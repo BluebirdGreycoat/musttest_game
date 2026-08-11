@@ -1268,6 +1268,7 @@ function protector.toggle_area_display(pos, entity)
 	if not got_any then
 		minetest.add_entity(pos, entity)
 	end
+	return not got_any -- True if entity added, otherwise false.
 end
 
 dofile(protector.modpath .. "/crafts.lua")

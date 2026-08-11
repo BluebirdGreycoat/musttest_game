@@ -19,7 +19,7 @@
 
 local LAST_LOGIN_DAYS = 60 * 60 * 24 * 180
 local PROTECTOR_PLACETIME_OFFSET = 60 * 60 * 24 * 3
-local BUILDXP_FOR_MAYOR = 20000
+city_block.BUILDXP_FOR_MAYOR = 20000
 local CITYBLOCK_BOROUGH_RADIUS = 22 -- Covers a 45x45x45 area.
 
 local PROTECTOR_NAMES = {
@@ -27,6 +27,13 @@ local PROTECTOR_NAMES = {
 	"protector:protect2",
 	"protector:protect3",
 	"protector:protect4",
+}
+
+local DISPLAY_ENTITY_NAME = {
+	["protector:protect"] = "protector:display",
+	["protector:protect2"] = "protector:display",
+	["protector:protect3"] = "protector:display_small",
+	["protector:protect4"] = "protector:display_small",
 }
 
 local function is_protector_name(name)
@@ -68,6 +75,18 @@ local function is_node_of_interest(name)
 	end
 end
 
+local CITYBLOCK_NAMES = {
+	"city_block:cityblock",
+}
+
+local function is_cityblock_name(name)
+	for k, v in ipairs(CITYBLOCK_NAMES) do
+		if name == v then
+			return true
+		end
+	end
+end
+
 -- Grok function.
 local function parse_protector_placedate(timestr)
   local year, month, day = timestr:match("^(%d+)/(%d+)/(%d+) UTC$")
@@ -94,6 +113,29 @@ local function parse_protector_placedate(timestr)
   return os.time(t) + offset
 end
 
+local function get_protector_timestamp(meta)
+	local placedate = meta:get_string("placedate")
+	local placetime = tonumber(meta:get_string("placetime")) -- May be nil.
+
+	-- Convert placetime to placedate if we have to.
+	if placetime == 0 or placetime == nil and placedate ~= "" then
+		placetime = parse_protector_placedate(placedate)
+	end
+
+	-- Protections owned by admin are maximally old.
+	local owner = meta:get_string("owner")
+	if gdac.player_is_admin(owner) then
+		placetime = nil
+	end
+
+	if placetime and placetime ~= 0 then
+		return placetime
+	end
+end
+
+-- Returns 1 if protector can be controled by the cityblock.
+-- Returns 0 if protector is independant.
+-- Returns -1 on error (node/meta invalid, etc.).
 local function get_protector_slave_status(prot_pos, city_pos)
 	local rpos = vector.subtract(prot_pos, city_pos)
 	local D = CITYBLOCK_BOROUGH_RADIUS
@@ -102,6 +144,12 @@ local function get_protector_slave_status(prot_pos, city_pos)
 	local in_cityblock_area = false
 	local protector_is_newer = false
 	local protowner_is_away = false
+
+	-- Check if the cityblock is valid.
+	local cblock = city_block.get_block(city_pos)
+	if not cblock then
+		return -1
+	end
 
 	-- Check if the protector is in the city block's area of control.
 	if rpos.x >= -D and rpos.x <= D then
@@ -112,11 +160,33 @@ local function get_protector_slave_status(prot_pos, city_pos)
 		end
 	end
 
+	-- Check if the nodes are actually valid.
+	local protnode = minetest.get_node(prot_pos)
+	local citynode = minetest.get_node(city_pos)
+	if not (is_protector_name(protnode.name) or is_expired_protector_name(protnode.name)) then
+		return -1
+	end
+	if not is_cityblock_name(citynode.name) then
+		return -1
+	end
+	if is_expired_protector_name(protnode.name) then
+		return 2
+	end
+
 	local meta = minetest.get_meta(prot_pos)
 	local owner = meta:get_string("owner")
-	local pauth = minetest.get_auth_handler().get_auth(owner)
+	if owner == "" then
+		return -1 -- Don't call get_auth() with an empty string.
+	end
+
+	-- If cityblock and protector owner are same, allow control.
+	-- Shortcut all remaining checks.
+	if cblock.owner and owner == cblock.owner then
+		return 1
+	end
 
 	-- Check if the protector owner is away for extended time.
+	local pauth = minetest.get_auth_handler().get_auth(owner)
 	if pauth and pauth.last_login and pauth.last_login ~= -1 then
 		local tnow = os.time()
 		local tlast = pauth.last_login
@@ -131,28 +201,16 @@ local function get_protector_slave_status(prot_pos, city_pos)
 	end
 
 	-- Check if the protector is newer than the city block.
-	local cblock = city_block.get_block(city_pos)
 	local city_time = cblock.time -- or nil.
 	-- Special: if the cityblock age is unknown and is owned by the admin,
 	-- then it is the oldest thing on the server.
-	if cblock and not city_time then
+	if not city_time then
 		if cblock.owner and gdac.player_is_admin(cblock.owner) then
 			city_time = 0
 		end
 	end
-	if cblock and city_time then
-		local placedate = meta:get_string("placedate")
-		local placetime = tonumber(meta:get_string("placetime")) -- May be nil.
-
-		-- Convert placetime to placedate if we have to.
-		if placetime == 0 or placetime == nil and placedate ~= "" then
-			placetime = parse_protector_placedate(placedate)
-		end
-
-		-- Protections owned by admin are maximally old.
-		if gdac.player_is_admin(owner) then
-			placetime = nil
-		end
+	if city_time then
+		local placetime = get_protector_timestamp(meta)
 
 		if placetime and placetime ~= 0 then
 			-- Protector must be significantly newer.
@@ -200,10 +258,12 @@ local function do_protector_scan(pos, pname, guiobj)
 		if is_node_of_interest(node.name) then
 			if is_protector_name(node.name) or is_expired_protector_name(node.name) then
 				local owner = meta:get_string("owner")
-				if not owner_set[owner] then
-					owner_set[owner] = 1
-				else
-					owner_set[owner] = owner_set[owner] + 1
+				if owner ~= "" then
+					if not owner_set[owner] then
+						owner_set[owner] = 1
+					else
+						owner_set[owner] = owner_set[owner] + 1
+					end
 				end
 			else
 				-- Is cityblock.
@@ -253,12 +313,19 @@ local FORMTABLE = {
 function city_block.create_mayor_formspec(pos, pname, blockdata)
 	local guiobj = city_block.guiobjs[pname]
 	if not guiobj then
-		guiobj = formspec.create_gui_object(FORMTABLE)
+		local key = pname .. ":" .. minetest.pos_to_string(pos)
+		guiobj = city_block.saved_guiobjs[key]
+		city_block.saved_guiobjs[key] = nil
+		if not guiobj then
+			guiobj = formspec.create_gui_object(FORMTABLE)
+		end
 		city_block.guiobjs[pname] = guiobj
 
 		-- Add some additional methods.
-		function guiobj:set_message(msg)
-			self:get_control_by_id("info_message").text = (msg or "No info.")
+		if not guiobj.set_message then
+			function guiobj:set_message(msg)
+				self:get_control_by_id("info_message").text = (msg or "No info.")
+			end
 		end
 
 		-- Initial message.
@@ -300,7 +367,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 		return true
 	end
 
-	if xp.get_xp(pname, "buildxp") < BUILDXP_FOR_MAYOR then
+	if xp.get_xp(pname, "buildxp") < city_block.BUILDXP_FOR_MAYOR then
 		return true
 	end
 
@@ -314,6 +381,8 @@ function city_block.on_mayor_fields(player, formname, fields)
 
 	if fields.quit then
 		city_block.formspecs[pname] = nil
+		local key = pname .. ":" .. minetest.pos_to_string(pos)
+		city_block.saved_guiobjs[key] = city_block.guiobjs[pname]
 		city_block.guiobjs[pname] = nil
 		return true
 	end
@@ -337,22 +406,131 @@ function city_block.on_mayor_fields(player, formname, fields)
 			local info = data[guiobj:get_control_by_name("player_list").selected]
 
 			local list = {}
+			local datalist = {}
+
 			if info then
 				for _, vpos in ipairs(prots) do
 					local node = minetest.get_node(vpos)
 					local meta = minetest.get_meta(vpos)
 					if is_protector_name(node.name) or is_expired_protector_name(node.name) then
-						if meta:get_string("owner") == info.owner then
+						local vowner = meta:get_string("owner")
+						if vowner ~= "" and vowner == info.owner then
 							local p = vector.subtract(vpos, pos)
 							local color = get_protector_slave_status_color(vpos, pos)
 							local str = ("%s%s"):format(color, minetest.pos_to_string(p))
 							table.insert(list, str)
+							table.insert(datalist, {pos=vpos, owner=info.owner})
 						end
 					end
 				end
+			else
+				guiobj:set_message("0xDEADBEEF: Bad GUI selection.")
 			end
-			--table.insert(list, "#55FF55Green item")
+
 			guiobj:get_control_by_name("block_list").itemlist = list
+			guiobj:get_usertable().current_block_list = datalist
+		end
+	end
+
+	if fields.block_list then
+		local tab = minetest.explode_textlist_event(fields.block_list)
+		if tab.type == "CHG" and tab.index then
+			guiobj:get_control_by_name("block_list").selected = tab.index
+		end
+
+		local list = guiobj:get_usertable().current_block_list or {}
+		local info = list[tab.index] -- May be nil.
+		if info then
+			local vpos = info.pos
+			local node = minetest.get_node(vpos)
+			if is_protector_name(node.name) or is_expired_protector_name(node.name) then
+				local is_expired = is_expired_protector_name(node.name)
+				local nmeta = minetest.get_meta(vpos)
+				local members = protector.get_member_list(nmeta)
+				local timestamp = get_protector_timestamp(nmeta) or 0
+				local areaname = nmeta:get_string("area_name")
+				areaname = areaname ~= "" and areaname or "N/A"
+
+				local textarea = guiobj:get_control_by_name("claim_infotext")
+				if textarea then
+					local lines = {
+						("Registered To: %s"):format(rename.gpn(info.owner)),
+						("GPS: %s"):format(minetest.pos_to_string(vector.subtract(vpos, pos))),
+						("Date: %s"):format(os.date("!%Y/%m/%d", timestamp)),
+						("Location: %s"):format(areaname),
+						("Members: %d"):format(#members),
+					}
+					if is_expired then
+						table.insert(lines, "*** EXPIRED ***")
+					end
+					textarea.text = table.concat(lines, '\n')
+				end
+			else
+				guiobj:set_message("0xDEADBEEF: Node is not a protector.")
+			end
+		else
+			guiobj:set_message("0xDEADBEEF: Bad GUI selection.")
+		end
+	end
+
+	-- Currently allows showing the protector grids of protections user doesn't own.
+	-- This may be useful, IDK.
+	if fields.show_protgrid then
+		local idx = guiobj:get_control_by_name("block_list").selected
+		local list = guiobj:get_usertable().current_block_list or {}
+		local info = list[idx] -- May be nil.
+		if info then
+			local vpos = info.pos
+			local node = minetest.get_node(vpos)
+			local entity = DISPLAY_ENTITY_NAME[node.name]
+			if is_protector_name(node.name) and entity then
+				if protector.toggle_area_display(vpos, entity) then
+					guiobj:set_message("Grid shown.")
+				else
+					guiobj:set_message("Grid hidden.")
+				end
+			elseif is_expired_protector_name(node.name) then
+				guiobj:set_message("Protector is expired.")
+			else
+				guiobj:set_message("0xDEADBEEF: Node is not a protector.")
+			end
+		else
+			guiobj:set_message("0xDEADBEEF: Bad GUI selection.")
+		end
+	end
+
+	if fields.force_expiry then
+		local idx = guiobj:get_control_by_name("block_list").selected
+		local list = guiobj:get_usertable().current_block_list or {}
+		local info = list[idx] -- May be nil.
+		if info then
+			local vpos = info.pos
+			local cpos = pos
+			local status = get_protector_slave_status(vpos, cpos)
+			if status == 1 then
+				local oldnode = minetest.get_node(vpos)
+				local oldndef = minetest.registered_nodes[oldnode.name] or {}
+				if oldndef._expired_protector_name then
+					local name = oldndef._expired_protector_name
+					local param2 = oldnode.param2
+					minetest.swap_node(vpos, {name=name, param2=param2})
+					-- Remove infotext. However, we leave the rest of the meta so
+					-- we have something to show in the cityblock GUI.
+					-- It's harmless since the first thing the protector code looks for
+					-- is the nodename.
+					minetest.get_meta(vpos):set_string("infotext", "")
+					protector.remove_area_display(vpos)
+					guiobj:set_message("Protector successfully expired.")
+				else
+					guiobj:set_message("0xDEADBEEF: Unknown node.")
+				end
+			elseif status == -1 then
+				guiobj:set_message("0xDEADBEEF: Map/GUI data mismatch.")
+			else
+				guiobj:set_message("Selected protector cannot be managed.")
+			end
+		else
+			guiobj:set_message("0xDEADBEEF: Bad GUI selection.")
 		end
 	end
 

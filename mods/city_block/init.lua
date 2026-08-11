@@ -13,6 +13,7 @@ city_block.filename = minetest.get_worldpath() .. "/city_blocks.txt"
 city_block.modpath = minetest.get_modpath("city_block")
 city_block.formspecs = city_block.formspecs or {}
 city_block.guiobjs = city_block.guiobjs or {}
+city_block.saved_guiobjs = city_block.saved_guiobjs or {}
 reload.install_simple_signals(city_block)
 
 -- Cityblocks take 6 hours to become "active".

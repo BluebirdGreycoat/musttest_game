@@ -287,6 +287,7 @@ local function get_protector_slave_status(prot_pos, city_pos)
 			cityblocks_all_allow = true
 		end
 	end
+	cityblocks_all_allow = true
 
 	-- Check if protector has members, and if all members pass.
 	local memberlist = protector.get_member_list(meta)

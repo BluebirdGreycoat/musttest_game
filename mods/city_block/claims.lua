@@ -193,9 +193,11 @@ local function calc_costinfo_for_protector(prot_pos)
 
 	local multiplier = 100
 	if count > 10 then
-		multiplier = 150
+		multiplier = 500
 	elseif count > 20 then
-		multiplier = 300
+		multiplier = 1000
+	elseif count > 30 then
+		multiplier = 1500
 	end
 
 	local cost = count * multiplier

@@ -20,6 +20,7 @@
 local LAST_LOGIN_DAYS = 60 * 60 * 24 * 180
 local PROTECTOR_PLACETIME_OFFSET = 60 * 60 * 24 * 3
 local BUILDXP_FOR_MAYOR = 20000
+local CITYBLOCK_BOROUGH_RADIUS = 22 -- Covers a 45x45x45 area.
 
 local PROTECTOR_NAMES = {
 	"protector:protect",
@@ -95,7 +96,7 @@ end
 
 local function get_protector_slave_status(prot_pos, city_pos)
 	local rpos = vector.subtract(prot_pos, city_pos)
-	local D = 22 -- Covers a 45x45x45 area.
+	local D = CITYBLOCK_BOROUGH_RADIUS
 
 	-- All must be true to pass.
 	local in_cityblock_area = false
@@ -182,7 +183,7 @@ end
 
 
 local function do_protector_scan(pos, pname, guiobj)
-	local D = 22 -- Covers a 45x45x45 area.
+	local D = CITYBLOCK_BOROUGH_RADIUS
 	local minp = vector.subtract(pos, D)
 	local maxp = vector.add(pos, D)
 
@@ -257,7 +258,7 @@ function city_block.create_mayor_formspec(pos, pname, blockdata)
 		local age = blockdata.time and os.date("!%Y/%m/%d UTC", blockdata.time) or "unknown"
 		local owner = blockdata.owner or "N/A"
 
-		label.text = ("Borough age: %s | Block captain: %s"):format(age, owner)
+		label.text = ("Borough incorporated: %s | Block captain: %s"):format(age, owner)
 	end
 
 	return guiobj:to_formspec()

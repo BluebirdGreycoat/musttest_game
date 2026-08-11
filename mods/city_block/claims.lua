@@ -228,10 +228,18 @@ local FORMTABLE = {
 	size = {x=10.7, y=6.7},
 	children = {
 		{h=6.7, texture="gui_formbg.png", type="background9", w=10.7, x=0, x1=50, y=0},
-		{h=0.6, label="Find Claims", name="protector_scan", type="button", w=2, x=0.5, y=0.5},
-		{h=5.5, name="player_list", type="textlist", w=3, x=3, y=0.5},
-		{h=5.5, name="block_list", type="textlist", w=3, x=6.5, y=0.5},
-		{FORMID="cityblock_age", h=0.4, text="Label Text", type="label", w=4, x=0.5, y=6},
+		{FORMID="cityblock_age", h=0.3, text="City age: unknown.", type="label", w=9.5, x=0.5, y=0.4},
+		{h=0.4, text="Landowners:", type="label", w=3, x=0.5, y=1},
+		{h=0.4, text="Properties:", type="label", w=3, x=3.3, y=1},
+		{h=0.4, text="Claim Info:", type="label", w=3, x=6.1, y=1},
+		{h=3.4, name="player_list", type="textlist", w=2.5, x=0.5, y=1.4},
+		{h=3.4, name="block_list", type="textlist", w=2.5, x=3.3, y=1.4},
+		{h=3.4, label="", name="claim_infotext", text="", type="textarea", w=4.1, x=6.1, y=1.4},
+		{h=0.5, label="Find Claims", name="protector_scan", tooltip="Find all protectors near cityblock.", type="button", w=2, x=0.5, y=4.9},
+		{h=0.5, label="Force Expiry", name="force_expiry", style={bgcolor="red"}, tooltip="This action cannot be undone.", type="button", w=2, x=6.1, y=4.9},
+		{h=0.5, label="Add M. Self", name="become_member", tooltip="Add yourself as a member of this protector.", type="button", w=2, x=8.2, y=4.9},
+		{color="#101010", h=0.5, type="box", w=9.7, x=0.5, y=5.7},
+		{FORMID="info_message", h=0.3, text="No info.", type="label", w=9.5, x=0.6, y=5.8},
 	},
 }
 
@@ -246,11 +254,10 @@ function city_block.create_mayor_formspec(pos, pname, blockdata)
 
 	do
 		local label = guiobj:get_control_by_id("cityblock_age")
-		if blockdata.time then
-			label.text = "City age: " .. os.date("!%Y/%m/%d UTC", blockdata.time)
-		else
-			label.text = "City age: unknown."
-		end
+		local age = blockdata.time and os.date("!%Y/%m/%d UTC", blockdata.time) or "unknown"
+		local owner = blockdata.owner or "N/A"
+
+		label.text = ("Borough age: %s | Block captain: %s"):format(age, owner)
 	end
 
 	return guiobj:to_formspec()

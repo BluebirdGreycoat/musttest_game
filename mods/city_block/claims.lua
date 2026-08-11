@@ -305,7 +305,7 @@ local function get_protector_slave_status(prot_pos, city_pos)
 					local tlast = pauth.last_login
 					local tdiff = tnow - tlast
 					local delay = LAST_LOGIN_DAYS
-					if tdiff > delay then
+					if tdiff <= delay then
 						good = false
 					end
 				else

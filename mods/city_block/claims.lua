@@ -209,7 +209,8 @@ local function get_protector_slave_status(prot_pos, city_pos)
 		if cityXP >= MAYOR_MINIMUM_BUILDXP then
 			cityowner_has_xp = true
 		end
-		if cityXP >= (protXP + MAYOR_MINIMUM_BUILDXP) then
+		-- Check if city owner XP is more than twice as much as prot owner XP.
+		if cityXP >= (protXP * 2) then
 			cityowner_has_xp_morethanprot = true
 		end
 		if protXP < (MAYOR_MINIMUM_BUILDXP / 2) then
@@ -323,7 +324,8 @@ local function get_protector_slave_status(prot_pos, city_pos)
 				if memberXP >= (MAYOR_MINIMUM_BUILDXP / 2) then
 					good = false
 				end
-				if cityXP < (memberXP + MAYOR_MINIMUM_BUILDXP) then
+				-- Check if city owner XP is more than twice as much as member XP.
+				if cityXP < (memberXP * 2) then
 					good = false
 				end
 			end

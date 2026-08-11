@@ -134,6 +134,7 @@ local function get_protector_timestamp(meta)
 end
 
 -- Returns 1 if protector can be controled by the cityblock.
+-- Returns 2 if protector is expired.
 -- Returns 0 if protector is independant.
 -- Returns -1 on error (node/meta invalid, etc.).
 local function get_protector_slave_status(prot_pos, city_pos)
@@ -144,6 +145,7 @@ local function get_protector_slave_status(prot_pos, city_pos)
 	local in_cityblock_area = false
 	local protector_is_newer = false
 	local protowner_is_away = false
+	local protowner_not_admin = false
 
 	-- Check if the cityblock is valid.
 	local cblock = city_block.get_block(city_pos)
@@ -185,6 +187,11 @@ local function get_protector_slave_status(prot_pos, city_pos)
 		return 1
 	end
 
+	-- Check if protector owner is admin.
+	if not gdac.player_is_admin(owner) then
+		protowner_not_admin = true
+	end
+
 	-- Check if the protector owner is away for extended time.
 	local pauth = minetest.get_auth_handler().get_auth(owner)
 	if pauth and pauth.last_login and pauth.last_login ~= -1 then
@@ -219,7 +226,7 @@ local function get_protector_slave_status(prot_pos, city_pos)
 		end
 	end
 
-	if in_cityblock_area and protector_is_newer and protowner_is_away then
+	if in_cityblock_area and protector_is_newer and protowner_is_away and protowner_not_admin then
 		return 1
 	end
 	return 0

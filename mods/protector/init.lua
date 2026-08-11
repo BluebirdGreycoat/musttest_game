@@ -666,7 +666,7 @@ end
 --= Protection Lock
 
 minetest.register_node("protector:protect", {
-	description = "Advanced Protection Lock\nArea Protected: 11x11x11",
+	description = "Advanced Protector Stone\nArea Protected: 11x11x11",
 	drawtype = "nodebox",
 	tiles = {
 		"moreblocks_circle_stone_bricks.png",
@@ -782,7 +782,7 @@ minetest.register_node("protector:protect", {
 })
 
 minetest.register_node("protector:protect3", {
-	description = "Protection Lock\nArea Protected: 7x7x7",
+	description = "Protector Stone\nArea Protected: 7x7x7",
 	drawtype = "nodebox",
 	tiles = {"cityblock.png"},
 	sounds = default.node_sound_stone_defaults(),
@@ -892,7 +892,7 @@ minetest.register_node("protector:protect3", {
 --= Protection Logo
 
 minetest.register_node("protector:protect2", {
-	description = "Advanced Protection Logo\nArea Protected: 11x11x11\nWarning: nearly invisible!",
+	description = "Skyway Protector\nArea Protected: 11x11x11\nWarning: nearly invisible!",
 	tiles = {"protector_logo.png"},
 	wield_image = "protector_logo_item.png",
 	inventory_image = "protector_logo_item.png",
@@ -1014,7 +1014,7 @@ minetest.register_node("protector:protect2", {
 })
 
 minetest.register_node("protector:protect4", {
-	description = "Protection Logo\nArea Protected: 7x7x7",
+	description = "Protection Lock\nArea Protected: 7x7x7",
 	tiles = {"protector_lock.png"},
 	wield_image = "protector_lock.png",
 	inventory_image = "protector_lock.png",

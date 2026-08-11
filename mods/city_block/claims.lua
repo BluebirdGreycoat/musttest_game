@@ -221,6 +221,9 @@ local function do_protector_scan(pos, pname, guiobj)
 	guiobj:get_control_by_name("player_list").itemlist = owner_list
 	guiobj:get_usertable().datalist = owner_list_data
 	guiobj:get_usertable().protlist = prots -- All blocks.
+
+	return #prots - 1, -- Always includes self in search, so -1.
+		#owner_list
 end
 
 
@@ -236,7 +239,8 @@ local FORMTABLE = {
 		{h=3.4, name="player_list", type="textlist", w=2.5, x=0.5, y=1.4},
 		{h=3.4, name="block_list", type="textlist", w=2.5, x=3.3, y=1.4},
 		{h=3.4, label="", name="claim_infotext", text="", type="textarea", w=4.1, x=6.1, y=1.4},
-		{h=0.5, label="Find Claims", name="protector_scan", tooltip="Find all protectors near cityblock.", type="button", w=2, x=0.5, y=4.9},
+		{h=0.5, label="Find Claims", name="protector_scan", tooltip="Find all protectors near cityblock.", type="button", w=2.5, x=0.5, y=4.9},
+		{h=0.5, label="Show Grid", name="show_protgrid", type="button", w=2.5, x=3.3, y=4.9},
 		{h=0.5, label="Force Expiry", name="force_expiry", style={bgcolor="red"}, tooltip="This action cannot be undone.", type="button", w=2, x=6.1, y=4.9},
 		{h=0.5, label="Add M. Self", name="become_member", tooltip="Add yourself as a member of this protector.", type="button", w=2, x=8.2, y=4.9},
 		{color="#101010", h=0.5, type="box", w=9.7, x=0.5, y=5.7},
@@ -315,9 +319,10 @@ function city_block.on_mayor_fields(player, formname, fields)
 	end
 
 	if fields.protector_scan then
-		do_protector_scan(pos, pname, guiobj)
+		local count, count_owners = do_protector_scan(pos, pname, guiobj)
 		guiobj:get_control_by_name("player_list").selected = -1 -- Apparently nil doesn't work.
 		guiobj:get_control_by_name("block_list").selected = -1
+		guiobj:set_message(("Scanned claims: %d (unique landowners: %d)"):format(count, count_owners))
 	end
 
 	if fields.player_list then

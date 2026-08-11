@@ -149,6 +149,7 @@ local function get_protector_slave_status(prot_pos, city_pos)
 	local protowner_not_admin = false
 	local cityowner_has_xp = false
 	local cityowner_has_xp_morethanprot = false
+	local protowner_has_noxp = false
 
 	-- Check if the cityblock is valid.
 	local cblock = city_block.get_block(city_pos)
@@ -196,6 +197,7 @@ local function get_protector_slave_status(prot_pos, city_pos)
 	end
 
 	-- Check if cityblock owner has needed minimum XP.
+	-- Also check other XP requirements.
 	if cblock.owner then
 		local cityXP = xp.get_xp(cblock.owner, "buildxp")
 		local protXP = xp.get_xp(owner, "buildxp")
@@ -204,6 +206,9 @@ local function get_protector_slave_status(prot_pos, city_pos)
 		end
 		if cityXP >= (protXP + MAYOR_MINIMUM_BUILDXP) then
 			cityowner_has_xp_morethanprot = true
+		end
+		if protXP < (MAYOR_MINIMUM_BUILDXP / 2) then
+			protowner_has_noxp = true
 		end
 	end
 
@@ -247,6 +252,7 @@ local function get_protector_slave_status(prot_pos, city_pos)
 			and protowner_not_admin
 			and cityowner_has_xp
 			and cityowner_has_xp_morethanprot
+			and protowner_has_noxp
 	then
 		return 1
 	end

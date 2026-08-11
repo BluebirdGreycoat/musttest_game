@@ -264,7 +264,7 @@ function city_block.create_mayor_formspec(pos, pname, blockdata)
 	do
 		local label = guiobj:get_control_by_id("cityblock_age")
 		local age = blockdata.time and os.date("!%Y/%m/%d", blockdata.time) or "N/A"
-		local owner = blockdata.owner or "N/A"
+		local owner = blockdata.owner and rename.gpn(blockdata.owner) or "N/A"
 
 		label.text = ("Borough incorporated: %s | Block captain: %s"):format(age, owner)
 	end

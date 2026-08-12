@@ -97,7 +97,7 @@ function city_block.on_receive_fields(player, formname, fields)
 			local blockdata = city_block.get_block(pos)
 			local formspec = city_block.create_mayor_formspec(pos, pname, blockdata)
 			minetest.show_formspec(pname, "city_block:mayor", formspec)
-			core.log("info", ("[cityblock] <%s> gained access to mayoral functions at %s."):
+			core.log("action", ("[cityblock] <%s> gained access to mayoral functions at %s."):
 				format(pname, minetest.pos_to_string(pos)))
 		else
 			core.log("info", ("[cityblock] <%s> was refused access to mayoral functions at %s."):

@@ -266,7 +266,7 @@ function camc.on_chatcommand(pname, param)
 		xp.subtract_xp(pname, "digxp", command.digxp_cost or 0)
 		xp.subtract_xp(pname, "buildxp", command.buildxp_cost or 0)
 
-		camc.system_response("MustTest", ("<%s> executes /hawkeye %s."):format(rename.gpn(pname), param))
+		minetest.log("action", ("[CAMC] <%s> executes /hawkeye %s."):format(rename.gpn(pname), param))
 		command.action(pname, param:sub(verb:len() + 2):trim())
 	end
 end

@@ -62,6 +62,8 @@ function camc.add_vantage_point(pname, vantage_name)
 		time = os.time(),
 	})
 	city_block:save()
+	minetest.log("action", ("[CAMC] <%s> creates vantage point at %s.")
+		:format(rename.gpn(pname), minetest.pos_to_string(vector.round(pos))))
 	return true, "Vantage point added."
 end
 

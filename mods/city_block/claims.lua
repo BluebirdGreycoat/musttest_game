@@ -22,6 +22,7 @@ local PROTECTOR_PLACETIME_OFFSET = 60 * 60 * 24 * 3
 city_block.BUILDXP_FOR_MAYOR = 20000
 local MAYOR_MINIMUM_BUILDXP = 30000
 local CITYBLOCK_BOROUGH_RADIUS = 22 -- Covers a 45x45x45 area.
+local ADD_MEMBER_COST_MULTPLIER = 0.85 -- % off doing "add member" instead of "force expire"
 
 local PROTECTOR_NAMES = {
 	"protector:protect",
@@ -538,6 +539,15 @@ function city_block.create_mayor_formspec(pos, pname, blockdata)
 		label.text = ("Borough incorporated: %s | Block captain: %s"):format(age, owner)
 	end
 
+	guiobj:get_control_by_name("force_expiry").tooltip =
+		("This action cannot be undone.\nWill cost Build XP!")
+		:format()
+
+	local percent = math.round((1 - ADD_MEMBER_COST_MULTPLIER) * 100)
+	guiobj:get_control_by_name("become_member").tooltip =
+		("Add yourself as a member of this protector.\n%d%% off XP list price.")
+		:format(percent)
+
 	return guiobj:to_formspec()
 end
 
@@ -670,7 +680,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 						("Date of Claim: %s"):format(timestr),
 						("Unique Blocks: %d"):format(unique_ids),
 						("Location: %s"):format(areaname),
-						("Members: %d"):format(#members),
+						("Members: %d"):format(#members), -- Must be the last entry or member list will be disconnected.
 					}
 					if is_expired then
 						table.insert(lines, "*** EXPIRED ***")
@@ -686,7 +696,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 				local status = get_protector_slave_status(vpos, pos)
 				local rposstr = minetest.pos_to_string(vector.subtract(vpos, pos))
 				local status_mode = ({[-1]="invalid", [0]="independant", [1]="slaved", [2]="expired"})[status] or "unknown"
-				guiobj:set_message(("Viewing claim at %s: %s."):format(rposstr, status_mode))
+				guiobj:set_message(("Viewing claim at %s: status %s."):format(rposstr, status_mode))
 			else
 				guiobj:set_message("0xDEADBEEF: Node is not a protector.")
 			end
@@ -730,19 +740,26 @@ function city_block.on_mayor_fields(player, formname, fields)
 			local cpos = pos
 			local status, errmsg = get_protector_slave_status(vpos, cpos)
 			if status == 1 then
+				local unique_ids, total_cost = calc_costinfo_for_protector(vpos)
+
 				local oldnode = minetest.get_node(vpos)
 				local oldndef = minetest.registered_nodes[oldnode.name] or {}
 				if oldndef._expired_protector_name then
-					local name = oldndef._expired_protector_name
-					local param2 = oldnode.param2
-					minetest.swap_node(vpos, {name=name, param2=param2})
-					-- Remove infotext. However, we leave the rest of the meta so
-					-- we have something to show in the cityblock GUI.
-					-- It's harmless since the first thing the protector code looks for
-					-- is the nodename.
-					minetest.get_meta(vpos):set_string("infotext", "")
-					protector.remove_area_display(vpos)
-					guiobj:set_message("Protector successfully expired.")
+					if xp.get_xp(pname, "buildxp") >= total_cost then
+						xp.subtract_xp(pname, "buildxp", total_cost)
+						local name = oldndef._expired_protector_name
+						local param2 = oldnode.param2
+						minetest.swap_node(vpos, {name=name, param2=param2})
+						-- Remove infotext. However, we leave the rest of the meta so
+						-- we have something to show in the cityblock GUI.
+						-- It's harmless since the first thing the protector code looks for
+						-- is the nodename.
+						minetest.get_meta(vpos):set_string("infotext", "")
+						protector.remove_area_display(vpos)
+						guiobj:set_message("Protector successfully expired.")
+					else
+						guiobj:set_message("You don't have enough Build XP.")
+					end
 				else
 					guiobj:set_message("0xDEADBEEF: Unknown node.")
 				end
@@ -765,14 +782,22 @@ function city_block.on_mayor_fields(player, formname, fields)
 			local cpos = pos
 			local status, errmsg = get_protector_slave_status(vpos, cpos)
 			if status == 1 then
+				local unique_ids, total_cost = calc_costinfo_for_protector(vpos)
+				total_cost = total_cost * ADD_MEMBER_COST_MULTPLIER
+
 				local vmeta = minetest.get_meta(vpos)
 				local vnode = minetest.get_node(vpos)
 				local vndef = minetest.registered_nodes[vnode.name] or {}
 				if vndef._protector_supports_members then
 					if vmeta:get_string("owner") ~= pname then
 						if not protector.is_member(vmeta, pname) then
-							protector.add_member(vmeta, pname)
-							guiobj:set_message("Member list updated.")
+							if xp.get_xp(pname, "buildxp") >= total_cost then
+								xp.subtract_xp(pname, "buildxp", total_cost)
+								protector.add_member(vmeta, pname)
+								guiobj:set_message("Member list updated.")
+							else
+								guiobj:set_message("You don't have enough Build XP.")
+							end
 						else
 							guiobj:set_message("You are already a member of the selected protector.")
 						end

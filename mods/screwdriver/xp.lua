@@ -23,6 +23,7 @@ function screwdriver.reward_xp(pname, pref, npos, xp_type, xp_reward)
 			prefpos = {},
 			streak = 0,
 			cooldown = 0,
+			blockpos = {},
 		}
 		players[pname] = pdata
 	end

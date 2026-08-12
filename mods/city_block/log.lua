@@ -20,11 +20,11 @@ city_block.register_callback("log_borough_action", "cityblock", function(params)
 		end
 	end
 
-	if not params.refused then
-		core.log("action", ("[cityblock] <%s> gained access to mayoral functions at %s."):
+	if params.refused then
+		core.log("action", ("[cityblock] <%s> was refused access to mayoral functions at %s."):
 			format(pname, minetest.pos_to_string(pos)))
 	else
-		core.log("action", ("[cityblock] <%s> was refused access to mayoral functions at %s."):
+		core.log("action", ("[cityblock] <%s> gained access to mayoral functions at %s."):
 			format(pname, minetest.pos_to_string(pos)))
 	end
 end)

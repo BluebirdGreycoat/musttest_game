@@ -8,6 +8,7 @@ local TIME_WINDOW = 10
 local MAX_STREAK = 5
 local XP_COOLDOWN = 60
 local PLAYER_DIST = 2
+local MAX_XP_PER_BPOS = 500
 
 -- Localize for readability.
 local players = screwdriver.xp.players
@@ -67,6 +68,15 @@ function screwdriver.reward_xp(pname, pref, npos, xp_type, xp_reward)
 	end
 
 	if pdata.cooldown > tnow then
+		return
+	end
+
+	-- Limit how much XP can be earned per mapblock.
+	local blockpos = vector.floor(vector.divide(npos, 16))
+	local bpostab = pdata.blockpos
+	local bposxp = bpostab[blockpos] or 0
+	bpostab[blockpos] = bposxp + xp_reward
+	if bposxp > MAX_XP_PER_BPOS then
 		return
 	end
 

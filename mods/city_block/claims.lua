@@ -577,6 +577,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 
 	local pname = player:get_player_name()
 	local pos = city_block.formspecs[pname]
+	local block = city_block.get_block(pos)
 	local guiobj = city_block.guiobjs[pname]
 	local is_admin = gdac.player_is_admin(pname)
 
@@ -585,12 +586,23 @@ function city_block.on_mayor_fields(player, formname, fields)
 		return true
 	end
 
-	if xp.get_xp(pname, "buildxp") < city_block.BUILDXP_FOR_MAYOR then
-		core.log("info",
-			("[cityblock] <%s> tried to send fields to 'city_block:mayor', but they don't have enough Build XP.")
-			:format(pname)
-		)
+	-- Ensure we got the city block data.
+	if not block then
 		return true
+	end
+
+	do
+		local is_admin = gdac.player_is_admin(pname)
+		local have_xp = (xp.get_xp(pname, "buildxp") >= city_block.BUILDXP_FOR_MAYOR)
+		local have_time = (block.time ~= nil and block.time >= city_block.BOROUGH_MIN_ACTIVATION_TIME)
+
+		if not (is_admin or (have_xp and have_time)) then
+			core.log("action",
+				("[cityblock] <%s> tried to send fields to 'city_block:mayor', but access is disallowed.")
+				:format(pname)
+			)
+			return true
+		end
 	end
 
 	local meta = minetest.get_meta(pos)

@@ -100,26 +100,32 @@ function city_block.on_receive_fields(player, formname, fields)
 
 	if fields.manage_claims then
 		local is_admin = gdac.player_is_admin(pname)
+		local blocktime = block.time or 0
+		local have_xp = (xp.get_xp(pname, "buildxp") >= city_block.BUILDXP_FOR_MAYOR)
+		local have_time = (block.time ~= nil and block.time >= city_block.BOROUGH_MIN_ACTIVATION_TIME)
+		local refused = true
 
-		if is_admin or xp.get_xp(pname, "buildxp") >= city_block.BUILDXP_FOR_MAYOR then
-			if is_admin or os.time() > city_block.BOROUGH_MIN_ACTIVATION_TIME then
-				local formspec = city_block.create_mayor_formspec(pos, pname, block)
-				minetest.show_formspec(pname, "city_block:mayor", formspec)
-				core.log("action", ("[cityblock] <%s> gained access to mayoral functions at %s."):
-					format(pname, minetest.pos_to_string(pos)))
-			else
-				minetest.chat_send_player(pname,
-					("This feature is not available until %s.")
-					:format( os.date("!%Y/%m/%d", city_block.BOROUGH_MIN_ACTIVATION_TIME) )
-				)
+		if is_admin or (have_xp and have_time) then
+			if is_admin then
+				have_xp = true
+				have_time = true
 			end
-		else
-			core.log("info", ("[cityblock] <%s> was refused access to mayoral functions at %s."):
-				format(pname, minetest.pos_to_string(pos)))
-			minetest.chat_send_player(pname,
-				("# Server: You need %d Build XP to access this function.")
-				:format(city_block.BUILDXP_FOR_MAYOR))
+
+			local formspec = city_block.create_mayor_formspec(pos, pname, block)
+			minetest.show_formspec(pname, "city_block:mayor", formspec)
+			refused = false
 		end
+
+		city_block.run_callbacks("log_borough_action", {
+			pname = pname,
+			is_admin = is_admin,
+			time = blocktime,
+			have_xp = have_xp,
+			have_time = have_time,
+			pos = pos,
+			refused = refused,
+		})
+
 		return true
 	end
 

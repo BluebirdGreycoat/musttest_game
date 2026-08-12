@@ -497,6 +497,10 @@ function protector.check_overlap_main(protname, pname, spos)
 		return false, 1
 	end
 
+	if not city_block:may_place_protector_at(spos) then
+		return false, 6
+	end
+
 	local pos = {x=spos.x, y=spos.y, z=spos.z}
 	local rad = protector.radius
 	local bones = minetest.find_nodes_in_area(
@@ -547,6 +551,8 @@ function protector.check_overlap(itemstack, placer, pt)
 			minetest.chat_send_player(pname, "# Server: Cannot claim protection here, there is no land authority.")
 		elseif reason == 5 then
 			minetest.chat_send_player(pname, "# Server: The area near the Outback gate's exit is public. Cannot claim land here.")
+		elseif reason == 6 then
+			minetest.chat_send_player(pname, "# Server: A nearby city block forbids placing protectors.")
 		else
 			minetest.chat_send_player(pname, "# Server: Cannot place protection for unknown reason.")
 		end

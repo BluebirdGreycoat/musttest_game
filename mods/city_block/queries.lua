@@ -28,6 +28,33 @@ end
 
 
 
+function city_block:may_place_protector_at(pos)
+	pos = vector_round(pos)
+	-- Covers a 45x45x45 area.
+	local r = 22
+	local blocks = self.blocks
+	local t2 = os.time()
+
+	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
+		local v = blocks[i]
+		local vpos = v.pos
+		local t1 = v.time or 0
+
+		-- nil or true means the cityblock allows protectors.
+		if v.allow_protectors == false then
+			if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
+				pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
+				pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
+				return false
+			end
+		end
+	end
+
+	return true
+end
+
+
+
 -- Returns a table of the N-nearest city-blocks to a given position.
 -- The return value format is: {{pos, owner}, {pos, owner}, ...}
 -- Note: only returns blocks in the same realm! See RC mod.

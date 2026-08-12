@@ -53,13 +53,9 @@ function city_block.create_formspec(pos, pname, blockdata)
 		inv:set_size("config", 1)
 	end
 
-	if blockdata.pvp_arena then
-		guiobj:get_control_by_name("pvp_arena").selected = true
-	end
-
-	if blockdata.hud_beacon then
-		guiobj:get_control_by_name("hud_beacon").selected = true
-	end
+	guiobj:get_control_by_name("pvp_arena").selected = (blockdata.pvp_arena == true)
+	guiobj:get_control_by_name("hud_beacon").selected = (blockdata.hud_beacon == true)
+	guiobj:get_control_by_name("allow_protectors").selected = (blockdata.allow_protectors == nil or blockdata.allow_protectors == true)
 
 	return guiobj:to_formspec()
 end
@@ -164,11 +160,12 @@ function city_block.on_receive_fields(player, formname, fields)
 		end
 
 		city_block:save()
-	---[[
-	elseif fields.pvp_arena == "true" then
+	end
+
+	if fields.pvp_arena == "true" then
 		local block = city_block.get_block(pos)
 		if block then
-			minetest.chat_send_player(pname, "# Server: Enabled dueling arena.")
+			--minetest.chat_send_player(pname, "# Server: Enabled dueling arena.")
 			block.pvp_arena = true
 			meta:set_string("infotext", city_block.get_infotext(pos))
 			city_block:save()
@@ -176,28 +173,40 @@ function city_block.on_receive_fields(player, formname, fields)
 	elseif fields.pvp_arena == "false" then
 		local block = city_block.get_block(pos)
 		if block then
-			minetest.chat_send_player(pname, "# Server: Disabled dueling arena.")
+			--minetest.chat_send_player(pname, "# Server: Disabled dueling arena.")
 			block.pvp_arena = nil
 			meta:set_string("infotext", city_block.get_infotext(pos))
 			city_block:save()
 		end
-	--]]
-	---[[
-	elseif fields.hud_beacon == "true" then
+	end
+
+	if fields.hud_beacon == "true" then
 		local block = city_block.get_block(pos)
 		if block then
-			minetest.chat_send_player(pname, "# Server: Activated KEY signal.")
+			--minetest.chat_send_player(pname, "# Server: Activated KEY signal.")
 			block.hud_beacon = true
 			city_block:save()
 		end
 	elseif fields.hud_beacon == "false" then
 		local block = city_block.get_block(pos)
 		if block then
-			minetest.chat_send_player(pname, "# Server: Disabled KEY signal.")
+			--minetest.chat_send_player(pname, "# Server: Disabled KEY signal.")
 			block.hud_beacon = nil
 			city_block:save()
 		end
-	--]]
+	end
+
+	if fields.allow_protectors then
+		local str = fields.allow_protectors
+		local block = city_block.get_block(pos)
+		if block then
+			if str == "true" then
+				block.allow_protectors = true
+			elseif str == "false" then
+				block.allow_protectors = false
+			end
+			city_block:save()
+		end
 	end
 
 	if fields.quit then

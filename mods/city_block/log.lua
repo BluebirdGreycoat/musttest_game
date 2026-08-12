@@ -9,7 +9,7 @@ city_block.register_callback("log_borough_action", "cityblock", function(params)
 	if params.refused then
 		if not params.have_time then
 			minetest.chat_send_player(pname,
-				("# Server: This system is not available until %s.")
+				("# Server: This system is not available on city blocks placed before %s.")
 				:format( os.date("!%Y/%m/%d", city_block.BOROUGH_MIN_ACTIVATION_TIME) )
 			)
 		end

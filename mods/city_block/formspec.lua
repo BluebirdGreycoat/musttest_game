@@ -174,23 +174,19 @@ function city_block.on_receive_fields(player, formname, fields)
 	end
 
 	if fields.pvp_arena == "true" then
-		--minetest.chat_send_player(pname, "# Server: Enabled dueling arena.")
 		block.pvp_arena = true
 		meta:set_string("infotext", city_block.get_infotext(pos))
 		city_block:save()
 	elseif fields.pvp_arena == "false" then
-		--minetest.chat_send_player(pname, "# Server: Disabled dueling arena.")
 		block.pvp_arena = nil
 		meta:set_string("infotext", city_block.get_infotext(pos))
 		city_block:save()
 	end
 
 	if fields.hud_beacon == "true" then
-		--minetest.chat_send_player(pname, "# Server: Activated KEY signal.")
 		block.hud_beacon = true
 		city_block:save()
 	elseif fields.hud_beacon == "false" then
-		--minetest.chat_send_player(pname, "# Server: Disabled KEY signal.")
 		block.hud_beacon = nil
 		city_block:save()
 	end

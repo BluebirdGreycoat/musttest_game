@@ -28,10 +28,10 @@ end
 
 
 
-function city_block:may_place_protector_at(pos)
+function city_block:may_place_protector_at(pos, protrad)
 	pos = vector_round(pos)
-	-- Covers a 45x45x45 area.
-	local r = 22
+	-- Covers a 45x45x45 area (not including prot radius).
+	local r = 22 + (protrad or 0) -- Plus the radius of the protector.
 	local blocks = self.blocks
 	local t2 = os.time()
 

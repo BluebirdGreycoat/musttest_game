@@ -497,7 +497,9 @@ function protector.check_overlap_main(protname, pname, spos)
 		return false, 1
 	end
 
-	if not city_block:may_place_protector_at(spos) then
+	local ndef = minetest.registered_nodes[protname] or {}
+	if not city_block:may_place_protector_at(spos, ndef._protector_node_radius or 0) then
+		-- Overlap with a cityblock that says "no."
 		return false, 6
 	end
 
@@ -702,6 +704,7 @@ minetest.register_node("protector:protect", {
 
 	_expired_protector_name = "protector:expired1",
 	_protector_supports_members = true,
+	_protector_node_radius = protector.radius,
 
 	on_timer = protector.on_timer,
 
@@ -839,6 +842,7 @@ minetest.register_node("protector:protect3", {
 	end,
 
 	_expired_protector_name = "protector:expired1",
+	_protector_node_radius = protector.radius_small,
 
 	on_timer = protector.on_timer,
 
@@ -928,6 +932,7 @@ minetest.register_node("protector:protect2", {
 
 	_expired_protector_name = "protector:expired2",
 	_protector_supports_members = true,
+	_protector_node_radius = protector.radius,
 
 	on_timer = protector.on_timer,
 
@@ -1076,6 +1081,7 @@ minetest.register_node("protector:protect4", {
 	end,
 
 	_expired_protector_name = "protector:expired2",
+	_protector_node_radius = protector.radius_small,
 
 	on_timer = protector.on_timer,
 

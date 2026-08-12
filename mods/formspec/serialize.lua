@@ -92,7 +92,9 @@ local function process_element_spec(in_data, out_lines)
 
 			-- Add tooltip if present. Must be declared *after* the element it's bound to.
 			if info.tooltip and info.name then
-				s = s .. "tooltip[" .. info.name .. ";" .. FS(info.tooltip) .. "]"
+				if info.tooltip ~= "" then -- Ignore empty tooltip.
+					s = s .. "tooltip[" .. info.name .. ";" .. FS(info.tooltip) .. "]"
+				end
 			end
 
 			-- Show debug AABB.

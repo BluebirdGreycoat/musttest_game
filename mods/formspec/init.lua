@@ -5,6 +5,7 @@ reload.install_simple_signals(formspec)
 
 formspec.WIDGET_TYPES = formspec.WIDGET_TYPES or {}
 formspec.FORMSPEC_VERSION = 9
+formspec.MOD_VERSION = "V1"
 
 
 

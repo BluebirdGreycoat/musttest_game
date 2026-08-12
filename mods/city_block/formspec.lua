@@ -78,9 +78,15 @@ function city_block.on_receive_fields(player, formname, fields)
 
 	local pname = player:get_player_name()
 	local pos = city_block.formspecs[pname]
+	local block = city_block.get_block(pos)
 
 	-- Context should have been created in 'on_rightclick'. CSM protection.
 	if not pos then
+		return true
+	end
+
+	-- Ensure we got the city block data.
+	if not block then
 		return true
 	end
 
@@ -93,12 +99,20 @@ function city_block.on_receive_fields(player, formname, fields)
 	end
 
 	if fields.manage_claims then
-		if gdac.player_is_admin(pname) or xp.get_xp(pname, "buildxp") >= city_block.BUILDXP_FOR_MAYOR then
-			local blockdata = city_block.get_block(pos)
-			local formspec = city_block.create_mayor_formspec(pos, pname, blockdata)
-			minetest.show_formspec(pname, "city_block:mayor", formspec)
-			core.log("action", ("[cityblock] <%s> gained access to mayoral functions at %s."):
-				format(pname, minetest.pos_to_string(pos)))
+		local is_admin = gdac.player_is_admin(pname)
+
+		if is_admin or xp.get_xp(pname, "buildxp") >= city_block.BUILDXP_FOR_MAYOR then
+			if is_admin or os.time() > city_block.BOROUGH_MIN_ACTIVATION_TIME then
+				local formspec = city_block.create_mayor_formspec(pos, pname, block)
+				minetest.show_formspec(pname, "city_block:mayor", formspec)
+				core.log("action", ("[cityblock] <%s> gained access to mayoral functions at %s."):
+					format(pname, minetest.pos_to_string(pos)))
+			else
+				minetest.chat_send_player(pname,
+					("This feature is not available until %s.")
+					:format( os.date("!%Y/%m/%d", city_block.BOROUGH_MIN_ACTIVATION_TIME) )
+				)
+			end
 		else
 			core.log("info", ("[cityblock] <%s> was refused access to mayoral functions at %s."):
 				format(pname, minetest.pos_to_string(pos)))
@@ -146,13 +160,6 @@ function city_block.on_receive_fields(player, formname, fields)
 			return
 		end
 
-		local block = city_block.get_block(pos)
-
-		-- Ensure we got the city block data.
-		if not block then
-			return
-		end
-
 		-- Write out.
 		meta:set_string("cityname", area_name)
 		meta:set_string("infotext", city_block.get_infotext(pos))
@@ -167,50 +174,35 @@ function city_block.on_receive_fields(player, formname, fields)
 	end
 
 	if fields.pvp_arena == "true" then
-		local block = city_block.get_block(pos)
-		if block then
-			--minetest.chat_send_player(pname, "# Server: Enabled dueling arena.")
-			block.pvp_arena = true
-			meta:set_string("infotext", city_block.get_infotext(pos))
-			city_block:save()
-		end
+		--minetest.chat_send_player(pname, "# Server: Enabled dueling arena.")
+		block.pvp_arena = true
+		meta:set_string("infotext", city_block.get_infotext(pos))
+		city_block:save()
 	elseif fields.pvp_arena == "false" then
-		local block = city_block.get_block(pos)
-		if block then
-			--minetest.chat_send_player(pname, "# Server: Disabled dueling arena.")
-			block.pvp_arena = nil
-			meta:set_string("infotext", city_block.get_infotext(pos))
-			city_block:save()
-		end
+		--minetest.chat_send_player(pname, "# Server: Disabled dueling arena.")
+		block.pvp_arena = nil
+		meta:set_string("infotext", city_block.get_infotext(pos))
+		city_block:save()
 	end
 
 	if fields.hud_beacon == "true" then
-		local block = city_block.get_block(pos)
-		if block then
-			--minetest.chat_send_player(pname, "# Server: Activated KEY signal.")
-			block.hud_beacon = true
-			city_block:save()
-		end
+		--minetest.chat_send_player(pname, "# Server: Activated KEY signal.")
+		block.hud_beacon = true
+		city_block:save()
 	elseif fields.hud_beacon == "false" then
-		local block = city_block.get_block(pos)
-		if block then
-			--minetest.chat_send_player(pname, "# Server: Disabled KEY signal.")
-			block.hud_beacon = nil
-			city_block:save()
-		end
+		--minetest.chat_send_player(pname, "# Server: Disabled KEY signal.")
+		block.hud_beacon = nil
+		city_block:save()
 	end
 
 	if fields.allow_protectors then
 		local str = fields.allow_protectors
-		local block = city_block.get_block(pos)
-		if block then
-			if str == "true" then
-				block.allow_protectors = true
-			elseif str == "false" then
-				block.allow_protectors = false
-			end
-			city_block:save()
+		if str == "true" then
+			block.allow_protectors = true
+		elseif str == "false" then
+			block.allow_protectors = false
 		end
+		city_block:save()
 	end
 
 	if fields.quit then

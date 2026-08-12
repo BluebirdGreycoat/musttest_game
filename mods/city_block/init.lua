@@ -14,6 +14,8 @@ city_block.modpath = minetest.get_modpath("city_block")
 city_block.formspecs = city_block.formspecs or {}
 city_block.guiobjs = city_block.guiobjs or {}
 city_block.saved_guiobjs = city_block.saved_guiobjs or {}
+city_block.BUILDXP_FOR_MAYOR = 20000
+city_block.BOROUGH_MIN_ACTIVATION_TIME = os.time({year=2026, month=10, day=1}) -- 10 year anniversary
 reload.install_simple_signals(city_block)
 
 -- Cityblocks take 6 hours to become "active".

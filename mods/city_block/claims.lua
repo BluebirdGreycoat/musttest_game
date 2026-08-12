@@ -412,6 +412,21 @@ local function get_protector_slave_status(prot_pos, city_pos)
 	protmembers_pass = true
 	--]]
 
+	-- Debugging.
+	if cblock.owner and gdac.player_is_admin(cblock.owner) then
+		core.log("action", ("cityblock_area=%s, protector_newer=%s, last_login=%s, not_admin=%s, mayor_xp=%s, mayor_xp2=%s, cityblock_conflict=%s, members=%s")
+		:format(
+			tostring(in_cityblock_area),
+			tostring(protector_is_newer),
+			tostring(protowner_is_away),
+			tostring(protowner_not_admin),
+			tostring(cityowner_has_xp),
+			tostring(cityowner_has_xp_morethanprot),
+			tostring(cityblocks_all_allow),
+			tostring(protmembers_pass)
+		))
+	end
+
 	if in_cityblock_area
 			and protector_is_newer
 			and protowner_is_away

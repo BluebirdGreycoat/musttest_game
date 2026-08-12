@@ -26,6 +26,7 @@ local FORMTABLE = {
 		{type="container", x=0, y=0},
 		{FORMID="area_name", h=0.4, text="Area:", type="label", w=7.5, x=0.5, y=1.7},
 		{FORMID="area_owner", h=0.4, text="Owner:", type="label", w=7.5, x=0.5, y=2.1},
+		{FORMID="date", h=0.4, text="Date:", type="label", w=7.5, x=0.5, y=2.5},
 		{type="container_end"},
 	},
 }
@@ -39,9 +40,15 @@ function protector.generate_formspec(pname, meta)
 	end
 
 	local area_name = meta:get_string("area_name")
+	local place_date = meta:get_string("placedate")
+
+	if place_date == "" then
+		place_date = "Unknown"
+	end
 
 	guiobj:get_control_by_id("area_name").text = "Area: " .. area_name
 	guiobj:get_control_by_id("area_owner").text = "Owner: " .. rename.gpn(meta:get_string("owner"))
+	guiobj:get_control_by_id("date").text = "Date: " .. place_date
 	guiobj:get_control_by_name("area_name").default = area_name
 
 	local members = protector.get_member_list(meta)

@@ -96,14 +96,14 @@ function city_block.on_receive_fields(player, formname, fields)
 	end
 
 	if fields.manage_claims then
-		-- TODO: replace this condition with an XP check.
-		-- BUILDXP_FOR_MAYOR
-		if gdac.player_is_admin(pname) and xp.get_xp(pname, "buildxp") >= city_block.BUILDXP_FOR_MAYOR then
+		if gdac.player_is_admin(pname) or xp.get_xp(pname, "buildxp") >= city_block.BUILDXP_FOR_MAYOR then
 			local blockdata = city_block.get_block(pos)
 			local formspec = city_block.create_mayor_formspec(pos, pname, blockdata)
 			minetest.show_formspec(pname, "city_block:mayor", formspec)
 		else
-			minetest.chat_send_player(pname, "# Server: Not yet available.")
+			minetest.chat_send_player(pname,
+				("# Server: You need %d Build XP to access this function.")
+				:format(city_block.BUILDXP_FOR_MAYOR))
 		end
 		return true
 	end

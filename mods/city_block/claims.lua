@@ -564,14 +564,10 @@ function city_block.on_mayor_fields(player, formname, fields)
 	local pname = player:get_player_name()
 	local pos = city_block.formspecs[pname]
 	local guiobj = city_block.guiobjs[pname]
+	local is_admin = gdac.player_is_admin(pname)
 
 	-- Context should have been created in 'on_rightclick'. CSM protection.
 	if not pos or not guiobj then
-		return true
-	end
-
-	-- TODO: Not yet available.
-	if not gdac.player_is_admin(pname) then
 		return true
 	end
 
@@ -745,8 +741,8 @@ function city_block.on_mayor_fields(player, formname, fields)
 				local oldnode = minetest.get_node(vpos)
 				local oldndef = minetest.registered_nodes[oldnode.name] or {}
 				if oldndef._expired_protector_name then
-					if xp.get_xp(pname, "buildxp") >= total_cost then
-						xp.subtract_xp(pname, "buildxp", total_cost)
+					if xp.get_xp(pname, "buildxp") >= total_cost or is_admin then
+						if not is_admin then xp.subtract_xp(pname, "buildxp", total_cost) end
 						local name = oldndef._expired_protector_name
 						local param2 = oldnode.param2
 						minetest.swap_node(vpos, {name=name, param2=param2})
@@ -791,8 +787,8 @@ function city_block.on_mayor_fields(player, formname, fields)
 				if vndef._protector_supports_members then
 					if vmeta:get_string("owner") ~= pname then
 						if not protector.is_member(vmeta, pname) then
-							if xp.get_xp(pname, "buildxp") >= total_cost then
-								xp.subtract_xp(pname, "buildxp", total_cost)
+							if xp.get_xp(pname, "buildxp") >= total_cost or is_admin then
+								if not is_admin then xp.subtract_xp(pname, "buildxp", total_cost) end
 								protector.add_member(vmeta, pname)
 								guiobj:set_message("Member list updated.")
 							else

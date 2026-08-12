@@ -53,7 +53,7 @@ function screwdriver.reward_xp(pname, pref, npos, xp_type, xp_reward)
 		end
 	end
 
-	if same_node and same_pos then
+	if same_node or same_pos then
 		pdata.streak = pdata.streak + 1
 	end
 	if not same_node and not same_pos then

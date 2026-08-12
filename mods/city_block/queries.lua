@@ -35,16 +35,38 @@ function city_block:may_place_protector_at(pos, protrad)
 	local blocks = self.blocks
 	local t2 = os.time()
 
+	local rname = rc.current_realm_at_pos(pos)
+	local success, ground_y = rc.get_ground_level_at_pos(pos)
+
+	-- Ignore ground level in Ir-Xen.
+	if rname == "stoneworld" and pos.y >= 13150 then
+		ground_y = nil
+	end
+
 	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
 		local v = blocks[i]
 		local vpos = v.pos
 		local t1 = v.time or 0
 
+		local ybot = vpos.y - r
+		local ytop = vpos.y + r
+
+		-- If city block is located at or above grade, then its height extends to
+		-- realm top, for purposes of placing protectors.
+		if ground_y then
+			if vpos.y >= ground_y - 10 then
+				local info = rc.get_realm_data(rname)
+				if info and info.maxp and info.maxp.y then
+					ytop = info.maxp.y
+				end
+			end
+		end
+
 		-- nil or true means the cityblock allows protectors.
 		if v.allow_protectors == false then
 			if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
 				pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
-				pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
+				pos.y >= (ybot) and pos.y <= (ytop) then
 				return false
 			end
 		end

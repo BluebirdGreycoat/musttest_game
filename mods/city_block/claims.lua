@@ -572,6 +572,10 @@ function city_block.on_mayor_fields(player, formname, fields)
 	end
 
 	if xp.get_xp(pname, "buildxp") < city_block.BUILDXP_FOR_MAYOR then
+		core.log("info",
+			("[cityblock] <%s> tried to send fields to 'city_block:mayor', but they don't have enough Build XP.")
+			:format(pname)
+		)
 		return true
 	end
 
@@ -597,6 +601,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 		guiobj:get_control_by_name("block_list").selected = -1
 		guiobj:get_control_by_name("claim_infotext").text = nil
 		guiobj:set_message(("Scanned claims: %d (unique landowners: %d)"):format(count, count_owners))
+		core.log("action", ("[cityblock] <%s> runs protector scan."):format(pname))
 	end
 
 	if fields.player_list then
@@ -753,6 +758,8 @@ function city_block.on_mayor_fields(player, formname, fields)
 						minetest.get_meta(vpos):set_string("infotext", "")
 						protector.remove_area_display(vpos)
 						guiobj:set_message("Protector successfully expired.")
+						core.log("action", ("[cityblock] <%s> force-expired protector at %s.")
+							:format(pname, minetest.pos_to_string(vpos)))
 					else
 						guiobj:set_message("You don't have enough Build XP.")
 					end
@@ -791,6 +798,8 @@ function city_block.on_mayor_fields(player, formname, fields)
 								if not is_admin then xp.subtract_xp(pname, "buildxp", total_cost) end
 								protector.add_member(vmeta, pname)
 								guiobj:set_message("Member list updated.")
+								core.log("action", ("[cityblock] <%s> added self to protector members at %s.")
+									:format(pname, minetest.pos_to_string(vpos)))
 							else
 								guiobj:set_message("You don't have enough Build XP.")
 							end

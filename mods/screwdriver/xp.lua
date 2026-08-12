@@ -73,9 +73,10 @@ function screwdriver.reward_xp(pname, pref, npos, xp_type, xp_reward)
 
 	-- Limit how much XP can be earned per mapblock.
 	local blockpos = vector.floor(vector.divide(npos, 16))
+	local bposkey = ("%d%d%d"):format(blockpos.x, blockpos.y, blockpos.z)
 	local bpostab = pdata.blockpos
-	local bposxp = bpostab[blockpos] or 0
-	bpostab[blockpos] = bposxp + xp_reward
+	local bposxp = bpostab[bposkey] or 0
+	bpostab[bposkey] = bposxp + xp_reward
 	if bposxp > MAX_XP_PER_BPOS then
 		return
 	end

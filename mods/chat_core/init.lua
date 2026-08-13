@@ -15,15 +15,11 @@ local vector_round = vector.round
 
 dofile(chat_core.modpath .. "/functions.lua")
 
-if minetest.get_modpath("reload") then
+if not chat_core.registered then
 	local c = "chat_core:core"
 	local f = chat_core.modpath .. "/init.lua"
-	if not reload.file_registered(c) then
-		reload.register_file(c, f, false)
-	end
-end
+	reload.register_file(c, f, false)
 
-if not chat_core.registered then
 	minetest.register_chatcommand("me", {
 		params = "<action>",
 		description = "Perform an action (emote). Only visible to others who can see you.",

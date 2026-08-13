@@ -131,11 +131,13 @@ function shout.whisper(name, param)
 
 	for _, player in ipairs(players) do
 		local target_name = player:get_player_name() or ""
-		local pos2 = player:get_pos()
-		-- Since whispers are range limited, they always get through even if players are ignored.
-		if vector.distance(pos, pos2) < chat_core.WHISPER_DISTANCE then
-			--chat_core.alert_player_sound(target_name)
-			minetest.chat_send_player(target_name, "«" .. chat_core.nametag_color .. dname .. WHITE .. mk .. "» " .. chat_core.WHISPER_COLOR .. param)
+		if not camc.player_is_camera(target_name) then
+			local pos2 = player:get_pos()
+			-- Since whispers are range limited, they always get through even if players are ignored.
+			if vector.distance(pos, pos2) < chat_core.WHISPER_DISTANCE then
+				--chat_core.alert_player_sound(target_name)
+				minetest.chat_send_player(target_name, "«" .. chat_core.nametag_color .. dname .. WHITE .. mk .. "» " .. chat_core.WHISPER_COLOR .. param)
+			end
 		end
 	end
 
@@ -208,13 +210,15 @@ function shout.spoof(pname, param, show_help)
 
 	for _, player in ipairs(to_players) do
 		local target_name = player:get_player_name() or ""
-		local pos2 = player:get_pos()
-		-- Since whispers are range limited, they always get through even if players are ignored.
-		if vector.distance(pos, pos2) < chat_core.WHISPER_DISTANCE then
-			--chat_core.alert_player_sound(target_name)
-			minetest.chat_send_player(target_name, "# Server: " .. message)
-			if target_name ~= pname then
-				table.insert(players_sent_to, target_name)
+		if not camc.player_is_camera(target_name) then
+			local pos2 = player:get_pos()
+			-- Since whispers are range limited, they always get through even if players are ignored.
+			if vector.distance(pos, pos2) < chat_core.WHISPER_DISTANCE then
+				--chat_core.alert_player_sound(target_name)
+				minetest.chat_send_player(target_name, "# Server: " .. message)
+				if target_name ~= pname then
+					table.insert(players_sent_to, target_name)
+				end
 			end
 		end
 	end

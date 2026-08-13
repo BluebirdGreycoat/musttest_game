@@ -41,6 +41,9 @@ function formspec.create_gui_object(formtable)
 			if widget.FORMID and widget.FORMID == name then
 				return widget, index
 			end
+			if widget.FORMSPEC_ID and widget.FORMSPEC_ID == name then
+				return widget, index
+			end
 		end
 	end
 
@@ -56,6 +59,13 @@ function formspec.create_gui_object(formtable)
 
 	function tab:get_usertable()
 		return self.user_data
+	end
+
+	function tab:set_geometry(geom)
+		if type(geom) == "table" and geom.x and geom.y then
+			self.size.x = geom.x
+			self.size.y = geom.y
+		end
 	end
 
 	return tab

@@ -11,17 +11,16 @@ dofile(falling.modpath .. "/react.lua")
 if not falling.run_once then
 	minetest.register_entity(":__builtin:falling_node", {
 		initial_properties = {
-			visual = "wielditem",
-			visual_size = {x = 0.667, y = 0.667},
-			textures = {},
+			visual = "node",
 			physical = true,
 			is_visible = false,
-			collide_with_objects = false,
+			collide_with_objects = true,
 			collisionbox = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 		},
 
 		node = {},
 		meta = {},
+		floats = false,
 
 		set_node = function(self, node, meta)
 			falling.set_node(self, node, meta)

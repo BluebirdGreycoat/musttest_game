@@ -29,7 +29,63 @@ function falling.node_walkable(pos, nodedef, selfdef)
 		return true
 	end
 end
-local node_walkable = falling.node_walkable
+
+
+
+function falling.pos_out_of_bounds(pos)
+	if pos.z < -30912 then
+		return true
+	end
+	if pos.z > 30927 then
+		return true
+	end
+	if pos.x > 30927 then
+		return true
+	end
+	if pos.x < -30912 then
+		return true
+	end
+	return false
+end
+
+
+
+local ADJACENCY = {
+	{x=0, y=0, z=0},
+	{x=0, y=0, z=0},
+	{x=0, y=0, z=0},
+	{x=0, y=0, z=0},
+}
+
+function falling.find_adjacent_slope(pos, selfdef)
+	ADJACENCY[1].x=pos.x-1 ADJACENCY[1].y=pos.y ADJACENCY[1].z=pos.z
+	ADJACENCY[2].x=pos.x+1 ADJACENCY[2].y=pos.y ADJACENCY[2].z=pos.z
+	ADJACENCY[3].x=pos.x   ADJACENCY[3].y=pos.y ADJACENCY[3].z=pos.z+1
+	ADJACENCY[4].x=pos.x   ADJACENCY[4].y=pos.y ADJACENCY[4].z=pos.z-1
+
+	local targets = {}
+
+	for i = 1, 4 do
+		local p = ADJACENCY[i]
+		local nodedef = all_nodes[get_node(p).name]
+
+		if not falling.node_walkable(p, nodedef, selfdef) then
+			p.y = p.y + 1
+			nodedef = all_nodes[get_node(p).name]
+
+			if not falling.node_walkable(p, nodedef, selfdef) and not falling.pos_out_of_bounds(p) then
+				targets[#targets+1] = {x=p.x, y=p.y-1, z=p.z}
+			end
+
+			p.y = p.y - 1
+		end
+	end
+
+	if #targets == 0 then
+		return nil
+	end
+	return targets[random(1, #targets)]
+end
 
 
 
@@ -42,15 +98,15 @@ function falling.could_fall_here(pos)
 	local selfdef = all_nodes[get_node(pos).name]
 	local nodedef = all_nodes[get_node(d).name]
 
-	if outof_bounds(d) then
+	if falling.pos_out_of_bounds(d) then
 		return false
 	end
 
-	if not node_walkable(d, nodedef, selfdef) then
+	if not falling.node_walkable(d, nodedef, selfdef) then
 		return true
 	end
 
-	if find_slope(d, selfdef) then
+	if falling.find_adjacent_slope(d, selfdef) then
 		return true
 	end
 
@@ -157,7 +213,7 @@ function core.check_single_for_falling(p)
 			end
 
 			-- Otherwise only if the bottom node is considered "fall through"
-			if not same and not node_walkable(p_bottom, d_bottom, ndef) then
+			if not same and not falling.node_walkable(p_bottom, d_bottom, ndef) then
 				local success, _ = convert_to_falling_node(p, n)
 				return success
 			end

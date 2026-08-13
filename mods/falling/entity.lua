@@ -5,6 +5,33 @@ local ENTITY_DAMAGE_TIME = 0.2
 -- Gravity.
 local GRAVITY = 9.8
 
+local FDIR_TO_EULER = {
+	{y = 0, x = 0, z = 0},
+	{y = -math.pi/2, x = 0, z = 0},
+	{y = math.pi, x = 0, z = 0},
+	{y = math.pi/2, x = 0, z = 0},
+	{y = math.pi/2, x = -math.pi/2, z = math.pi/2},
+	{y = math.pi/2, x = math.pi, z = math.pi/2},
+	{y = math.pi/2, x = math.pi/2, z = math.pi/2},
+	{y = math.pi/2, x = 0, z = math.pi/2},
+	{y = -math.pi/2, x = math.pi/2, z = math.pi/2},
+	{y = -math.pi/2, x = 0, z = math.pi/2},
+	{y = -math.pi/2, x = -math.pi/2, z = math.pi/2},
+	{y = -math.pi/2, x = math.pi, z = math.pi/2},
+	{y = 0, x = 0, z = math.pi/2},
+	{y = 0, x = -math.pi/2, z = math.pi/2},
+	{y = 0, x = math.pi, z = math.pi/2},
+	{y = 0, x = math.pi/2, z = math.pi/2},
+	{y = math.pi, x = math.pi, z = math.pi/2},
+	{y = math.pi, x = math.pi/2, z = math.pi/2},
+	{y = math.pi, x = 0, z = math.pi/2},
+	{y = math.pi, x = -math.pi/2, z = math.pi/2},
+	{y = math.pi, x = math.pi, z = 0},
+	{y = -math.pi/2, x = math.pi, z = 0},
+	{y = 0, x = math.pi, z = 0},
+	{y = math.pi/2, x = math.pi, z = 0}
+}
+
 local get_node = core.get_node
 local get_node_or_nil = core.get_node_or_nil
 local get_node_drops = core.get_node_drops
@@ -23,63 +50,8 @@ local get_item_group = core.get_item_group
 local get_meta = core.get_meta
 local after = core.after
 local node_walkable = falling.node_walkable
-
-
-
-local function pos_out_of_bounds(pos)
-	if pos.z < -30912 then
-		return true
-	end
-	if pos.z > 30927 then
-		return true
-	end
-	if pos.x > 30927 then
-		return true
-	end
-	if pos.x < -30912 then
-		return true
-	end
-	return false
-end
-
-
-
-local ADJACENCY = {
-	{x=0, y=0, z=0},
-	{x=0, y=0, z=0},
-	{x=0, y=0, z=0},
-	{x=0, y=0, z=0},
-}
-
-local function find_adjacent_slope(pos, selfdef)
-	ADJACENCY[1].x=pos.x-1 ADJACENCY[1].y=pos.y ADJACENCY[1].z=pos.z
-	ADJACENCY[2].x=pos.x+1 ADJACENCY[2].y=pos.y ADJACENCY[2].z=pos.z
-	ADJACENCY[3].x=pos.x   ADJACENCY[3].y=pos.y ADJACENCY[3].z=pos.z+1
-	ADJACENCY[4].x=pos.x   ADJACENCY[4].y=pos.y ADJACENCY[4].z=pos.z-1
-
-	local targets = {}
-
-	for i = 1, 4 do
-		local p = ADJACENCY[i]
-		local nodedef = all_nodes[get_node(p).name]
-
-		if not node_walkable(p, nodedef, selfdef) then
-			p.y = p.y + 1
-			nodedef = all_nodes[get_node(p).name]
-
-			if not node_walkable(p, nodedef, selfdef) and not pos_out_of_bounds(p) then
-				targets[#targets+1] = {x=p.x, y=p.y-1, z=p.z}
-			end
-
-			p.y = p.y - 1
-		end
-	end
-
-	if #targets == 0 then
-		return nil
-	end
-	return targets[random(1, #targets)]
-end
+local pos_out_of_bounds = falling.pos_out_of_bounds
+local find_adjacent_slope = falling.find_adjacent_slope
 
 
 
@@ -206,17 +178,76 @@ end
 
 
 
-local function set_visual_properties(self, node)
-	self.object:set_properties({
-		is_visible = true,
-		textures = {node.name},
-	})
+local function set_visual_properties(self, node, def)
+	-- Set up entity visuals
+	-- For compatibility with older clients we continue to use "item" visual
+	-- for simple situations.
+	local drawtypes = {normal=true, glasslike=true, allfaces=true, nodebox=true}
+	local p2types = {none=true, facedir=true, ["4dir"]=true}
+	if drawtypes[def.drawtype] and p2types[def.paramtype2] and def.use_texture_alpha ~= "blend" then
+		-- Calculate size of falling node
+		local s = vector.zero()
+		s.x = (def.visual_scale or 1) * 0.667
+		s.y = s.x
+		s.z = s.x
+		-- Compensate for wield_scale
+		if def.wield_scale then
+			s.x = s.x / def.wield_scale.x
+			s.y = s.y / def.wield_scale.y
+			s.z = s.z / def.wield_scale.z
+		end
+		self.object:set_properties({
+			is_visible = true,
+			visual = "item",
+			wield_item = node.name,
+			visual_size = s,
+			glow = def.light_source,
+		})
+		-- Rotate as needed
+		if def.paramtype2 == "facedir" then
+			local fdir = node.param2 % 32 % 24
+			local euler = FDIR_TO_EULER[fdir + 1]
+			if euler then
+				self.object:set_rotation(euler)
+			end
+		elseif def.paramtype2 == "4dir" then
+			local fdir = node.param2 % 4
+			local euler = FDIR_TO_EULER[fdir + 1]
+			if euler then
+				self.object:set_rotation(euler)
+			end
+		end
+	elseif def.drawtype ~= "airlike" then
+		self.object:set_properties({
+			is_visible = true,
+			node = node,
+			glow = def.light_source,
+		})
+	end
+
+	-- Set collision box (certain nodeboxes only for now)
+	local nb_types = {fixed=true, leveled=true, connected=true}
+	if def.drawtype == "nodebox" and def.node_box and
+		nb_types[def.node_box.type] and def.node_box.fixed then
+		local box = table.copy(def.node_box.fixed)
+		if type(box[1]) == "table" then
+			box = #box == 1 and box[1] or nil -- We can only use a single box
+		end
+		if box then
+			if def.paramtype2 == "leveled" and (self.node.level or 0) > 0 then
+				box[5] = -0.5 + self.node.level / 64
+			end
+			self.object:set_properties({
+				collisionbox = box
+			})
+		end
+	end
 end
 
 
 
 -- Warning: 'meta' sometimes contains userdata from the engine, or builtin.
-local function convert_metadata(meta)
+local function get_converted_metadata(meta)
 	meta = meta or {}
 
 	-- If we got userdata meta, convert to table form.
@@ -255,12 +286,14 @@ function falling.set_node(self, node, meta)
 	end
 
 	self.node = {name=node.name, param2=node.param2 or 0}
-	self.meta = convert_metadata(meta)
+	self.meta = get_converted_metadata(meta)
 
 	-- Cache whether we're supposed to float on water
 	self.floats = (core.get_item_group(node.name, "float") ~= 0)
+	-- Save liquidtype for falling water
+	self.liquidtype = ndef.liquidtype
 
-	set_visual_properties(self, self.node)
+	set_visual_properties(self, self.node, ndef)
 
 	self.pharm, self.mharm = get_node_falling_harm(node.name)
 	self.sound = get_node_falling_sound(node.name)
@@ -301,158 +334,177 @@ end
 
 
 
-function falling.on_step(self, dtime, moveresult)
-	-- Turn to actual node when colliding with ground, or continue to move
-	local pos = self.object:get_pos()
-
-	-- Position of bottom center point
-	local bcp = vector_round({x = pos.x, y = pos.y - 0.7, z = pos.z})
-
-	-- Damage entities while falling/in-flight.
-	self.damage_timer = (self.damage_timer or 0) + dtime
-	if self.damage_timer >= ENTITY_DAMAGE_TIME then
-		damage_entities_around(bcp, self.node, self.pharm, self.mharm)
-		self.damage_timer = 0
-	end
-
-	-- Avoid bugs caused by an unloaded node below
-	local bcn = get_node_or_nil(bcp)
-	local bcd = bcn and all_nodes[bcn.name]
-	local selfdef = all_nodes[self.node.name]
-
-	if bcd and bcd._falling_remove then
-		if type(bcd._falling_remove) == "function" then
-			bcd._falling_remove(bcp)
-		else
-			remove_node(bcp)
+local function try_place(self, bcp, bcn)
+	local bcd = core.registered_nodes[bcn.name]
+	-- Add levels if dropped on same leveled node
+	if bcd and bcd.paramtype2 == "leveled" and bcn.name == self.node.name then
+		local addlevel = self.node.level
+		if (addlevel or 0) <= 0 then
+			addlevel = bcd.leveled
+		end
+		if core.add_node_level(bcp, addlevel) < addlevel then
+			return true
+		elseif bcd.buildable_to then
+			-- Node level has already reached max, don't place anything
+			return true
 		end
 	end
 
-	if bcn and (not bcd or node_walkable(bcp, bcd, selfdef)) then
-		if bcd and bcd.leveled and bcn.name == self.node.name then
-			local addlevel = self.node.level
+	-- Decide if we're replacing the node or placing on top
+	-- This condition is very similar to the check in core.check_single_for_falling(p)
+	local np = vector.copy(bcp)
+	if bcd and bcd.buildable_to
+			and -- Take "float" group into consideration:
+			(
+				-- Fall through non-liquids
+				not self.floats or bcd.liquidtype == "none" or
+				-- Only let sources fall through flowing liquids
+				(self.floats and self.liquidtype ~= "none" and bcd.liquidtype ~= "source")
+			) then
 
-			if not addlevel or addlevel <= 0 then
-				addlevel = bcd.leveled
+		core.remove_node(bcp)
+	else
+		-- We are placing on top so check what's there
+		np.y = np.y + 1
+
+		local n2 = core.get_node(np)
+		local nd = core.registered_nodes[n2.name]
+		if not nd or nd.buildable_to then
+			core.remove_node(np)
+		else
+			-- 'walkable' is used to mean "falling nodes can't replace this"
+			-- here. Normally we would collide with the walkable node itself
+			-- and place our node on top (so `n2.name == "air"`), but we
+			-- re-check this in case we ended up inside a node.
+			if not nd.diggable or nd.walkable then
+				return false
 			end
+			nd.on_dig(np, n2, nil)
+			-- If it's still there, it might be protected
+			if core.get_node(np).name == n2.name then
+				return false
+			end
+		end
+	end
 
-			if add_node_level(bcp, addlevel) == 0 then
+	-- Create node
+	local def = core.registered_nodes[self.node.name]
+	if def then
+		core.add_node(np, self.node)
+		if self.meta then
+			core.get_meta(np):from_table(self.meta)
+		end
+		if def.sounds and def.sounds.place then
+			core.sound_play(def.sounds.place, {pos = np}, true)
+		end
+	end
+	core.check_for_falling(np)
+	return true
+end
+
+
+
+local function get_moveresult_info(moveresult)
+	local bcp, bcn
+	local player_collision
+
+	if moveresult.touching_ground then
+		for _, info in ipairs(moveresult.collisions) do
+			if info.type == "object" then
+				if info.axis == "y" and info.object:is_player() then
+					player_collision = info
+				end
+			elseif info.axis == "y" then
+				bcp = info.node_pos
+				bcn = core.get_node(bcp)
+				break
+			end
+		end
+	end
+
+	return bcp, bcn, player_collision
+end
+
+
+
+function falling.on_step(self, dtime, moveresult)
+	-- Fallback code since collision detection can't tell us
+	-- about liquids (which do not collide)
+	if self.floats then
+		local pos = self.object:get_pos()
+
+		local bcp = pos:offset(0, -0.7, 0):round()
+		local bcn = core.get_node(bcp)
+
+		local bcd = core.registered_nodes[bcn.name]
+		if bcd and bcd.liquidtype ~= "none" then
+			if try_place(self, bcp, bcn) then
 				self.object:remove()
 				return
 			end
-		elseif bcd and bcd.buildable_to and (not self.floats or bcd.liquidtype == "none") then
-			remove_node(bcp)
-			return
 		end
+	end
 
-		-- We have hit the ground. Check for a possible slope which we can continue to fall down.
-		if bcd then
-			local ss = find_adjacent_slope(bcp, selfdef)
-			if ss ~= nil then
-				self.object:set_pos(vector_add(ss, {x=0, y=1, z=0}))
-				self.object:set_velocity({x=0, y=0, z=0})
+	if not moveresult or not moveresult.collides then
+		return -- Fast path.
+	end
 
-				ambiance.sound_play("default_gravel_footstep", ss, 0.2, 20)
-				return
-			end
+	-- Returns: bcp=nodepos, bcn=nodetable. Or nil.
+	local bcp, bcn, player_collision = get_moveresult_info(moveresult)
+
+	if not bcp then
+		-- We're colliding with something, but not the ground. Irrelevant to us.
+		if player_collision then
+			-- Continue falling through players by moving a little into
+			-- their collision box
+			-- TODO: this hack could be avoided in the future if objects
+			--       could choose who to collide with
+			local vel = self.object:get_velocity()
+			self.object:set_velocity(vector.new(
+				vel.x,
+				player_collision.old_velocity.y,
+				vel.z
+			))
+			self.object:set_pos(self.object:get_pos():offset(0, -0.5, 0))
 		end
-
-		local np = {x=bcp.x, y=bcp.y+1, z=bcp.z}
-		local protected = nil
-
-		-- Check what's here.
-		local n2 = get_node(np)
-		local nd = all_nodes[n2.name]
-		local nodedef = all_nodes[self.node.name]
-
-		if nodedef then
-			-- If not merely replacing air, or the nodetype is `buildable_to', then check protection.
-			if n2.name ~= "air" or nodedef.buildable_to then
-				protected = minetest.test_protection(np, "")
-			end
-
-			-- If it's not air and not liquid (and not protected), remove node and replace it with it's drops.
-			if not protected and n2.name ~= "air" and (not nd or nd.liquidtype == "none") then
-				remove_node(np)
-				if nd.buildable_to == false then
-					-- Add dropped items.
-					-- Pass node name, because passing a node table gives wrong results.
-					local drops = get_node_drops(n2.name, "")
-					for _, dropped_item in pairs(drops) do
-						add_item(np, dropped_item)
-					end
-				end
-
-				-- Run script hook
-				for _, callback in pairs(core.registered_on_dignodes) do
-					callback(np, n2)
-				end
-			end
-
-			-- Create node and remove entity.
-			if not protected or n2.name == "air" or n2.name == "default:snow" or n2.name == "snow:footprints" then
-				if protected and nodedef.buildable_to then
-					-- If the position is protected and the node we're placing is `buildable_to',
-					-- then we must drop an item instead in order to avoid creating a protection exploit,
-					-- even though we'd normally be placing into air.
-					local callback = nodedef.on_collapse_to_entity
-					if callback then
-						local drops = callback(np, self.node)
-						if drops then
-							for k, v in ipairs(drops) do
-								minetest.add_item(np, v)
-							end
-						end
-					else
-						add_item(np, self.node)
-					end
-				else
-					-- We're either placing into air, or crushing something that isn't protected.
-					add_node(np, self.node)
-					if self.meta then
-						local meta = get_meta(np)
-						meta:from_table(self.meta)
-					end
-
-					if self.sound then
-						ambiance.sound_play(self.sound, np, 1.3, 20)
-					end
-
-					-- Mark node as unprotectable.
-					-- This has to come before executing the node callback because the callback might remove the node.
-					-- If the callback changes the node placed, it should use `minetest.swap_node()'.
-					local meta = get_meta(np)
-					meta:set_int("protection_cancel", 1)
-					meta:mark_as_private("protection_cancel")
-
-					-- Execute node callback.
-					local callback = nodedef.on_finish_collapse
-					if callback then
-						callback(np, self.node)
-					end
-
-					-- Dirtspread notification.
-					dirtspread.on_environment(np)
-				end
-			else
-				-- Not air and protected, so we drop as entity instead.
-				local callback = nodedef.on_collapse_to_entity
-				if callback then
-					callback(np, self.node)
-				else
-					add_item(np, self.node)
-				end
-			end
-		end
-
+		return
+	elseif bcn.name == "ignore" then
+		-- Delete on contact with ignore at world edges
 		self.object:remove()
-		after(1, function() core.check_for_falling(np) end)
 		return
 	end
 
-	local vel = self.object:get_velocity()
-	if vector_equals(vel, {x = 0, y = 0, z = 0}) then
-		local npos = self.object:get_pos()
-		self.object:set_pos(vector_round(npos))
+	local failure = false
+
+	local pos = self.object:get_pos()
+	local distance = vector.apply(vector.subtract(pos, bcp), math.abs)
+	if distance.x >= 1 or distance.z >= 1 then
+		-- We're colliding with some part of a node that's sticking out
+		-- Since we don't want to visually teleport, drop as item
+		failure = true
+	elseif distance.y >= 2 then
+		-- Doors consist of a hidden top node and a bottom node that is
+		-- the actual door. Despite the top node being solid, the moveresult
+		-- almost always indicates collision with the bottom node.
+		-- Compensate for this by checking the top node
+		bcp.y = bcp.y + 1
+		bcn = core.get_node(bcp)
+		local def = core.registered_nodes[bcn.name]
+		if not (def and def.walkable) then
+			failure = true -- This is unexpected, fail
+		end
 	end
+
+	-- Try to actually place ourselves
+	if not failure then
+		failure = not try_place(self, bcp, bcn)
+	end
+
+	if failure then
+		local drops = core.get_node_drops(self.node, "")
+		for _, item in pairs(drops) do
+			core.add_item(pos, item)
+		end
+	end
+	self.object:remove()
 end

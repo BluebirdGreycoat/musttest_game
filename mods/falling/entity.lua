@@ -23,7 +23,7 @@ local node_walkable = falling.node_walkable
 
 
 
-local function outof_bounds(pos)
+local function pos_out_of_bounds(pos)
 	if pos.z < -30912 then
 		return true
 	end
@@ -48,34 +48,34 @@ local ADJACENCY = {
 	{x=0, y=0, z=0},
 }
 
-local function find_slope(pos, selfdef)
+local function find_adjacent_slope(pos, selfdef)
 	ADJACENCY[1].x=pos.x-1 ADJACENCY[1].y=pos.y ADJACENCY[1].z=pos.z
 	ADJACENCY[2].x=pos.x+1 ADJACENCY[2].y=pos.y ADJACENCY[2].z=pos.z
 	ADJACENCY[3].x=pos.x   ADJACENCY[3].y=pos.y ADJACENCY[3].z=pos.z+1
 	ADJACENCY[4].x=pos.x   ADJACENCY[4].y=pos.y ADJACENCY[4].z=pos.z-1
 
-  local targets = {}
+	local targets = {}
 
-  for i = 1, 4 do
-    local p = ADJACENCY[i]
-    local nodedef = all_nodes[get_node(p).name]
+	for i = 1, 4 do
+		local p = ADJACENCY[i]
+		local nodedef = all_nodes[get_node(p).name]
 
-    if not node_walkable(p, nodedef, selfdef) then
+		if not node_walkable(p, nodedef, selfdef) then
 			p.y = p.y + 1
 			nodedef = all_nodes[get_node(p).name]
 
-      if not node_walkable(p, nodedef, selfdef) and not outof_bounds(p) then
-        targets[#targets+1] = {x=p.x, y=p.y-1, z=p.z}
-      end
+			if not node_walkable(p, nodedef, selfdef) and not pos_out_of_bounds(p) then
+				targets[#targets+1] = {x=p.x, y=p.y-1, z=p.z}
+			end
 
 			p.y = p.y - 1
-    end
-  end
+		end
+	end
 
 	if #targets == 0 then
 		return nil
 	end
-  return targets[random(1, #targets)]
+	return targets[random(1, #targets)]
 end
 
 
@@ -95,7 +95,7 @@ local TOOL_CAPABILITIES = {
 	damage_groups = {fleshy = 1},
 }
 
-local function damage_entities(pos, node, pharm, mharm)
+local function damage_entities_around(pos, node, pharm, mharm)
 	if not pharm or pharm < 1 then
 		return
 	end
@@ -103,10 +103,10 @@ local function damage_entities(pos, node, pharm, mharm)
 		return
 	end
 
-  local objects = get_objects_inside_radius(pos, 1.2)
-  for i = 1, #objects do
-    local r = objects[i]
-    if r:is_player() then
+	local objects = get_objects_inside_radius(pos, 1.2)
+	for i = 1, #objects do
+		local r = objects[i]
+		if r:is_player() then
 			if not gdac.player_is_admin(r) and not camc.player_is_camera(r) then
 				local hp = r:get_hp()
 				if hp > 0 then
@@ -114,7 +114,7 @@ local function damage_entities(pos, node, pharm, mharm)
 
 					if r:get_hp() <= 0 then
 						-- Player will die.
-						falling.run_callbacks_after("on_kill_player", {
+						falling.run_callbacks_after("after_killed_player", {
 							pname = r:get_player_name(),
 							player_pos = r:get_pos(),
 							pos = pos,
@@ -122,8 +122,8 @@ local function damage_entities(pos, node, pharm, mharm)
 					end
 				end
 			end
-    else
-      local l = r:get_luaentity()
+		else
+			local l = r:get_luaentity()
 			if l then
 				if l.mob and l.mob == true then
 					TOOL_CAPABILITIES.damage_groups.fleshy = mharm
@@ -132,15 +132,15 @@ local function damage_entities(pos, node, pharm, mharm)
 					droplift.invoke(r)
 				end
 			end
-    end
-  end
+		end
+	end
 end
 
 
 
-local function node_sound(name)
-  local def = all_nodes[name]
-  if not def then
+local function get_node_falling_sound(name)
+	local def = all_nodes[name]
+	if not def then
 		return "default_gravel_footstep"
 	end
 
@@ -148,14 +148,14 @@ local function node_sound(name)
 		return
 	end
 
-  if def.sounds then
-    if def.sounds.footstep then
-      local s = def.sounds.footstep
-      if s.name then
+	if def.sounds then
+		if def.sounds.footstep then
+			local s = def.sounds.footstep
+			if s.name then
 				return s.name
 			end
-    end
-  end
+		end
+	end
 
 	return "default_gravel_footstep"
 end
@@ -164,15 +164,15 @@ end
 
 -- Called to check if a falling node may cause harm when it lands.
 -- Must return the amount of harm the node does. Called when the falling node is first spawned.
-local function node_harm(name)
+local function get_node_falling_harm(name)
 	if not name or name == "air" or name == "ignore" then
 		return 0, 0
 	end
 
-  -- Abort if node cannot cause harm.
-  if name == "bones:bones_type2" or string_find(name, "lava_") or string_find(name, "water_") then
-    return 0, 0
-  end
+	-- Abort if node cannot cause harm.
+	if name == "bones:bones_type2" or string_find(name, "lava_") or string_find(name, "water_") then
+		return 0, 0
+	end
 
 	-- Non-walkable nodes cause no harm.
 	local ndef = all_nodes[name]
@@ -213,6 +213,12 @@ function falling.set_node(self, node, meta)
 		end
 	end
 
+	local ndef = all_nodes[node.name]
+	if not ndef then
+		self.object:remove()
+		return
+	end
+
 	self.node = node
 	self.meta = meta or {}
 
@@ -235,8 +241,8 @@ function falling.set_node(self, node, meta)
 		is_visible = true,
 		textures = {node.name},
 	})
-	self.pharm, self.mharm = node_harm(node.name)
-	self.sound = node_sound(node.name)
+	self.pharm, self.mharm = get_node_falling_harm(node.name)
+	self.sound = get_node_falling_sound(node.name)
 
 	--minetest.log("TEST1: " .. dump(self.meta))
 end
@@ -263,7 +269,7 @@ function falling.on_activate(self, staticdata)
 	self.object:set_armor_groups({immortal = 1})
 
 	local pos = self.object:get_pos()
-	if outof_bounds(pos) then
+	if pos_out_of_bounds(pos) then
 		self.object:remove()
 		return
 	end
@@ -293,7 +299,7 @@ function falling.on_step(self, dtime, moveresult)
 	-- Damage entities while falling/in-flight.
 	self.damage_timer = (self.damage_timer or 0) + dtime
 	if self.damage_timer >= ENTITY_DAMAGE_TIME then
-		damage_entities(bcp, self.node, self.pharm, self.mharm)
+		damage_entities_around(bcp, self.node, self.pharm, self.mharm)
 		self.damage_timer = 0
 	end
 
@@ -335,7 +341,7 @@ function falling.on_step(self, dtime, moveresult)
 
 		-- We have hit the ground. Check for a possible slope which we can continue to fall down.
 		if bcd then
-			local ss = find_slope(bcp, selfdef)
+			local ss = find_adjacent_slope(bcp, selfdef)
 			if ss ~= nil then
 				self.object:set_pos(vector_add(ss, {x=0, y=1, z=0}))
 				self.object:set_velocity({x=0, y=0, z=0})

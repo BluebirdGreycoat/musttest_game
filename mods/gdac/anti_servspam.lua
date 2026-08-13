@@ -78,7 +78,7 @@ end
 -- Only block future logins from this IP only if they successfully logged in the first time.
 function spam.on_joinplayer(pref, last_login)
   local ip = minetest.get_player_ip(pref:get_player_name())
-  spamips[ip] = os.time() + 30
+  spamips[ip] = os.time() + 15
 end
 
 

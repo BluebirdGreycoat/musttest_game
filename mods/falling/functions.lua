@@ -448,7 +448,7 @@ function falling.on_activate(self, staticdata)
 	if ds and ds.node then
 		self:set_node(ds.node, ds.meta)
 	elseif ds then
-			self:set_node(ds)
+		self:set_node(ds)
 	elseif staticdata ~= "" then
 		self:set_node({name = staticdata})
 	end
@@ -461,26 +461,13 @@ function falling.on_activate(self, staticdata)
 		return
 	end
 
+	-- Set gravity.
 	self.object:set_acceleration({x = 0, y = -8, z = 0})
 end
 
 
 
 function falling.on_step(self, dtime, moveresult)
-	--[[
-	-- Set gravity
-	local acceleration = self.object:get_acceleration()
-	if not vector_equals(acceleration, {x = 0, y = -8, z = 0}) then
-		self.object:set_acceleration({x = 0, y = -8, z = 0})
-	end
-	--]]
-
-	--minetest.chat_send_all('testing')
-	--for k, v in ipairs(moveresult.collisions) do
-	--	minetest.chat_send_all('collision!')
-	--end
-
-	---[=[
 	-- Turn to actual node when colliding with ground, or continue to move
 	local pos = self.object:get_pos()
 
@@ -498,11 +485,6 @@ function falling.on_step(self, dtime, moveresult)
 	local bcn = get_node_or_nil(bcp)
 	local bcd = bcn and all_nodes[bcn.name]
 	local selfdef = all_nodes[self.node.name]
-
-	--if self.slope_time and self.slope_time > 0 then
-	--	self.slope_time = self.slope_time - dtime
-	--	self.slope_time = math.max(self.slope_time, 0)
-	--end
 
 	if bcd and bcd._falling_remove then
 		if type(bcd._falling_remove) == "function" then
@@ -529,7 +511,6 @@ function falling.on_step(self, dtime, moveresult)
 			return
 		end
 
-		---[[
 		-- We have hit the ground. Check for a possible slope which we can continue to fall down.
 		if bcd then
 			local ss = find_slope(bcp, selfdef)
@@ -541,7 +522,6 @@ function falling.on_step(self, dtime, moveresult)
 				return
 			end
 		end
-		--]]
 
 		local np = {x=bcp.x, y=bcp.y+1, z=bcp.z}
 		local protected = nil
@@ -636,11 +616,9 @@ function falling.on_step(self, dtime, moveresult)
 		return
 	end
 
-	---[=[
 	local vel = self.object:get_velocity()
 	if vector_equals(vel, {x = 0, y = 0, z = 0}) then
 		local npos = self.object:get_pos()
 		self.object:set_pos(vector_round(npos))
 	end
-	--]=]
 end

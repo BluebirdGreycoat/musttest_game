@@ -484,6 +484,14 @@ function falling.on_step(self, dtime)
 		return
 	end
 
+	if bcd and bcd._falling_remove then
+		if type(bcd._falling_remove) == "function" then
+			bcd._falling_remove(bcp)
+		else
+			remove_node(bcp)
+		end
+	end
+
 	if bcn and (not bcd or node_walkable(bcp, bcd, selfdef)) then
 		if bcd and bcd.leveled and bcn.name == self.node.name then
 			local addlevel = self.node.level
@@ -496,13 +504,8 @@ function falling.on_step(self, dtime)
 				self.object:remove()
 				return
 			end
-		elseif bcd and bcd.buildable_to and (get_item_group(self.node.name, "float") == 0 or bcd.liquidtype == "none" or bcd._falling_remove) then
-			minetest.chat_send_all('test')
-			if type(bcd._falling_remove) == "function" then
-				bcd._falling_remove(bcp)
-			else
-				remove_node(bcp)
-			end
+		elseif bcd and bcd.buildable_to and (get_item_group(self.node.name, "float") == 0 or bcd.liquidtype == "none") then
+			remove_node(bcp)
 			return
 		end
 

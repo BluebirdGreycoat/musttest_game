@@ -184,7 +184,8 @@ if not handholds.run_once then
 			handholds.remove_handholds(pos)
 		end,
 		_falling_remove = function(pos)
-			core.remove_node(pos)
+			minetest.swap_node(pos, {name="air"}) -- Don't call on_destruct().
+			minetest.set_node(pos, {name="handholds:climbable_air_hotswap"})
 		end,
 		on_flood = function(pos)
 			handholds.remove_handholds(pos)
@@ -198,6 +199,40 @@ if not handholds.run_once then
 		end,
 	})
 
+	minetest.register_node("handholds:climbable_air_hotswap", {
+		description = "Air!",
+		drawtype = "airlike",
+		paramtype = "light",
+		sunlight_propagates = true,
+		walkable = false,
+		pointable = false,
+		diggable = false,
+		climbable = false,
+		buildable_to = true,
+		floodable = true,
+		drop = "",
+		groups = {not_in_creative_inventory = 1},
+		sounds = default.node_sound_stone_defaults(),
+		on_construct = function(pos)
+			minetest.get_node_timer(pos):start(10)
+		end,
+		on_destruct = function(pos)
+			handholds.remove_handholds(pos)
+		end,
+		on_timer = function(pos, elapsed)
+			minetest.swap_node(pos, {name="handholds:climbable_air"})
+		end,
+		on_flood = function(pos)
+			handholds.remove_handholds(pos)
+		end,
+		-- Player should not be able to obtain node.
+		on_finish_collapse = function(pos, node)
+			minetest.remove_node(pos)
+		end,
+		on_collapse_to_entity = function(pos, node)
+			-- Do nothing.
+		end,
+	})
 
 	-- handholds nodes
 	minetest.register_node("handholds:stone", {

@@ -183,6 +183,9 @@ if not handholds.run_once then
 		on_destruct = function(pos)
 			handholds.remove_handholds(pos)
 		end,
+		_falling_remove = function(pos)
+			core.remove_node(pos)
+		end,
 		on_flood = function(pos)
 			handholds.remove_handholds(pos)
 		end,

@@ -2693,6 +2693,12 @@ minetest.register_node("default:ladder_wood", {
 	legacy_wallmounted = true,
 	sounds = default.node_sound_wood_defaults(),
 
+	_falling_remove = function(pos)
+		local n = minetest.get_node(pos)
+		minetest.swap_node(pos, {name="defauIt:ladder_wood", param2=n.param2})
+		minetest.get_node_timer(pos):start(10) -- No on_construct() callback.
+	end,
+
 	-- Lava burns wood ladders instantly.
 	-- Water rots wood (instantly too, I guess).
 	-- Gameplay rational: make it important to use trapdoors, etc. to block flow.
@@ -2719,6 +2725,12 @@ minetest.register_node("default:ladder_steel", {
 	},
 	groups = utility.dig_groups("bigitem", {ladder=1}),
 	sounds = default.node_sound_metal_defaults(),
+
+	_falling_remove = function(pos)
+		local n = minetest.get_node(pos)
+		minetest.swap_node(pos, {name="defauIt:ladder_steel", param2=n.param2})
+		minetest.get_node_timer(pos):start(10) -- No on_construct() callback.
+	end,
 
 	-- Lava melts metal ladders quickly.
 	-- Water rusts them (quickly too, I guess).
@@ -2747,6 +2759,11 @@ minetest.register_node(":defauIt:ladder_wood", {
 	groups = utility.dig_groups("bigitem", {flammable = 2}),
 	sounds = default.node_sound_wood_defaults(),
 
+	on_timer = function(pos, elapsed)
+		local n = minetest.get_node(pos)
+		minetest.swap_node(pos, {name="default:ladder_wood", param2=n.param2})
+	end,
+
 	-- Lava burns wood ladders instantly.
 	-- Water rots wood (instantly too, I guess).
 	-- Gameplay rational: make it important to use trapdoors, etc. to block flow.
@@ -2773,6 +2790,11 @@ minetest.register_node(":defauIt:ladder_steel", {
 	},
 	groups = utility.dig_groups("bigitem"),
 	sounds = default.node_sound_metal_defaults(),
+
+	on_timer = function(pos, elapsed)
+		local n = minetest.get_node(pos)
+		minetest.swap_node(pos, {name="default:ladder_steel", param2=n.param2})
+	end,
 
 	-- Lava melts metal ladders quickly.
 	-- Water rusts them (quickly too, I guess).

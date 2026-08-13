@@ -8,6 +8,13 @@ local get_time = function(pname)
   return os.date("%Y-%m-%d, %H:%M")
 end
 
+local function write(msg)
+	if chat_logging.logfile then
+		chat_logging.logfile:write(msg)
+		chat_logging.logfile:flush()
+	end
+end
+
 local get_time_and_place = function(pname)
   local place = "N/A"
   local player = minetest.get_player_by_name(pname)
@@ -43,83 +50,28 @@ chat_logging.on_shutdown = function()
   if chat_logging.logfile then
     chat_logging.logfile:flush()
     chat_logging.logfile:close()
-
-		chat_logging.logfile2:flush()
-		chat_logging.logfile2:close()
   end
 end
 
 
 
 chat_logging.on_joinplayer = function(obj)
-	--[[
-  local pname = obj:get_player_name()
-  local prefix = "[" .. get_time_and_place(pname) .. "] "
-	local prefix2 = "[" .. get_public_time() .. "] "
-  local wspace = generate_whitespace(prefix)
-	local wspace2 = generate_shortspace(prefix2)
-  prefix = prefix .. wspace
-	prefix2 = prefix2 .. wspace2
-	local msg = prefix .. "*** <" .. rename.gpn(pname) .. "> joined the game.\n"
-	local msg2 = prefix2 .. "*** <" .. rename.gpn(pname) .. "> joined the game.\n"
-  chat_logging.logfile:write(msg)
-	if not chat_colorize.should_suppress(pname) then
-		chat_logging.logfile2:write(msg2)
-	end
-  chat_logging.logfile:flush()
-	chat_logging.logfile2:flush()
-	--]]
+end
+
+chat_logging.on_leaveplayer = function(obj, timeout)
 end
 
 
 
 chat_logging.report_leavejoin_player = function(pname, message)
-  local prefix = "[" .. get_time_and_place(pname) .. "] "
   local prefix2 = "[" .. get_public_time() .. "] "
-  local wspace = generate_whitespace(prefix)
 	local wspace2 = generate_shortspace(prefix2)
-  prefix = prefix .. wspace
 	prefix2 = prefix2 .. wspace2
-
-	local msg = prefix .. message .. "\n"
 	local msg2 = prefix2 .. message .. "\n"
 
-	chat_logging.logfile:write(msg)
 	if not chat_colorize.should_suppress(pname) then
-		chat_logging.logfile2:write(msg2)
+		write(msg2)
 	end
-
-  chat_logging.logfile:flush()
-	chat_logging.logfile2:flush()
-end
-
-chat_logging.on_leaveplayer = function(obj, timeout)
-	--[[
-  local pname = obj:get_player_name()
-  local prefix = "[" .. get_time_and_place(pname) .. "] "
-  local prefix2 = "[" .. get_public_time() .. "] "
-  local wspace = generate_whitespace(prefix)
-	local wspace2 = generate_shortspace(prefix2)
-  prefix = prefix .. wspace
-	prefix2 = prefix2 .. wspace2
-  if timeout then
-		local msg = prefix .. "*** <" .. rename.gpn(pname) .. "> left the game. (Broken connection.)\n"
-		local msg2 = prefix2 .. "*** <" .. rename.gpn(pname) .. "> left the game. (Broken connection.)\n"
-    chat_logging.logfile:write(msg)
-		if not chat_colorize.should_suppress(pname) then
-			chat_logging.logfile2:write(msg2)
-		end
-  else
-		local msg = prefix .. "*** <" .. rename.gpn(pname) .. "> left the game.\n"
-		local msg2 = prefix2 .. "*** <" .. rename.gpn(pname) .. "> left the game.\n"
-    chat_logging.logfile:write(msg)
-		if not chat_colorize.should_suppress(pname) then
-			chat_logging.logfile2:write(msg2)
-		end
-  end
-  chat_logging.logfile:flush()
-	chat_logging.logfile2:flush()
-	--]]
 end
 
 
@@ -127,57 +79,33 @@ end
 -- Public API functions.
 
 chat_logging.log_public_shout = function(pname, msg, loc)
-  local prefix = "[" .. get_time_and_place(pname) .. "] "
   local prefix2 = "[" .. get_public_time() .. "] "
-  local wspace = generate_whitespace(prefix)
 	local wspace2 = generate_shortspace(prefix2)
-  prefix = prefix .. wspace .. "<!" .. rename.gpn(pname) .. loc .. "!> " .. msg .. "\n"
 	prefix2 = prefix2 .. wspace2 .. "<!" .. rename.gpn(pname) .. loc .. "!> " .. msg .. "\n"
-  chat_logging.logfile:write(prefix)
-	chat_logging.logfile2:write(prefix2)
-  chat_logging.logfile:flush()
-	chat_logging.logfile2:flush()
+	write(prefix2)
 end
 
 chat_logging.log_public_chat = function(pname, msg, loc)
-  local prefix = "[" .. get_time_and_place(pname) .. "] "
 	local prefix2 = "[" .. get_public_time() .. "] "
-  local wspace = generate_whitespace(prefix)
 	local wspace2 = generate_shortspace(prefix2)
-  prefix = prefix .. wspace .. "<" .. rename.gpn(pname) .. loc .. "> " .. msg .. "\n"
 	prefix2 = prefix2 .. wspace2 .. "<" .. rename.gpn(pname) .. loc .. "> " .. msg .. "\n"
-  chat_logging.logfile:write(prefix)
-	chat_logging.logfile2:write(prefix2)
-  chat_logging.logfile:flush()
-	chat_logging.logfile2:flush()
+	write(prefix2)
 end
 
 --[[
 chat_logging.log_public_action = function(pname, act, loc)
-  local prefix = "[" .. get_time_and_place(pname) .. "] "
 	local prefix2 = "[" .. get_public_time() .. "] "
-  local wspace = generate_whitespace(prefix)
 	local wspace2 = generate_shortspace(prefix2)
-  prefix = prefix .. wspace .. "* <" .. rename.gpn(pname) .. loc .. "> " .. act .. "\n"
 	prefix2 = prefix2 .. wspace2 .. "* <" .. rename.gpn(pname) .. loc .. "> " .. act .. "\n"
-  chat_logging.logfile:write(prefix)
-	chat_logging.logfile2:write(prefix2)
-  chat_logging.logfile:flush()
-	chat_logging.logfile2:flush()
+	write(prefix2)
 end
 --]]
 
 chat_logging.log_server_message = function(message)
-  local prefix = "[" .. get_time() .. "] "
 	local prefix2 = "[" .. get_public_time() .. "] "
-  local wspace = generate_whitespace(prefix)
 	local wspace2 = generate_shortspace(prefix2)
-  prefix = prefix .. wspace .. message .. "\n"
 	prefix2 = prefix2 .. wspace2 .. message .. "\n"
-  chat_logging.logfile:write(prefix)
-	chat_logging.logfile2:write(prefix2)
-  chat_logging.logfile:flush()
-	chat_logging.logfile2:flush()
+	write(prefix2)
 end
 
 

@@ -24,11 +24,8 @@ end
 
 -- Open logfile if not already done.
 if not chat_logging.opened then
-  local path = chat_logging.worldpath .. "/chat.txt"
-  chat_logging.logfile = io.open(path, "a")
-
-	local path2 = chat_logging.worldpath .. "/chat-public.txt"
-	chat_logging.logfile2 = io.open(path2, "a")
+	local path = chat_logging.worldpath .. "/chat-public.txt"
+	chat_logging.logfile = io.open(path, "a")
 
   minetest.register_on_shutdown(function(...)
     return chat_logging.on_shutdown(...) end)

@@ -370,7 +370,9 @@ function chat_core.handle_command_msg(name, param)
 		to = string.trim(param:sub(1, p-1))
 	end
 
-	newmsg = toad.modify_chat(name, newmsg)
+	if newmsg then -- Could be nil.
+		newmsg = toad.modify_chat(name, newmsg)
+	end
 
 	if type(to)=="string" and type(newmsg)=="string" and string.len(newmsg) > 0 and string.len(to) > 0 then
 		to = rename.grn(to)
@@ -414,9 +416,6 @@ function chat_core.handle_command_msg(name, param)
 				end
 			end)
 			minetest.chat_send_player(name, color_dark_magenta .. "# PM: TO <" .. rename.gpn(to) .. coord_string .. ">: " .. newmsg)
-
-			-- Prevent me from being tempted.
-			--chat_logging.log_private_message(name, to, newmsg)
 
 			afk.reset_timeout(name)
 		else minetest.chat_send_player(name, "# Server: <" .. rename.gpn(to) .. "> is not online.") end

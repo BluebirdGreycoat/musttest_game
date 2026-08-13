@@ -32,8 +32,8 @@ if not falling.run_once then
 			falling.on_activate(self, staticdata)
 		end,
 
-		on_step = function(self, dtime)
-			falling.on_step(self, dtime)
+		on_step = function(self, dtime, moveresult)
+			falling.on_step(self, dtime, moveresult)
 		end,
 	})
 

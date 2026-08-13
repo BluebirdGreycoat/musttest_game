@@ -42,7 +42,7 @@ end
 
 
 
-chat_core.rewrite_message = function(chat2)
+function chat_core.rewrite_message(chat2)
 	-- Prevent players from including zero-bytes or control characters in their chat.
 	local sub = string.gsub
 	local chat = chat2
@@ -239,7 +239,7 @@ end
 
 
 
-local generate_coord_string = function(name)
+local function generate_coord_string(name)
 	local coord_string = ""
 	local entity = minetest.get_player_by_name(name)
 	if not entity then
@@ -286,34 +286,7 @@ chat_core.generate_coord_string = generate_coord_string
 
 
 
---[===[
-function chat_core.player_status(pname)
-	-- He's probably right, you know.
-	--[[
-	local pref = minetest.get_player_by_name(pname)
-	if pref then
-		local pos = pref:get_pos()
-		local cblock = city_block:nearest_named_region(pos)
-		local info
-
-		if cblock[1] and cblock[1].area_name then
-			info = cblock[1].area_name
-		else
-			info = rc.realm_description_at_pos(pos)
-		end
-
-		local xpmax = math.floor(xp.digxp_hp_max / 20)
-		local xper = math.floor(xp.get_xp(pname, "digxp") / xpmax)
-		return "[" .. info .. " - Lvl: " .. xper .. "] "
-	end
-	--]]
-	return ""
-end
---]===]
-
-
-
-chat_core.on_chat_message = function(name, message)
+function chat_core.on_chat_message(name, message)
 	local pref = minetest.get_player_by_name(name)
 	if not pref then
 		minetest.chat_send_player(name, "# Server: You failed the existence test.")
@@ -323,18 +296,6 @@ chat_core.on_chat_message = function(name, message)
 		minetest.chat_send_player(name, "# Server: The dead do not speak.")
 		return -- U ded; and teh ded do not speak.
 	end
-
-	-- The engine never sends us messages starting with a /
-	--[[
-	if message:sub(1, 1) == "/" then
-		minetest.chat_send_all('testing!')
-		minetest.chat_send_player(name, "# Server: Invalid command. See '/help all' for a list of valid commands.")
-		easyvend.sound_error(name)
-		-- It's a special command, and not one that was registered.
-		-- This is actually never called?
-		return
-	end
-	--]]
 
 	-- Check for DM typo accidents.
 	if chat_core.accident_check(name, message) then return end
@@ -361,68 +322,14 @@ chat_core.on_chat_message = function(name, message)
 
 	-- Delegate to our slaves.
 	chat_channels.on_chat_message(name, message)
-
-	-- Global chat requires 'shout' priv.
-	--[[
-	if not minetest.check_player_privs(name, {shout=true}) then
-		minetest.chat_send_player(name, "# Server: You do not have 'shout' priv.")
-		-- Player doesn't have shout priv.
-		return
-	end
-	--]]
-
-	--local player_muted = false
-	--[[
-	if command_tokens.mute.player_muted(name) then
-		minetest.chat_send_player(name, "# Server: You are currently gagged.")
-		-- Player is muted.
-		return
-	end
-	--]]
-
-	-- If this succeeds player was kicked or muted or something.
-	--if chat_core.check_language(name, message) then return end
-
-	--local mark = generate_coord_string(name)
-
-	--[[
-	chat_core.send_all_ex({
-		from = name,
-		prename = "<",
-		actname = rename.gpn(name),
-		postname = mark .. "> ",
-		message = message
-	})
-	--]]
-	--chat_logging.log_public_chat(name, message, mark)
-
-	--[[
-	-- Notify other stuff.
-	player_labels.on_chat_message(name, message)
-	afk.reset_timeout(name)
-	--]]
 end
 
 
 
-chat_core.handle_command_me = function(name, param)
+function chat_core.handle_command_me(name, param)
 	-- Emote chat command is short-range, doesn't require 'shout' priv.
-	--[[
-	if not minetest.check_player_privs(name, {shout=true}) then
-		minetest.chat_send_player(name, "# Server: You do not have 'shout' priv.")
-		return -- Player doesn't have shout priv.
-	end
-	--]]
-
 	-- Emotes don't require an ungagged tongue.
 	-- (And they're short-range, not part of the global chat.)
-	--[[
-	if command_tokens.mute.player_muted(name) then
-		minetest.chat_send_player(name, "# Server: You can't do that while gagged, sorry.")
-		return -- Player is muted.
-	end
-	--]]
-
 	param = string.trim(param)
 	if #param < 1 then
 		minetest.chat_send_player(name, "# Server: No action specified.")
@@ -448,27 +355,11 @@ end
 
 
 
-chat_core.handle_command_msg = function(name, param)
+function chat_core.handle_command_msg(name, param)
 	-- It doesn't make sense to require the "shout" priv for private messages ...
-	--[[
-	if not minetest.check_player_privs(name, {shout=true}) then
-		minetest.chat_send_player(name, "# Server: You do not have 'shout' priv.")
-		easyvend.sound_error(name)
-		return -- Player doesn't have shout priv.
-	end
-	--]]
-
 	-- Gagged players cannot polute global chat, but PMs are allowed.
 	-- If an annoying pervert is PM'ing someone, that person should take advantage
 	-- of the ignore-list in their Key. Or use F2 if they don't have a Key.
-	--[[
-	if command_tokens.mute.player_muted(name) then
-		minetest.chat_send_player(name, "# Server: You are gagged at the moment.")
-		easyvend.sound_error(name)
-		return -- Player is muted.
-	end
-	--]]
-
 	local coord_string = generate_coord_string(name)
 
 	-- Split command arguments.

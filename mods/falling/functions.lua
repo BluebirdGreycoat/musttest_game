@@ -453,14 +453,6 @@ function falling.on_activate(self, staticdata)
 		self:set_node({name = staticdata})
 	end
 
-	local selfdef = all_nodes[self.node.name]
-
-	-- Bail if nil.
-	if not selfdef then
-		self.object:remove()
-		return
-	end
-
 	-- Set gravity.
 	self.object:set_acceleration({x = 0, y = -8, z = 0})
 end
@@ -485,6 +477,12 @@ function falling.on_step(self, dtime, moveresult)
 	local bcn = get_node_or_nil(bcp)
 	local bcd = bcn and all_nodes[bcn.name]
 	local selfdef = all_nodes[self.node.name]
+
+	-- Bail if nil.
+	if not selfdef then
+		self.object:remove()
+		return
+	end
 
 	if bcd and bcd._falling_remove then
 		if type(bcd._falling_remove) == "function" then

@@ -206,9 +206,40 @@ end
 
 
 
+local function set_visual_properties(self, node)
+	self.object:set_properties({
+		is_visible = true,
+		textures = {node.name},
+	})
+end
+
+
+
 -- Warning: 'meta' sometimes contains userdata from the engine, or builtin.
+local function convert_metadata(meta)
+	meta = meta or {}
+
+	-- If we got userdata meta, convert to table form.
+	if type(meta.to_table) == "function" then
+		meta = meta:to_table()
+	end
+
+	for _, list in pairs(meta.inventory or {}) do
+		for i, stack in pairs(list) do
+			if type(stack) == "userdata" then
+				list[i] = stack:to_string()
+			end
+		end
+	end
+
+	return meta
+end
+
+
+
 function falling.set_node(self, node, meta)
-	-- If this is a snow node and snow is supposed to be melted, then just remove the falling entity so we don't create gfx artifacts.
+	-- If this is a snow node and snow is supposed to be melted,
+	-- then just remove the falling entity so we don't create gfx artifacts.
 	if node.name == "default:snow" then
 		if not snow.is_visible() then
 			self.object:remove()
@@ -223,32 +254,16 @@ function falling.set_node(self, node, meta)
 		return
 	end
 
-	self.node = node
-	self.meta = meta or {}
+	self.node = {name=node.name, param2=node.param2 or 0}
+	self.meta = convert_metadata(meta)
 
 	-- Cache whether we're supposed to float on water
-	self.floats = core.get_item_group(node.name, "float") ~= 0
+	self.floats = (core.get_item_group(node.name, "float") ~= 0)
 
-	-- If we got userdata meta, convert to table form.
-	if type(meta.to_table) == "function" then
-		meta = meta:to_table()
-	end
-	for _, list in pairs(meta.inventory or {}) do
-		for i, stack in pairs(list) do
-			if type(stack) == "userdata" then
-				list[i] = stack:to_string()
-			end
-		end
-	end
+	set_visual_properties(self, self.node)
 
-	self.object:set_properties({
-		is_visible = true,
-		textures = {node.name},
-	})
 	self.pharm, self.mharm = get_node_falling_harm(node.name)
 	self.sound = get_node_falling_sound(node.name)
-
-	--minetest.log("TEST1: " .. dump(self.meta))
 end
 
 

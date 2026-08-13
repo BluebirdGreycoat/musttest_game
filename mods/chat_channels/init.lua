@@ -3,6 +3,8 @@ if not minetest.global_exists("chat_channels") then chat_channels = {} end
 chat_channels.modpath = minetest.get_modpath("chat_channels")
 reload.install_simple_signals(chat_channels)
 
+dofile(chat_channels.modpath .. "/functions.lua")
+
 -- Shorten.
 local CC = chat_channels
 

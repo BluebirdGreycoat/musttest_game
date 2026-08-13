@@ -47,6 +47,18 @@ end
 
 
 
+function signs.set_text(pos, meta, pname, message)
+	meta:set_string("text", message)
+	meta:set_string("author", pname)
+	meta:mark_as_private({"text", "author"})
+
+	-- Translate escape sequences.
+	message = string.gsub(message, "%%[nN]", "\n")
+	meta:set_string("infotext", message)
+end
+
+
+
 function signs.on_receive_fields(pos, formname, fields, sender)
 	local pname = sender:get_player_name()
 	if minetest.test_protection(pos, pname) then
@@ -72,18 +84,7 @@ function signs.on_receive_fields(pos, formname, fields, sender)
 		return
 	end
 
-	minetest.log("action", pname .. " wrote \"" ..
-		message .. "\" to sign at " .. minetest.pos_to_string(pos))
-
-	meta:set_string("text", message)
-	meta:set_string("author", pname)
-
-	meta:mark_as_private({"text", "author"})
-
-	-- Translate escape sequences.
-	message = string.gsub(message, "%%[nN]", "\n")
-
-	meta:set_string("infotext", message)
+	signs.set_text(pos, meta, pname, message)
 
 	-- Zero-out old stuff.
 	meta:set_string("formspec", nil)

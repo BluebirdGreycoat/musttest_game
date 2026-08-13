@@ -6,6 +6,7 @@ reload.install_simple_signals(falling)
 -- Core reloadable logic.
 dofile(falling.modpath .. "/functions.lua")
 dofile(falling.modpath .. "/entity.lua")
+dofile(falling.modpath .. "/react.lua")
 
 if not falling.run_once then
 	minetest.register_entity(":__builtin:falling_node", {

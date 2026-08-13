@@ -114,7 +114,11 @@ local function damage_entities(pos, node, pharm, mharm)
 
 					if r:get_hp() <= 0 then
 						-- Player will die.
-						minetest.chat_send_all("# Server: Player <" .. rename.gpn(r:get_player_name()) .. "> was crushed to death.")
+						falling.run_callbacks_after("on_kill_player", {
+							pname = r:get_player_name(),
+							player_pos = r:get_pos(),
+							pos = pos,
+						})
 					end
 				end
 			end

@@ -392,6 +392,9 @@ function falling.set_node(self, node, meta)
 	self.node = node
 	self.meta = meta or {}
 
+	-- Cache whether we're supposed to float on water
+	self.floats = core.get_item_group(node.name, "float") ~= 0
+
 	-- If we got userdata meta, convert to table form.
 	if type(meta.to_table) == "function" then
 		meta = meta:to_table()
@@ -519,7 +522,7 @@ function falling.on_step(self, dtime, moveresult)
 				self.object:remove()
 				return
 			end
-		elseif bcd and bcd.buildable_to and (get_item_group(self.node.name, "float") == 0 or bcd.liquidtype == "none") then
+		elseif bcd and bcd.buildable_to and (not self.floats or bcd.liquidtype == "none") then
 			remove_node(bcp)
 			return
 		end

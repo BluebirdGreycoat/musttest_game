@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("signs") then signs = {} end
 signs.modpath = minetest.get_modpath("signs")
+signs.player_contexts = signs.player_contexts or {}
 reload.install_simple_signals(signs)
 
 dofile(signs.modpath .. "/functions.lua")
@@ -31,10 +32,6 @@ if not signs.run_once then
 
 			on_construct = function(...)
 				return signs.on_construct(...)
-			end,
-
-			on_receive_fields = function(...)
-				return signs.on_receive_fields(...)
 			end,
 
 			on_rightclick = function(...)

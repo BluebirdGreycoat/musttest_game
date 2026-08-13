@@ -1,5 +1,6 @@
 
 local MAX_SIGN_LENGTH = 256
+local PLAYERS = signs.player_contexts
 
 
 
@@ -29,6 +30,12 @@ function signs.on_rightclick(pos, node, clicker, itemstack, pt)
 	local pname = clicker:get_player_name()
 	local text = minetest.get_meta(pos):get_string("text")
 
+	-- TODO: some clients can't see infotext well.
+	-- I need to show a "view" formspec for them.
+	if minetest.test_protection(pos, pname) then
+		return
+	end
+
 	--local formspec = "field[text;;${text}]"
 	local formspec = ""
 	formspec = formspec ..
@@ -41,7 +48,9 @@ function signs.on_rightclick(pos, node, clicker, itemstack, pt)
 		"button_exit[2,1;2,1;proceed;Proceed]" ..
 		"label[0,2;`%n' inserts a new line.]"
 
-	local formname = "signs:input_" .. minetest.pos_to_string(pos)
+	-- Create security context and show formspec.
+	PLAYERS[pname] = {pos=pos}
+	local formname = "signs:input"
 	minetest.show_formspec(pname, formname, formspec)
 end
 
@@ -59,13 +68,10 @@ end
 
 
 
-function signs.on_receive_fields(pos, formname, fields, sender)
+local function handle_fields(pos, fields, sender)
 	local pname = sender:get_player_name()
-	if minetest.test_protection(pos, pname) then
-		return
-	end
-
 	local meta = minetest.get_meta(pos)
+
 	if not fields.text or type(fields.text) ~= "string" then
 		return
 	end
@@ -93,15 +99,27 @@ end
 
 
 function signs.on_player_receive_fields(player, formname, fields)
-	if not string.find(formname, "^signs:input_") then
+	if formname ~= "signs:input" then
 		return
 	end
 	if not player or not player:is_player() then
 		return true
 	end
+	local pname = sender:get_player_name()
 
-	local pos = minetest.string_to_pos(string.sub(formname, string.len("signs:input_") + 1))
-	if not pos then
+	local context = PLAYERS[pname]
+	if not context or not context.pos then
+		return true
+	end
+	local pos = context.pos
+
+	if fields.quit then
+		PLAYERS[pname] = nil
+		return
+	end
+
+	if minetest.test_protection(pos, pname) then
+		PLAYERS[pname] = nil
 		return true
 	end
 
@@ -111,9 +129,10 @@ function signs.on_player_receive_fields(player, formname, fields)
 
 	-- Capture all signs nodes.
 	if not name:find("signs:sign_wall_") then
+		PLAYERS[pname] = nil
 		return true
 	end
 
-	signs.on_receive_fields(pos, "", fields, player)
+	handle_fields(pos, fields, player)
 	return true
 end

@@ -374,52 +374,58 @@ function chat_core.handle_command_msg(name, param)
 		newmsg = toad.modify_chat(name, newmsg)
 	end
 
-	if type(to)=="string" and type(newmsg)=="string" and string.len(newmsg) > 0 and string.len(to) > 0 then
-		to = rename.grn(to)
+	if not (type(to) == "string" and type(newmsg) == "string" and string.len(newmsg) > 0 and string.len(to) > 0) then
+		minetest.chat_send_player(name, "# Server: Usage: '/msg <playername> <message>'.")
+		return
+	end
 
-		if to == name then
-			minetest.chat_send_player(name, "# Server: Clever. But no.")
+	to = rename.grn(to)
+
+	if to == name then
+		minetest.chat_send_player(name, "# Server: Clever. But no.")
+		return
+	end
+
+	if gdac_invis.is_invisible(to) and to ~= name then -- If target is invisible, and player sending is not same as target ...
+		if chat_core.players[name] and (chat_core.players[name].last_pm_from or "") ~= to then -- Do not permit, if player did not receive a PM from this target.
+			if minetest.get_player_privs(to).server then
+				minetest.chat_send_player(name, "# Server: The server admin is not available at this time! If it's important, send mail instead.")
+			else
+				minetest.chat_send_player(name, "# Server: <" .. rename.gpn(to) .. "> is not available at this time! If it's important, send mail instead.")
+			end
 			return
 		end
+	end
 
-		if gdac_invis.is_invisible(to) and to ~= name then -- If target is invisible, and player sending is not same as target ...
-			if chat_core.players[name] and (chat_core.players[name].last_pm_from or "") ~= to then -- Do not permit, if player did not receive a PM from this target.
-				if minetest.get_player_privs(to).server then
-					minetest.chat_send_player(name, "# Server: The server admin is not available at this time! If it's important, send mail instead.")
-				else
-					minetest.chat_send_player(name, "# Server: <" .. rename.gpn(to) .. "> is not available at this time! If it's important, send mail instead.")
-				end
-				return
-			end
+	if not minetest.get_player_by_name(to) then
+		minetest.chat_send_player(name, "# Server: <" .. rename.gpn(to) .. "> is not online.")
+		return
+	end
+
+	-- Bad words in PMs.
+	-- Don't be a Karen over private chats.
+	--if chat_core.check_language(name, newmsg) then
+	--	return
+	--end
+
+	-- Cannot PM player if being ignored.
+	if chat_controls.player_ignored_pm(to, name) and to ~= name then
+		minetest.chat_send_player(name, "# Server: <" .. rename.gpn(to) .. "> is not available for private messaging!")
+		easyvend.sound_error(name)
+		return
+	end
+
+	minetest.after(0, function()
+		chat_core.alert_player_sound(to)
+		minetest.chat_send_player(to, color_magenta .. "# PM: FROM <" .. rename.gpn(name) .. coord_string .. ">: " .. newmsg)
+		-- Record name of last player to send this player a PM.
+		if chat_core.players[to] then
+			chat_core.players[to].last_pm_from = name
 		end
+	end)
+	minetest.chat_send_player(name, color_dark_magenta .. "# PM: TO <" .. rename.gpn(to) .. coord_string .. ">: " .. newmsg)
 
-		if minetest.get_player_by_name(to) then
-			-- Bad words in PMs.
-			-- Don't be a Karen over private chats.
-			--if chat_core.check_language(name, newmsg) then
-			--	return
-			--end
-
-			-- Cannot PM player if being ignored.
-			if chat_controls.player_ignored_pm(to, name) and to ~= name then
-				minetest.chat_send_player(name, "# Server: <" .. rename.gpn(to) .. "> is not available for private messaging!")
-				easyvend.sound_error(name)
-				return
-			end
-
-			minetest.after(0, function()
-				chat_core.alert_player_sound(to)
-				minetest.chat_send_player(to, color_magenta .. "# PM: FROM <" .. rename.gpn(name) .. coord_string .. ">: " .. newmsg)
-				-- Record name of last player to send this player a PM.
-				if chat_core.players[to] then
-					chat_core.players[to].last_pm_from = name
-				end
-			end)
-			minetest.chat_send_player(name, color_dark_magenta .. "# PM: TO <" .. rename.gpn(to) .. coord_string .. ">: " .. newmsg)
-
-			afk.reset_timeout(name)
-		else minetest.chat_send_player(name, "# Server: <" .. rename.gpn(to) .. "> is not online.") end
-	else minetest.chat_send_player(name, "# Server: Usage: '/msg <playername> <message>'.") end
+	afk.reset_timeout(name)
 end
 
 

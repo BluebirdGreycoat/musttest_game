@@ -86,8 +86,12 @@ local function convert_to_falling_node(pos, node)
 
 	-- 'metatable' must be in table form, WITHOUT userdata.
 	obj:get_luaentity():set_node(node, metatable)
-	core.remove_node(pos)
-	return true, obj
+	if obj:is_valid() then
+		core.remove_node(pos)
+		return true, obj
+	end
+
+	return false
 end
 
 

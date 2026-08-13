@@ -2,6 +2,9 @@
 -- How many seconds between checks to punch nearby entities while in flight.
 local ENTITY_DAMAGE_TIME = 0.2
 
+-- Gravity.
+local GRAVITY = 9.8
+
 local get_node = core.get_node
 local get_node_or_nil = core.get_node_or_nil
 local get_node_drops = core.get_node_drops
@@ -213,6 +216,7 @@ function falling.set_node(self, node, meta)
 		end
 	end
 
+	-- Don't create falling nodes from unknown nodes.
 	local ndef = all_nodes[node.name]
 	if not ndef then
 		self.object:remove()
@@ -253,12 +257,7 @@ function falling.get_staticdata(self)
 	local ds = {
 		node = self.node,
 		meta = self.meta,
-		pharm = self.pharm,
-		mharm = self.mharm,
-		sound = self.sound,
 	}
-
-	--minetest.log("TEST2: " .. dump(ds))
 
 	return minetest.serialize(ds)
 end
@@ -267,6 +266,7 @@ end
 
 function falling.on_activate(self, staticdata)
 	self.object:set_armor_groups({immortal = 1})
+	self.object:set_acceleration({x = 0, y = -GRAVITY, z = 0})
 
 	local pos = self.object:get_pos()
 	if pos_out_of_bounds(pos) then
@@ -277,14 +277,11 @@ function falling.on_activate(self, staticdata)
 	local ds = minetest.deserialize(staticdata)
 	if ds and ds.node then
 		self:set_node(ds.node, ds.meta)
-	elseif ds then
+	elseif ds then -- What case is this supposed to handle?
 		self:set_node(ds)
 	elseif staticdata ~= "" then
 		self:set_node({name = staticdata})
 	end
-
-	-- Set gravity.
-	self.object:set_acceleration({x = 0, y = -8, z = 0})
 end
 
 
@@ -307,12 +304,6 @@ function falling.on_step(self, dtime, moveresult)
 	local bcn = get_node_or_nil(bcp)
 	local bcd = bcn and all_nodes[bcn.name]
 	local selfdef = all_nodes[self.node.name]
-
-	-- Bail if nil.
-	if not selfdef then
-		self.object:remove()
-		return
-	end
 
 	if bcd and bcd._falling_remove then
 		if type(bcd._falling_remove) == "function" then

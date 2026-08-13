@@ -1,4 +1,8 @@
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+
 local COLOR_WHITE = 1
 
 local ALL_COLORS = {

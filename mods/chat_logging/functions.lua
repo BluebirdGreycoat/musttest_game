@@ -1,4 +1,7 @@
 
+-- Localize for performance.
+local vector_round = vector.round
+
 
 
 local get_time = function(pname)

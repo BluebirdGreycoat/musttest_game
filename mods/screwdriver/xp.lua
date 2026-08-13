@@ -78,7 +78,7 @@ function screwdriver.reward_xp(pname, pref, npos, xp_type, xp_reward)
 	local bposxp = bpostab[bposkey] or 0
 	bpostab[bposkey] = bposxp + xp_reward
 	if bposxp > MAX_XP_PER_BPOS then
-		core.log("info", ("[XP] <%s> reached the max Build XP they can get (per mapblock) at %s")
+		core.log("action", ("[XP] <%s> reached the max Build XP they can get (per mapblock) at %s")
 			:format(pname, minetest.pos_to_string(npos))
 		)
 		return

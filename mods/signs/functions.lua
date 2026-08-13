@@ -64,6 +64,12 @@ function signs.set_text(pos, meta, pname, message)
 	-- Translate escape sequences.
 	message = string.gsub(message, "%%[nN]", "\n")
 	meta:set_string("infotext", message)
+
+	signs.run_callbacks("update_sign_text", {
+		pos = pos,
+		pname = pname,
+		message = message,
+	})
 end
 
 
@@ -113,26 +119,27 @@ function signs.on_player_receive_fields(player, formname, fields)
 	end
 	local pos = context.pos
 
-	if fields.quit then
-		PLAYERS[pname] = nil
-		return
-	end
-
 	if minetest.test_protection(pos, pname) then
 		PLAYERS[pname] = nil
 		return true
 	end
 
 	-- Make sure player is actually using a sign.
+	-- This catches the case where someone removed a sign while the player was editing it.
+	-- Capture all sign nodes.
 	local node = minetest.get_node(pos)
-	local name = node.name
-
-	-- Capture all signs nodes.
-	if not name:find("signs:sign_wall_") then
+	if not node.name:find("^signs:sign_wall_") then
 		PLAYERS[pname] = nil
 		return true
 	end
 
 	handle_fields(pos, fields, player)
+
+	-- Handle fields.quit *after* because button_exit sets it.
+	if fields.quit then
+		PLAYERS[pname] = nil
+		return
+	end
+
 	return true
 end

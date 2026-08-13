@@ -5,6 +5,7 @@ signs.player_contexts = signs.player_contexts or {}
 reload.install_simple_signals(signs)
 
 dofile(signs.modpath .. "/functions.lua")
+dofile(signs.modpath .. "/log.lua")
 
 if not signs.run_once then
 	local function register_sign(material, desc, def)

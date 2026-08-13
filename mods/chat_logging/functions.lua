@@ -164,26 +164,6 @@ chat_logging.log_public_action = function(pname, act, loc)
 end
 --]]
 
---[[
-chat_logging.log_private_message = function(from, to, message)
-  local prefix = "[" .. get_time_and_place(from) .. "] "
-  local wspace = generate_whitespace(prefix)
-  prefix = prefix .. wspace .. "<" .. rename.gpn(from) .. " -- " .. rename.gpn(to) .. "> " .. message .. "\n"
-  chat_logging.logfile:write(prefix)
-  chat_logging.logfile:flush()
-end
---]]
-
---[[
-chat_logging.log_team_chat = function(from, stats, message, team)
-  local prefix = "[" .. get_time_and_place(from) .. "] "
-  local wspace = generate_whitespace(prefix)
-  prefix = prefix .. wspace .. stats .. "<" .. rename.gpn(from) .. " x:" .. team .. "> " .. message .. "\n"
-  chat_logging.logfile:write(prefix)
-  chat_logging.logfile:flush()
-end
---]]
-
 chat_logging.log_server_message = function(message)
   local prefix = "[" .. get_time() .. "] "
 	local prefix2 = "[" .. get_public_time() .. "] "

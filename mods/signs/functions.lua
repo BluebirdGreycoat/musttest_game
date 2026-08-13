@@ -105,7 +105,7 @@ function signs.on_player_receive_fields(player, formname, fields)
 	if not player or not player:is_player() then
 		return true
 	end
-	local pname = sender:get_player_name()
+	local pname = player:get_player_name()
 
 	local context = PLAYERS[pname]
 	if not context or not context.pos then

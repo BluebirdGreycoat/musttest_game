@@ -476,6 +476,15 @@ local function make_editor(pname)
 	local guiobj = formspec.create_gui_object(NEWROOT)
 	guiobj:set_geometry(INIT_SIZE)
 	guiobj:get_control_by_id("EditorOffsetContainer").x = offset
+	guiobj:get_control_by_name("EditorTabs").current_tab = context.current_form_tab
+	guiobj:get_control_by_name("paramfield").default = context.default_edit_parameter
+	guiobj:get_control_by_name("SavedFormspecList").selected = context.savefile_selection
+	guiobj:get_control_by_name("AllowOverwrite").selected = context.savefile_overwrite_enabled
+	guiobj:get_control_by_name("EditStyleParameter").default = context.default_edit_parameter
+	guiobj:get_control_by_name("EventResponseDisplay").text = context.last_event_table or ""
+	guiobj:get_control_by_name("EditTableChooseColumnType").selected = context.EditTable.selected_type
+	guiobj:get_control_by_name("EditTableColumnsDisplay").selected = context.EditTable.selected_column
+	guiobj:get_control_by_name("EditTableRowDataText").text = context.EditTable.serialized_cells
 	context.root = guiobj
 
 	if context.savefile_selection then

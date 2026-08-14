@@ -279,6 +279,10 @@ protector.can_dig = function(r, mult, nodename, pos, digger, onlyowner, infoleve
 		return true
 	end
 
+	-- E.g., snow.
+	-- This actually cannot work because it would allow players to place/drop snow
+	-- (or any never_protected buildable_to) and then place nodes inside the
+	-- buildable_to!
 	--[[
 	if ndef.never_protected == true and (infolevel == 1 or infolevel == 0) then
 		return true

@@ -187,13 +187,12 @@ local function get_node_falling_harm(name)
 		-- If `crushing_damage' is defined, use it.
 		if ndef.crushing_damage then
 			local cd = ndef.crushing_damage
-			-- Mobs always take damage*5.
-			return cd, cd*5
+			return cd, cd
 		end
 	end
 
 	-- Default amount of harm to: player, mobs.
-	return 4*500, 20*500
+	return 4*500, 4*500
 end
 
 
@@ -509,13 +508,20 @@ end
 
 local function get_moveresult_info(moveresult)
 	local bcp, bcn
-	local player_collision
+	local entity_collision
 
 	if moveresult.touching_ground then
 		for _, info in ipairs(moveresult.collisions) do
 			if info.type == "object" then
-				if info.axis == "y" and info.object:is_player() then
-					player_collision = info
+				if info.axis == "y" then
+					if info.object:is_player() then
+						entity_collision = info
+					else
+						local entity = info.object:get_luaentity()
+						if entity.mob == true then
+							entity_collision = info
+						end
+					end
 				end
 			elseif info.axis == "y" then
 				bcp = info.node_pos
@@ -525,26 +531,27 @@ local function get_moveresult_info(moveresult)
 		end
 	end
 
-	return bcp, bcn, player_collision
+	return bcp, bcn, entity_collision
 end
 
 
 
-local function handle_collision_player_or_ignore(self, bcp, bcn, player_collision)
+local function handle_collision_entity_or_ignore(self, bcp, bcn, entity_collision)
 	if not bcp then
 		-- We're colliding with something, but not the ground. Irrelevant to us.
-		if player_collision then
-			-- Continue falling through players by moving a little into
+		if entity_collision then
+			-- Continue falling through players/mobs by moving a little into
 			-- their collision box
 			-- TODO: this hack could be avoided in the future if objects
 			--       could choose who to collide with
 			local vel = self.object:get_velocity()
 			self.object:set_velocity(vector.new(
 				vel.x,
-				player_collision.old_velocity.y,
+				entity_collision.old_velocity.y,
 				vel.z
 			))
 			self.object:set_pos(self.object:get_pos():offset(0, -0.5, 0))
+			damage_entity(self, entity_collision.object)
 		end
 		return true
 	elseif bcn.name == "ignore" then
@@ -669,11 +676,12 @@ function falling.on_step(self, dtime, moveresult)
 	end
 
 	-- Returns: bcp=nodepos, bcn=nodetable. Or nil.
-	local bcp, bcn, player_collision = get_moveresult_info(moveresult)
+	local bcp, bcn, entity_collision = get_moveresult_info(moveresult)
 
-	if handle_collision_player_or_ignore(self, bcp, bcn, player_collision) then
+	if handle_collision_entity_or_ignore(self, bcp, bcn, entity_collision) then
 		-- If hit ignore, self is deleted.
-		-- If hit player, self is teleported slightly.
+		-- If hit player or other entity, self is teleported slightly.
+		-- Do damage to players and mobs.
 		return
 	end
 

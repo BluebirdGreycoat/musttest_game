@@ -427,6 +427,70 @@ end
 
 
 
+local function handle_collision_player_or_ignore(self, bcp, bcn, player_collision)
+	if not bcp then
+		-- We're colliding with something, but not the ground. Irrelevant to us.
+		if player_collision then
+			-- Continue falling through players by moving a little into
+			-- their collision box
+			-- TODO: this hack could be avoided in the future if objects
+			--       could choose who to collide with
+			local vel = self.object:get_velocity()
+			self.object:set_velocity(vector.new(
+				vel.x,
+				player_collision.old_velocity.y,
+				vel.z
+			))
+			self.object:set_pos(self.object:get_pos():offset(0, -0.5, 0))
+		end
+		return true
+	elseif bcn.name == "ignore" then
+		-- Delete on contact with ignore at world edges
+		self.object:remove()
+		return true
+	end
+end
+
+
+
+local function handle_collision_extended_node(self, bcp, bcn)
+	local failure = false
+
+	local pos = self.object:get_pos()
+	local distance = vector.apply(vector.subtract(pos, bcp), math.abs)
+
+	if distance.x >= 1 or distance.z >= 1 then
+		-- We're colliding with some part of a node that's sticking out
+		-- Since we don't want to visually teleport, drop as item
+		failure = true
+	elseif distance.y >= 2 then
+		-- Doors consist of a hidden top node and a bottom node that is
+		-- the actual door. Despite the top node being solid, the moveresult
+		-- almost always indicates collision with the bottom node.
+		-- Compensate for this by checking the top node
+		bcp.y = bcp.y + 1
+		bcn = core.get_node(bcp)
+		local def = core.registered_nodes[bcn.name]
+		if not (def and def.walkable) then
+			failure = true -- This is unexpected, fail
+		end
+	end
+
+	return failure, bcp, bcn
+end
+
+
+
+local function drop_as_item(self)
+	local pos = self.object:get_pos()
+	local drops = core.get_node_drops(self.node, "")
+	for _, item in pairs(drops) do
+		core.add_item(pos, item)
+	end
+end
+
+
+
 function falling.on_step(self, dtime, moveresult)
 	-- Fallback code since collision detection can't tell us
 	-- about liquids (which do not collide)
@@ -452,48 +516,12 @@ function falling.on_step(self, dtime, moveresult)
 	-- Returns: bcp=nodepos, bcn=nodetable. Or nil.
 	local bcp, bcn, player_collision = get_moveresult_info(moveresult)
 
-	if not bcp then
-		-- We're colliding with something, but not the ground. Irrelevant to us.
-		if player_collision then
-			-- Continue falling through players by moving a little into
-			-- their collision box
-			-- TODO: this hack could be avoided in the future if objects
-			--       could choose who to collide with
-			local vel = self.object:get_velocity()
-			self.object:set_velocity(vector.new(
-				vel.x,
-				player_collision.old_velocity.y,
-				vel.z
-			))
-			self.object:set_pos(self.object:get_pos():offset(0, -0.5, 0))
-		end
-		return
-	elseif bcn.name == "ignore" then
-		-- Delete on contact with ignore at world edges
-		self.object:remove()
+	if handle_collision_player_or_ignore(self, bcp, bcn, player_collision) then
 		return
 	end
 
 	local failure = false
-
-	local pos = self.object:get_pos()
-	local distance = vector.apply(vector.subtract(pos, bcp), math.abs)
-	if distance.x >= 1 or distance.z >= 1 then
-		-- We're colliding with some part of a node that's sticking out
-		-- Since we don't want to visually teleport, drop as item
-		failure = true
-	elseif distance.y >= 2 then
-		-- Doors consist of a hidden top node and a bottom node that is
-		-- the actual door. Despite the top node being solid, the moveresult
-		-- almost always indicates collision with the bottom node.
-		-- Compensate for this by checking the top node
-		bcp.y = bcp.y + 1
-		bcn = core.get_node(bcp)
-		local def = core.registered_nodes[bcn.name]
-		if not (def and def.walkable) then
-			failure = true -- This is unexpected, fail
-		end
-	end
+	failure, bcp, bcn = handle_collision_extended_node(self, bcp, bcn)
 
 	-- Try to actually place ourselves
 	if not failure then
@@ -501,10 +529,7 @@ function falling.on_step(self, dtime, moveresult)
 	end
 
 	if failure then
-		local drops = core.get_node_drops(self.node, "")
-		for _, item in pairs(drops) do
-			core.add_item(pos, item)
-		end
+		drop_as_item(self)
 	end
 	self.object:remove()
 end

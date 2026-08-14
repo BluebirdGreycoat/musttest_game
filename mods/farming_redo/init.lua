@@ -13,10 +13,12 @@ minetest.register_craft({
 	replacements = {{"farming:mortar_pestle", "farming:mortar_pestle"}},
 })
 
+--[[
 minetest.register_craftitem(":farming:coffeecup", {
 	description = "Coffee",
 	inventory_image = "farming_coffeecup.png",
 })
+--]]
 
 minetest.register_craft({
     type = "shapeless",
@@ -53,6 +55,7 @@ minetest.register_node(":farming:coffeecup", {
   end,
 
 	_xp_zerocost_drop = true,
+	on_place = protector.on_place_ignore_protection,
 })
 
 
@@ -104,6 +107,7 @@ minetest.register_node(":farming:teacup", {
 		fixed = {-0.25, -0.5, -0.25, 0.25, 0.3, 0.25}
 	},
 	walkable = false,
+	on_place = protector.on_place_ignore_protection,
 })
 
 minetest.register_craft({
@@ -456,6 +460,7 @@ minetest.register_node(":farming:salt", {
 		fixed = {-0.25, -0.5, -0.25, 0.25, 0.3, 0.25}
 	},
 	walkable = false,
+	on_place = protector.on_place_ignore_protection,
 })
 
 minetest.register_craft({
@@ -515,6 +520,7 @@ minetest.register_node(":farming:rose_water", {
 		fixed = {-0.25, -0.5, -0.25, 0.25, 0.3, 0.25}
 	},
 	walkable = false,
+	on_place = protector.on_place_ignore_protection,
 })
 
 minetest.register_craft({

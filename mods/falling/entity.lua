@@ -535,7 +535,7 @@ end
 
 
 
-function falling.on_step(self, dtime, moveresult)
+local function handle_floating_fall(self)
 	-- Fallback code since collision detection can't tell us
 	-- about liquids (which do not collide)
 	if self.floats then
@@ -548,13 +548,22 @@ function falling.on_step(self, dtime, moveresult)
 		if bcd and bcd.liquidtype ~= "none" then
 			if try_place(self, bcp, bcn) then
 				self.object:remove()
-				return
+				return true
 			end
 		end
 	end
+end
 
+
+
+function falling.on_step(self, dtime, moveresult)
 	trigger_fallthrough_callbacks(self)
 	damage_entities_around(self, dtime)
+
+	-- Collision detection does not detect liquids.
+	if handle_floating_fall(self) then
+		return
+	end
 
 	if not moveresult or not moveresult.collides then
 		return -- Fast path.
@@ -564,6 +573,8 @@ function falling.on_step(self, dtime, moveresult)
 	local bcp, bcn, player_collision = get_moveresult_info(moveresult)
 
 	if handle_collision_player_or_ignore(self, bcp, bcn, player_collision) then
+		-- If hit ignore, self is deleted.
+		-- If hit player, self is teleported slightly.
 		return
 	end
 
@@ -573,12 +584,14 @@ function falling.on_step(self, dtime, moveresult)
 	-- Try to actually place ourselves
 	if not failure then
 		if follow_adjacent_slope(self, bcp) then
+			-- If slope found, keep falling.
 			return
 		end
 		failure = not try_place(self, bcp, bcn)
 	end
 
 	if failure then
+		-- Could not place, so drop as item.
 		drop_as_item(self)
 	end
 	self.object:remove()

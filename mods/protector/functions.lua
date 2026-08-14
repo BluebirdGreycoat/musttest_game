@@ -7,7 +7,7 @@ function protector.on_place_ignore_protection(itemstack, placer, pointed_thing)
 
 	-- Protection prevents proper operation of 'item_place_node'
 	protector.enable_protection(false)
-	local newstack, place_to = core.item_place_node(itemstack, placer, pointed_thing)
+	local newstack, place_to = core.item_place(itemstack, placer, pointed_thing)
 	protector.enable_protection(true)
 
 	-- Check if player put object in location protected by someone else.

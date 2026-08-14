@@ -582,7 +582,7 @@ function protector.check_overlap(itemstack, placer, pt)
 		for _, pos in ipairs(nodes) do
 			local meta = minetest.get_meta(pos)
 			if meta:get_int("protection_cancel") == 1 then
-				meta:set_int("protection_cancel", 0)
+				meta:set_string("protection_cancel", "") -- Completely remove.
 			end
 		end
 	end

@@ -365,6 +365,43 @@ end
 
 
 
+local function try_remove(np)
+	local node = core.get_node(np)
+	local name = node.name
+	local ndef = all_nodes[name] or {}
+
+	if name ~= "air" then
+		local protected = core.test_protection(np, "")
+		if not protected then
+			core.remove_node(np)
+
+			-- Run script hook.
+			for _, callback in pairs(core.registered_on_dignodes) do
+				callback(np, node) -- Node position, oldnode.
+			end
+
+			if not ndef.buildable_to and ndef.liquidtype == "none" then
+				-- Add dropped items.
+				-- Pass node name, because passing a node table gives wrong results.
+				local drops = get_node_drops(name, "")
+				for _, dropped_item in pairs(drops) do
+					add_item(np, dropped_item)
+				end
+			end
+
+			return true
+		end
+
+		-- Protected. Can't remove.
+		return false
+	end
+
+	-- Removing air always succeeds.
+	return true
+end
+
+
+
 local function try_place(self, bcp, bcn)
 	local bcd = core.registered_nodes[bcn.name]
 	-- Add levels if dropped on same leveled node
@@ -381,6 +418,8 @@ local function try_place(self, bcp, bcn)
 		end
 	end
 
+	local do_remove = false
+
 	-- Decide if we're replacing the node or placing on top
 	-- This condition is very similar to the check in core.check_single_for_falling(p)
 	local np = vector.copy(bcp)
@@ -393,7 +432,7 @@ local function try_place(self, bcp, bcn)
 				(self.floats and self.liquidtype ~= "none" and bcd.liquidtype ~= "source")
 			) then
 
-		core.remove_node(bcp)
+		do_remove = true
 	else
 		-- We are placing on top so check what's there
 		np.y = np.y + 1
@@ -401,7 +440,7 @@ local function try_place(self, bcp, bcn)
 		local n2 = core.get_node(np)
 		local nd = core.registered_nodes[n2.name]
 		if not nd or nd.buildable_to then
-			core.remove_node(np)
+			do_remove = true
 		else
 			-- 'walkable' is used to mean "falling nodes can't replace this"
 			-- here. Normally we would collide with the walkable node itself
@@ -410,11 +449,15 @@ local function try_place(self, bcp, bcn)
 			if not nd.diggable or nd.walkable then
 				return false
 			end
-			nd.on_dig(np, n2, nil)
-			-- If it's still there, it might be protected
-			if core.get_node(np).name == n2.name then
-				return false
-			end
+
+			do_remove = true
+		end
+	end
+
+	-- Actually try to remove what's here.
+	if do_remove then
+		if not try_remove(np) then
+			return false
 		end
 	end
 

@@ -253,7 +253,7 @@ function camc.get_regular_players()
 		if not gdac.player_is_admin(v) and not camc.player_is_camera(v) then
 			local pname = v:get_player_name()
 			if player_labels.query_nametag_onoff(pname) == true then
-				if not cloaking.is_cloaked(tname) and not gdac_invis.is_invisible(tname) then
+				if not cloaking.is_cloaked(pname) and not gdac_invis.is_invisible(pname) then
 					regular[#regular + 1] = v
 				end
 			end

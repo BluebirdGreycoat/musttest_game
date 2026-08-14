@@ -3,6 +3,8 @@
 -- Customized for EnyekalaMT by MustTest.
 
 local get_public_time = function()
+	-- Warning: never change this format!
+	-- It gets parsed by other code to get a timestamp.
 	return os.date("!%Y/%m/%d UTC")
 end
 

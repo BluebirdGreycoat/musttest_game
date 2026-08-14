@@ -123,8 +123,8 @@ local function on_place(itemstack, placer, pointed_thing)
 	if data and data_owner then
 		copymeta(itemstack:get_meta(), stack:get_meta() )
 	end
-	local _, placed, pos = minetest.item_place_node(stack, placer, pointed_thing, nil)
-	if placed then
+	local _, pos = minetest.item_place_node(stack, placer, pointed_thing, nil)
+	if pos then
 		local meta = minetest.get_meta(pos)
 		meta:mark_as_private({"text", "iv", "title", "owner", "page", "page_max", "description"})
 		itemstack:take_item()

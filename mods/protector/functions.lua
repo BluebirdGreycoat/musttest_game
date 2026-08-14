@@ -7,11 +7,11 @@ function protector.on_place_ignore_protection(itemstack, placer, pointed_thing)
 
 	-- Protection prevents proper operation of 'item_place_node'
 	protector.enable_protection(false)
-	local newstack, success, place_to = core.item_place_node(itemstack, placer, pointed_thing)
+	local newstack, place_to = core.item_place_node(itemstack, placer, pointed_thing)
 	protector.enable_protection(true)
 
 	-- Check if player put object in location protected by someone else.
-	if success and place_to and minetest.test_protection(place_to, pname) then
+	if place_to and minetest.test_protection(place_to, pname) then
 		local meta = minetest.get_meta(place_to)
 		meta:set_int("protection_cancel", 1)
 		meta:mark_as_private("protection_cancel")

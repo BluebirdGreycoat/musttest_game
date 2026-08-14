@@ -151,7 +151,7 @@ end
 function core.item_place_node(itemstack, placer, pointed_thing, param2)
 	local def = itemstack:get_definition()
 	if def.type ~= "node" or pointed_thing.type ~= "node" then
-		return itemstack, false, nil
+		return itemstack, nil
 	end
 
 	local under = pointed_thing.under
@@ -164,7 +164,7 @@ function core.item_place_node(itemstack, placer, pointed_thing, param2)
 	if not oldnode_under or not oldnode_above then
 		log("info", playername .. " tried to place"
 			.. " node in unloaded position " .. core.pos_to_string(above))
-		return itemstack, false, nil
+		return itemstack, nil
 	end
 
 	local oldnode_uname = oldnode_under.name
@@ -182,12 +182,12 @@ function core.item_place_node(itemstack, placer, pointed_thing, param2)
 		log("info", playername .. " tried to place"
 			.. " node in invalid position " .. core.pos_to_string(above)
 			.. ", replacing " .. oldnode_aname)
-		return itemstack, false, nil
+		return itemstack, nil
 	end
 
 	-- Don't permit building against some nodes.
 	if olddef_under.not_buildable_against then
-		return itemstack, false, nil
+		return itemstack, nil
 	end
 
 	-- Place above pointed node
@@ -204,9 +204,9 @@ function core.item_place_node(itemstack, placer, pointed_thing, param2)
 	-- Feature addition by MustTest.
 	if not def.can_place_in_liquid then
 		if will_place_above and olddef_above.liquidtype ~= "none" then
-			return itemstack, false, nil
+			return itemstack, nil
 		elseif not will_place_above and olddef_under.liquidtype ~= "none" then
-			return itemstack, false, nil
+			return itemstack, nil
 		end
 	end
 
@@ -216,7 +216,7 @@ function core.item_place_node(itemstack, placer, pointed_thing, param2)
 				.. " at protected position "
 				.. core.pos_to_string(place_to))
 		core.record_protection_violation(place_to, playername)
-		return itemstack, false, nil
+		return itemstack, nil
 	end
 
 	log("action", playername .. " places node "
@@ -300,7 +300,7 @@ function core.item_place_node(itemstack, placer, pointed_thing, param2)
 	if checks_done > 0 and fail_count >= checks_done then
 		log("action", "attached or hanging node " .. def.name ..
 			" can not be placed at " .. core.pos_to_string(place_to))
-		return itemstack, false, nil
+		return itemstack, nil
 	end
 
 	-- Add node and update
@@ -336,6 +336,6 @@ function core.item_place_node(itemstack, placer, pointed_thing, param2)
 		itemstack:take_item()
 	end
 
-	-- Return position as 3rd result. By MustTest.
-	return itemstack, true, place_to
+	-- Return position as 2nd result. By MustTest.
+	return itemstack, place_to
 end

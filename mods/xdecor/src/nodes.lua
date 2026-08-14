@@ -516,10 +516,10 @@ local function lantern_place(itemstack, placer, pointed_thing)
 	--minetest.log("action", "nodename: " .. nodename)
 
 	-- Non-standard 'minetest.item_place_node'.
-	leftover, place_success, place_pos = minetest.item_place_node(
+	leftover, place_pos = minetest.item_place_node(
 		ItemStack(nodename), placer, pointed_thing)
 
-	if not place_success or place_pos == nil then
+	if place_pos == nil then
 		return
 	end
 
@@ -663,10 +663,10 @@ xdecor.register("painting_1", {
 	on_place = function(itemstack, placer, pointed_thing)
 		local num = math_random(1, 4)
 
-		local leftover, success, pos = minetest.item_place_node(
+		local leftover, pos = minetest.item_place_node(
 			ItemStack("xdecor:painting_" .. num), placer, pointed_thing)
 
-		if success then
+		if pos then
 			itemstack:take_item()
 		end
 

@@ -31,9 +31,9 @@ function papyrus.on_place(itemstack, placer, pt)
 		fakestack:set_count(itemstack:get_count())
 	end
 
-	local stack, success, pos = minetest.item_place_node(fakestack, placer, pt)
+	local stack, pos = minetest.item_place_node(fakestack, placer, pt)
 
-	if success then
+	if pos then
 		itemstack:set_count(stack:get_count())
 		return itemstack
 	end

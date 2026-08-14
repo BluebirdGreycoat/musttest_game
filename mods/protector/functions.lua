@@ -14,7 +14,7 @@ function protector.on_place_ignore_protection(itemstack, placer, pointed_thing)
 		local node = minetest.get_node_or_nil(pointed_thing.under)
 		local ndef = node and minetest.reg_ns_nodes[node.name]
 		if ndef and ndef.on_rightclick and placer and not placer:get_player_control().sneak then
-			return ndef.on_rightclick(pointed_thing.under, node, placer, itemstack)
+			return ndef.on_rightclick(pointed_thing.under, node, placer, itemstack, pointed_thing)
 		end
 	end
 

@@ -108,9 +108,9 @@ function diving_equipment.on_place(itemstack, placer, pt)
   end
 
 	local fakestack = ItemStack("vessels:steel_bottle")
-	local retstack, success, position = minetest.item_place(fakestack, placer, pt)
+	local retstack, position = minetest.item_place(fakestack, placer, pt)
 
-	if success and position then
+	if position then
 		local meta = minetest.get_meta(position)
 		meta:set_string("infotext", "Compressed Air Canister")
 		meta:set_string("nodetype_on_dig", "scuba:air")

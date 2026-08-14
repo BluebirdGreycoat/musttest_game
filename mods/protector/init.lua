@@ -572,10 +572,10 @@ function protector.check_overlap(itemstack, placer, pt)
 		return
 	end
 
-	local newstack, success, place_to = minetest.item_place(itemstack, placer, pt)
+	local newstack, place_to = minetest.item_place(itemstack, placer, pt)
 
 	-- Remove any "protection_cancel" in the protected region.
-	if success and place_to then
+	if place_to then
 		local ndef = itemstack:get_definition()
 		local minp = vector.subtract(place_to, ndef._protector_node_radius)
 		local maxp = vector.add(place_to, ndef._protector_node_radius)
@@ -588,7 +588,7 @@ function protector.check_overlap(itemstack, placer, pt)
 		end
 	end
 
-	return newstack, success, place_to
+	return newstack, place_to
 end
 
 

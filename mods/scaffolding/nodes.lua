@@ -10,29 +10,15 @@ minetest.register_node("scaffolding:scaffolding", {
 	walkable = false,
 	groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 	sounds = default.node_sound_wood_defaults(),
+
 	on_punch = function(pos, node, puncher)
 			local tool = puncher:get_wielded_item():get_name()
 			if tool and tool == "scaffolding:scaffolding_wrench" then
 					node.name = "scaffolding:reinforced_scaffolding"
 					minetest.add_node(pos, node)
-					--puncher:get_inventory():add_item("main", ItemStack("scaffolding:scaffolding"))
 			end
 	end,
-	--[[on_rightclick = function(pos, node, player, itemstack, pointed_thing)
-			if itemstack:get_name() == "scaffolding:scaffolding_wrench" then
-					node.name = "scaffolding:reinforced_scaffolding"
-					minetest.add_node(pos, node)
 
-			end
-	end,
-	on_punch = function(pos, node, puncher)
-	local tool = puncher:get_wielded_item():get_name()
-			if tool and tool == "scaffolding:scaffolding_wrench" then
-					node.name = "air"
-					minetest.add_node(pos, node)
-					puncher:get_inventory():add_item("main", ItemStack("scaffolding:scaffolding"))
-			end
-	end,]]
 	node_box = {
 			type = "fixed",
 			fixed = {
@@ -64,29 +50,15 @@ minetest.register_node("scaffolding:reinforced_scaffolding", {
 	groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 	sounds = default.node_sound_wood_defaults(),
 	_no_collapse_on_walkover = true,
+
 	on_punch = function(pos, node, puncher)
 			local tool = puncher:get_wielded_item():get_name()
 			if tool and tool == "scaffolding:scaffolding_wrench" then
 					node.name = "scaffolding:scaffolding"
 					minetest.add_node(pos, node)
-					--puncher:get_inventory():add_item("main", ItemStack("scaffolding:scaffolding"))
 			end
 	end,
-	--[[ on_rightclick = function(pos, node, puncher)
-	local tool = puncher:get_wielded_item():get_name()
-			if tool and tool == "scaffolding:scaffolding_wrench" then
-					node.name = "scaffolding:scaffolding"
-					minetest.add_node(pos, node)
-			end
-	end,
-	on_punch = function(pos, node, puncher)
-	local tool = puncher:get_wielded_item():get_name()
-			if tool and tool == "scaffolding:scaffolding_wrench" then
-					node.name = "air"
-					minetest.add_node(pos, node)
-					puncher:get_inventory():add_item("main", ItemStack("scaffolding:scaffolding"))
-			end
-	end,]]
+
 	node_box = {
 			type = "fixed",
 			fixed = {
@@ -112,6 +84,7 @@ minetest.register_node("scaffolding:platform", {
 	groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 	sounds = default.node_sound_wood_defaults(),
 	_no_collapse_on_walkover = true,
+
 	on_punch = function(pos, node, puncher)
 			local tool = puncher:get_wielded_item():get_name()
 			if tool and tool == "scaffolding:scaffolding_wrench" then
@@ -119,6 +92,7 @@ minetest.register_node("scaffolding:platform", {
 					minetest.add_node(pos, node)
 			end
 	end,
+
 	node_box = {
 			type = "fixed",
 			fixed = {
@@ -131,6 +105,7 @@ minetest.register_node("scaffolding:platform", {
 					{-0.5, -0.3, -0.5, 0.5, 0.1, 0.5},
 			},
 	},
+
 	after_dig_node = function(pos, node, metadata, digger)
 		scaffolding.dig_horx(pos, node, digger)
 		scaffolding.dig_horx2(pos, node, digger)
@@ -151,6 +126,7 @@ minetest.register_node("scaffolding:reinforced_platform", {
 	groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 	sounds = default.node_sound_wood_defaults(),
 	_no_collapse_on_walkover = true,
+
 	on_punch = function(pos, node, puncher)
 			local tool = puncher:get_wielded_item():get_name()
 			if tool and tool == "scaffolding:scaffolding_wrench" then
@@ -158,6 +134,7 @@ minetest.register_node("scaffolding:reinforced_platform", {
 					minetest.add_node(pos, node)
 			end
 	end,
+
 	node_box = {
 			type = "fixed",
 			fixed = {
@@ -196,31 +173,15 @@ minetest.register_node("scaffolding:iron_scaffolding", {
 					{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 			},
 	},
+
 	on_punch = function(pos, node, puncher)
 			local tool = puncher:get_wielded_item():get_name()
 			if tool and tool == "scaffolding:scaffolding_wrench" then
 					node.name = "scaffolding:reinforced_iron_scaffolding"
 					minetest.add_node(pos, node)
-					--puncher:get_inventory():add_item("main", ItemStack("scaffolding:scaffolding"))
 			end
 	end,
-	--[[
-	on_rightclick = function(pos, node, puncher)
-	local tool = puncher:get_wielded_item():get_name()
-			if tool and tool == "scaffolding:scaffolding_wrench" then
-					node.name = "scaffolding:reinforced_iron_scaffolding"
-					minetest.add_node(pos, node)
-			end
-	end,
-	on_punch = function(pos, node, puncher)
-	local tool = puncher:get_wielded_item():get_name()
-			if tool and tool == "scaffolding:scaffolding_wrench" then
-					node.name = "air"
-					minetest.add_node(pos, node)
-					--puncher:get_inventory():remove_item("main", ItemStack("beer_test:tankard"))
-					puncher:get_inventory():add_item("main", ItemStack("scaffolding:scaffolding"))
-			end
-	end,]]
+
 	after_dig_node = function(pos, node, metadata, digger)
 		default.dig_up(pos, node, digger)
 	end,
@@ -239,30 +200,15 @@ minetest.register_node("scaffolding:reinforced_iron_scaffolding", {
 	_no_collapse_on_walkover = true,
 	groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 	sounds = default.node_sound_stone_defaults(),
+
 	on_punch = function(pos, node, puncher)
 			local tool = puncher:get_wielded_item():get_name()
 			if tool and tool == "scaffolding:scaffolding_wrench" then
 					node.name = "scaffolding:iron_scaffolding"
 					minetest.add_node(pos, node)
-					--puncher:get_inventory():add_item("main", ItemStack("scaffolding:scaffolding"))
 			end
 	end,
-	--[[on_rightclick = function(pos, node, puncher)
-	local tool = puncher:get_wielded_item():get_name()
-			if tool and tool == "scaffolding:scaffolding_wrench" then
-					node.name = "scaffolding:iron_scaffolding"
-					minetest.add_node(pos, node)
-			end
-	end,
-	on_punch = function(pos, node, puncher)
-	local tool = puncher:get_wielded_item():get_name()
-			if tool and tool == "scaffolding:scaffolding_wrench" then
-					node.name = "air"
-					minetest.add_node(pos, node)
-					--puncher:get_inventory():remove_item("main", ItemStack("beer_test:tankard"))
-					puncher:get_inventory():add_item("main", ItemStack("scaffolding:scaffolding"))
-			end
-	end,]]
+
 	node_box = {
 			type = "fixed",
 			fixed = {
@@ -288,6 +234,7 @@ minetest.register_node("scaffolding:iron_platform", {
 	groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 	sounds = default.node_sound_stone_defaults(),
 	_no_collapse_on_walkover = true,
+
 	on_punch = function(pos, node, puncher)
 			local tool = puncher:get_wielded_item():get_name()
 			if tool and tool == "scaffolding:scaffolding_wrench" then
@@ -295,6 +242,7 @@ minetest.register_node("scaffolding:iron_platform", {
 					minetest.add_node(pos, node)
 			end
 	end,
+
 	node_box = {
 			type = "fixed",
 			fixed = {
@@ -307,11 +255,12 @@ minetest.register_node("scaffolding:iron_platform", {
 					{-0.5, -0.3, -0.5, 0.5, 0.1, 0.5},
 			},
 	},
+
 	after_dig_node = function(pos, node, metadata, digger)
-			scaffolding.dig_horx(pos, node, digger)
-			scaffolding.dig_horx2(pos, node, digger)
-			scaffolding.dig_horz(pos, node, digger)
-			scaffolding.dig_horz2(pos, node, digger)
+		scaffolding.dig_horx(pos, node, digger)
+		scaffolding.dig_horx2(pos, node, digger)
+		scaffolding.dig_horz(pos, node, digger)
+		scaffolding.dig_horz2(pos, node, digger)
 	end,
 })
 
@@ -327,6 +276,7 @@ minetest.register_node("scaffolding:reinforced_iron_platform", {
 	groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 	sounds = default.node_sound_stone_defaults(),
 	_no_collapse_on_walkover = true,
+
 	on_punch = function(pos, node, puncher)
 			local tool = puncher:get_wielded_item():get_name()
 			if tool and tool == "scaffolding:scaffolding_wrench" then
@@ -334,6 +284,7 @@ minetest.register_node("scaffolding:reinforced_iron_platform", {
 					minetest.add_node(pos, node)
 			end
 	end,
+
 	node_box = {
 			type = "fixed",
 			fixed = {

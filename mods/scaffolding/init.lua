@@ -26,5 +26,3 @@ if not scaffolding.run_once then
 
 	scaffolding.run_once = true
 end
-
-

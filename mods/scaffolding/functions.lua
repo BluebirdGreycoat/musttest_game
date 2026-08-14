@@ -1,4 +1,19 @@
 
+-- Non-reinforced scaffolding will self-destruct if falling nodes fall on it.
+-- You can stop this by using reinforced scaffolding, but that also means you
+-- can't climb inside it.
+function scaffolding.on_falling_trigger(pos)
+	-- Causes issues with nodes getting stuck in the falling state
+	-- and clipped inside each other.
+	--sfn.drop_node(pos)
+
+	local node = minetest.get_node(pos)
+	minetest.remove_node(pos)
+	minetest.add_item(pos, node.name)
+end
+
+
+
 local scaffolding_nodenames={"scaffolding:scaffolding","scaffolding:iron_scaffolding"}
 
 minetest.register_on_dignode(function(pos, node)

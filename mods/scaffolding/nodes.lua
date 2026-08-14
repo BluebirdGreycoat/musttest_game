@@ -19,6 +19,10 @@ minetest.register_node("scaffolding:scaffolding", {
 			end
 	end,
 
+	_falling_remove = function(pos)
+		scaffolding.on_falling_trigger(pos)
+	end,
+
 	node_box = {
 			type = "fixed",
 			fixed = {
@@ -45,8 +49,8 @@ minetest.register_node("scaffolding:reinforced_scaffolding", {
 	drop = "scaffolding:scaffolding",
 	paramtype = "light",
 	paramtype2 = "facedir",
-	climbable = true,
-	walkable = false,
+	climbable = false,
+	walkable = true,
 	groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 	sounds = default.node_sound_wood_defaults(),
 	_no_collapse_on_walkover = true,
@@ -174,6 +178,10 @@ minetest.register_node("scaffolding:iron_scaffolding", {
 			},
 	},
 
+	_falling_remove = function(pos)
+		scaffolding.on_falling_trigger(pos)
+	end,
+
 	on_punch = function(pos, node, puncher)
 			local tool = puncher:get_wielded_item():get_name()
 			if tool and tool == "scaffolding:scaffolding_wrench" then
@@ -195,8 +203,8 @@ minetest.register_node("scaffolding:reinforced_iron_scaffolding", {
 	drop = "scaffolding:iron_scaffolding",
 	paramtype = "light",
 	paramtype2 = "facedir",
-	climbable = true,
-	walkable = false,
+	climbable = false,
+	walkable = true,
 	_no_collapse_on_walkover = true,
 	groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 	sounds = default.node_sound_stone_defaults(),

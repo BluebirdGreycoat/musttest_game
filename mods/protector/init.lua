@@ -105,6 +105,26 @@ end
 
 
 
+-- Called by rename LBM.
+function protector.on_update_infotext_lbm(pos)
+	local meta = minetest.get_meta(pos)
+	local owner = meta:get_string("owner")
+	local placedate = meta:get_string("placedate")
+
+	-- Nobody placed this block.
+	if owner == "" then
+		return
+	end
+	if placedate == "" then
+		placedate = "an unknown date!"
+	end
+
+	meta:set_string("rename", rename.gpn(owner))
+	meta:set_string("infotext", protector.get_infotext(meta))
+end
+
+
+
 -- Singular function to find relevant protector nodes in an area.
 function protector.find_protector_nodes(pos, r, mult, nodename)
 	-- Arguments:
@@ -810,17 +830,7 @@ minetest.register_node("protector:protect", {
 
 	-- Called by rename LBM.
 	_on_update_infotext = function(pos)
-		local meta = minetest.get_meta(pos)
-		local owner = meta:get_string("owner")
-		-- Nobody placed this block.
-		if owner == "" then
-			return
-		end
-		local cname = meta:get_string("rename")
-		local dname = rename.gpn(owner)
-
-		meta:set_string("rename", dname)
-		meta:set_string("infotext", protector.get_infotext(meta))
+		protector.on_update_infotext_lbm(pos)
 	end,
 
 	on_destruct = function(pos)
@@ -898,21 +908,7 @@ minetest.register_node("protector:protect3", {
 
 	-- Called by rename LBM.
 	_on_update_infotext = function(pos)
-		local meta = minetest.get_meta(pos)
-		local owner = meta:get_string("owner")
-		local placedate = meta:get_string("placedate")
-		-- Nobody placed this block.
-		if owner == "" then
-			return
-		end
-		if placedate == "" then
-			placedate = "an unknown date!"
-		end
-		local cname = meta:get_string("rename")
-		local dname = rename.gpn(owner)
-
-		meta:set_string("rename", dname)
-		meta:set_string("infotext", protector.get_infotext(meta))
+		protector.on_update_infotext_lbm(pos)
 	end,
 
 	on_destruct = function(pos)
@@ -1008,21 +1004,7 @@ minetest.register_node("protector:protect2", {
 
 	-- Called by rename LBM.
 	_on_update_infotext = function(pos)
-		local meta = minetest.get_meta(pos)
-		local owner = meta:get_string("owner")
-		local placedate = meta:get_string("placedate")
-		-- Nobody placed this block.
-		if owner == "" then
-			return
-		end
-		if placedate == "" then
-			placedate = "an unknown date!"
-		end
-		local cname = meta:get_string("rename")
-		local dname = rename.gpn(owner)
-
-		meta:set_string("rename", dname)
-		meta:set_string("infotext", protector.get_infotext(meta))
+		protector.on_update_infotext_lbm(pos)
 	end,
 
 	on_destruct = function(pos)
@@ -1105,21 +1087,7 @@ minetest.register_node("protector:protect4", {
 
 	-- Called by rename LBM.
 	_on_update_infotext = function(pos)
-		local meta = minetest.get_meta(pos)
-		local owner = meta:get_string("owner")
-		local placedate = meta:get_string("placedate")
-		-- Nobody placed this block.
-		if owner == "" then
-			return
-		end
-		if placedate == "" then
-			placedate = "an unknown date!"
-		end
-		local cname = meta:get_string("rename")
-		local dname = rename.gpn(owner)
-
-		meta:set_string("rename", dname)
-		meta:set_string("infotext", protector.get_infotext(meta))
+		protector.on_update_infotext_lbm(pos)
 	end,
 
 	on_destruct = function(pos)

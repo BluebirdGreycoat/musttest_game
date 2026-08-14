@@ -70,7 +70,16 @@ local TOOL_CAPABILITIES = {
 	damage_groups = {fleshy = 1},
 }
 
-local function damage_entities_around(pos, node, pharm, mharm)
+local function damage_entities_around(self, dtime)
+	self.damage_timer = (self.damage_timer or 0) + dtime
+	if self.damage_timer < ENTITY_DAMAGE_TIME then
+		return
+	end
+	self.damage_timer = 0
+
+	local pharm = self.pharm
+	local mharm = self.mharm
+
 	if not pharm or pharm < 1 then
 		return
 	end
@@ -78,7 +87,9 @@ local function damage_entities_around(pos, node, pharm, mharm)
 		return
 	end
 
+	local pos = vector_round(self.object:get_pos())
 	local objects = get_objects_inside_radius(pos, 1.2)
+
 	for i = 1, #objects do
 		local r = objects[i]
 		if r:is_player() then
@@ -543,6 +554,7 @@ function falling.on_step(self, dtime, moveresult)
 	end
 
 	trigger_fallthrough_callbacks(self)
+	damage_entities_around(self, dtime)
 
 	if not moveresult or not moveresult.collides then
 		return -- Fast path.

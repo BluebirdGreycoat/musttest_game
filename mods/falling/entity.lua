@@ -345,6 +345,26 @@ end
 
 
 
+local function finish_collapse_callback(np, def, node)
+	-- Mark node as unprotectable.
+	-- This has to come before executing the node callback because the callback might remove the node.
+	-- If the callback changes the node placed, it should use `minetest.swap_node()'.
+	local meta = get_meta(np)
+	meta:set_int("protection_cancel", 1)
+	meta:mark_as_private("protection_cancel")
+
+	-- Execute node callback.
+	local callback = def.on_finish_collapse
+	if callback then
+		callback(np, node)
+	end
+
+	-- Dirtspread notification.
+	dirtspread.on_environment(np)
+end
+
+
+
 local function try_place(self, bcp, bcn)
 	local bcd = core.registered_nodes[bcn.name]
 	-- Add levels if dropped on same leveled node
@@ -408,7 +428,10 @@ local function try_place(self, bcp, bcn)
 		if def.sounds and def.sounds.place then
 			core.sound_play(def.sounds.place, {pos = np}, true)
 		end
+
+		finish_collapse_callback(np, def, self.node)
 	end
+
 	core.check_for_falling(np)
 	return true
 end

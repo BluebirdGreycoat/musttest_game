@@ -391,6 +391,11 @@ local function try_remove(protected, np)
 			return true
 		end
 
+		-- These nodes can always be replaced by falling nodes.
+		if name == "default:snow" or name == "snow:footprints" then
+			return true
+		end
+
 		-- Protected. Can't remove.
 		return false
 	end
@@ -467,7 +472,9 @@ local function try_place(self, bcp, bcn)
 	local def = core.registered_nodes[self.node.name]
 	if def then
 		-- If the position is protected and the node we're placing is `buildable_to',
-		-- then we must drop an item instead in order to avoid creating a protection exploit,
+		-- then we must drop an item instead in order to avoid creating a protection exploit.
+		-- (Player could drop a buildable_to node, get "protection_cancel" set on its
+		-- metadata, then build into the node, thus breaking protection.)
 		local ndef = all_nodes[self.node.name] or {}
 		if protected and ndef.buildable_to then
 			return false

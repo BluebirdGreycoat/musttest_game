@@ -274,7 +274,7 @@ function snow.choose_level()
 	assert(which >= 1)
 	assert(which <= 17*2)
 	return which
-	--return 5
+	--return 5 -- For testing on occasions when snow would be invisible.
 end
 snow.snowlevel = snow.choose_level()
 function snow.get_day()

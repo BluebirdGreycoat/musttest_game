@@ -506,6 +506,24 @@ end
 
 
 
+local function trigger_fallthrough_callbacks(self)
+	local pos = self.object:get_pos()
+
+	local bcp = pos:offset(0, -0.7, 0):round()
+	local bcn = core.get_node(bcp)
+
+	local bcd = core.registered_nodes[bcn.name]
+	if bcd and bcd._falling_remove then
+		if type(bcd._falling_remove) == "function" then
+			bcd._falling_remove(bcp)
+		elseif bcd._falling_remove == true then
+			remove_node(bcp)
+		end
+	end
+end
+
+
+
 function falling.on_step(self, dtime, moveresult)
 	-- Fallback code since collision detection can't tell us
 	-- about liquids (which do not collide)
@@ -523,6 +541,8 @@ function falling.on_step(self, dtime, moveresult)
 			end
 		end
 	end
+
+	trigger_fallthrough_callbacks(self)
 
 	if not moveresult or not moveresult.collides then
 		return -- Fast path.

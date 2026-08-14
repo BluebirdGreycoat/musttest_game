@@ -70,15 +70,12 @@ local TOOL_CAPABILITIES = {
 	damage_groups = {fleshy = 1},
 }
 
-local function damage_entities_around(self, dtime)
-	self.damage_timer = (self.damage_timer or 0) + dtime
-	if self.damage_timer < ENTITY_DAMAGE_TIME then
-		return
-	end
-	self.damage_timer = 0
-
-	local pharm = self.pharm
-	local mharm = self.mharm
+-- Do damage to player or mob.
+-- Invokes droplift on __builtin:item entites.
+-- Ignores all other entities.
+local function damage_entity(self, obj)
+	local pharm = self.pharm -- Damage to players.
+	local mharm = self.mharm -- Damage to mobs.
 
 	if not pharm or pharm < 1 then
 		return
@@ -87,38 +84,50 @@ local function damage_entities_around(self, dtime)
 		return
 	end
 
+	if obj:is_player() then
+		if not gdac.player_is_admin(obj) and not camc.player_is_camera(obj) then
+			local hp = obj:get_hp()
+			if hp > 0 then -- Ignore the already-dead.
+				utility.damage_player(obj, "crush", pharm)
+
+				if obj:get_hp() <= 0 then
+					-- Player will die.
+					falling.run_callbacks_after("after_killed_player", {
+						pname = obj:get_player_name(),
+						player_pos = obj:get_pos(),
+						pos = pos,
+					})
+				end
+			end
+		end
+
+		return -- Done.
+	end
+
+	local entity = obj:get_luaentity()
+	if entity then
+		if entity.mob and entity.mob == true then
+			TOOL_CAPABILITIES.damage_groups.fleshy = mharm
+			obj:punch(obj, 1, TOOL_CAPABILITIES, nil)
+		elseif entity.name == "__builtin:item" then
+			droplift.invoke(obj)
+		end
+	end
+end
+
+local function damage_entities_around(self, dtime)
+	self.damage_timer = (self.damage_timer or 0) + dtime
+	if self.damage_timer < ENTITY_DAMAGE_TIME then
+		return
+	end
+	self.damage_timer = 0
+
 	local pos = vector_round(self.object:get_pos())
 	local objects = get_objects_inside_radius(pos, 1.2)
 
 	for i = 1, #objects do
 		local r = objects[i]
-		if r:is_player() then
-			if not gdac.player_is_admin(r) and not camc.player_is_camera(r) then
-				local hp = r:get_hp()
-				if hp > 0 then
-					utility.damage_player(r, "crush", pharm)
-
-					if r:get_hp() <= 0 then
-						-- Player will die.
-						falling.run_callbacks_after("after_killed_player", {
-							pname = r:get_player_name(),
-							player_pos = r:get_pos(),
-							pos = pos,
-						})
-					end
-				end
-			end
-		else
-			local l = r:get_luaentity()
-			if l then
-				if l.mob and l.mob == true then
-					TOOL_CAPABILITIES.damage_groups.fleshy = mharm
-					r:punch(r, 1, TOOL_CAPABILITIES, nil)
-				elseif l.name == "__builtin:item" then
-					droplift.invoke(r)
-				end
-			end
-		end
+		damage_entity(self, r)
 	end
 end
 

@@ -365,13 +365,12 @@ end
 
 
 
-local function try_remove(np)
+local function try_remove(protected, np)
 	local node = core.get_node(np)
 	local name = node.name
 	local ndef = all_nodes[name] or {}
 
 	if name ~= "air" then
-		local protected = core.test_protection(np, "")
 		if not protected then
 			core.remove_node(np)
 
@@ -454,9 +453,12 @@ local function try_place(self, bcp, bcn)
 		end
 	end
 
+	-- Prefetch whether the location we'll place to is protected.
+	local protected = core.test_protection(np, "")
+
 	-- Actually try to remove what's here.
 	if do_remove then
-		if not try_remove(np) then
+		if not try_remove(protected, np) then
 			return false
 		end
 	end
@@ -464,7 +466,15 @@ local function try_place(self, bcp, bcn)
 	-- Create node
 	local def = core.registered_nodes[self.node.name]
 	if def then
+		-- If the position is protected and the node we're placing is `buildable_to',
+		-- then we must drop an item instead in order to avoid creating a protection exploit,
+		local ndef = all_nodes[self.node.name] or {}
+		if protected and ndef.buildable_to then
+			return false
+		end
+
 		core.add_node(np, self.node)
+
 		if self.meta then
 			core.get_meta(np):from_table(self.meta)
 		end

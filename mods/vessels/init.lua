@@ -217,6 +217,8 @@ if not vessels.run_once then
 		groups = utility.dig_groups("item", {vessel = 1, attached_node = 1}),
 		sounds = default.node_sound_glass_defaults(),
 		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+
+		on_place = protector.on_place_ignore_protection,
 	})
 
 	minetest.register_craft( {
@@ -244,6 +246,8 @@ if not vessels.run_once then
 		groups = utility.dig_groups("item", {vessel = 1, attached_node = 1}),
 		sounds = default.node_sound_glass_defaults(),
 		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+
+		on_place = protector.on_place_ignore_protection,
 	})
 
 	minetest.register_craft( {
@@ -272,6 +276,8 @@ if not vessels.run_once then
 		groups = utility.dig_groups("item", {vessel = 1, attached_node = 1}),
 		sounds = default.node_sound_glass_defaults(),
 		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+
+		on_place = protector.on_place_ignore_protection,
 	})
 
 	minetest.register_craft( {

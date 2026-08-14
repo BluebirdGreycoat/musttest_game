@@ -20,6 +20,7 @@ protector.display_time = 60*2
 dofile(protector.modpath .. "/hud.lua")
 dofile(protector.modpath .. "/tool.lua")
 dofile(protector.modpath .. "/formspec.lua")
+dofile(protector.modpath .. "/functions.lua")
 
 -- Temporary pos store.
 local player_pos = protector.players

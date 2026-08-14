@@ -59,6 +59,30 @@ end
 
 
 
+-- Remove all "protection_cancel" around protector.
+-- To be called in 'after_place_node'.
+function protector.clear_protection_cancel(place_to)
+	local node = minetest.get_node(place_to)
+	local ndef = minetest.registered_nodes[node.name] or {}
+
+	if not ndef._protector_node_radius then
+		return
+	end
+
+	local minp = vector.subtract(place_to, ndef._protector_node_radius)
+	local maxp = vector.add(place_to, ndef._protector_node_radius)
+	local nodes = core.find_nodes_with_meta(minp, maxp)
+
+	for _, pos in ipairs(nodes) do
+		local meta = minetest.get_meta(pos)
+		if meta:get_int("protection_cancel") == 1 then
+			meta:set_string("protection_cancel", "") -- Completely remove.
+		end
+	end
+end
+
+
+
 -- Singular function to find relevant protector nodes in an area.
 function protector.find_protector_nodes(pos, r, mult, nodename)
 	-- Arguments:
@@ -572,23 +596,7 @@ function protector.check_overlap(itemstack, placer, pt)
 		return
 	end
 
-	local newstack, place_to = minetest.item_place(itemstack, placer, pt)
-
-	-- Remove any "protection_cancel" in the protected region.
-	if place_to then
-		local ndef = itemstack:get_definition()
-		local minp = vector.subtract(place_to, ndef._protector_node_radius)
-		local maxp = vector.add(place_to, ndef._protector_node_radius)
-		local nodes = core.find_nodes_with_meta(minp, maxp)
-		for _, pos in ipairs(nodes) do
-			local meta = minetest.get_meta(pos)
-			if meta:get_int("protection_cancel") == 1 then
-				meta:set_string("protection_cancel", "") -- Completely remove.
-			end
-		end
-	end
-
-	return newstack, place_to
+	return minetest.item_place(itemstack, placer, pt)
 end
 
 
@@ -759,6 +767,7 @@ minetest.register_node("protector:protect", {
 
 		-- Notify nearby players.
 		protector.update_nearby_players(pos)
+		protector.clear_protection_cancel(pos)
 	end,
 
 	on_use = function(itemstack, user, pointed_thing)
@@ -866,6 +875,7 @@ minetest.register_node("protector:protect3", {
 
 		-- Notify nearby players.
 		protector.update_nearby_players(pos)
+		protector.clear_protection_cancel(pos)
 	end,
 
 	_expired_protector_name = "protector:expired1",
@@ -989,6 +999,7 @@ minetest.register_node("protector:protect2", {
 
 		-- Notify nearby players.
 		protector.update_nearby_players(pos)
+		protector.clear_protection_cancel(pos)
 	end,
 
 	on_use = function(itemstack, user, pointed_thing)
@@ -1105,6 +1116,7 @@ minetest.register_node("protector:protect4", {
 
 		-- Notify nearby players.
 		protector.update_nearby_players(pos)
+		protector.clear_protection_cancel(pos)
 	end,
 
 	_expired_protector_name = "protector:expired2",

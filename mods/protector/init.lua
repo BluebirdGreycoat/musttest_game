@@ -571,7 +571,23 @@ function protector.check_overlap(itemstack, placer, pt)
 		return
 	end
 
-	return minetest.item_place(itemstack, placer, pt)
+	local newstack, success, place_to = minetest.item_place(itemstack, placer, pt)
+
+	-- Remove any "protection_cancel" in the protected region.
+	if success and place_to then
+		local ndef = itemstack:get_definition()
+		local minp = vector.subtract(place_to, ndef._protector_node_radius)
+		local maxp = vector.add(place_to, ndef._protector_node_radius)
+		local nodes = core.find_nodes_with_meta(minp, maxp)
+		for _, pos in ipairs(nodes) do
+			local meta = minetest.get_meta(pos)
+			if meta:get_int("protection_cancel") == 1 then
+				meta:set_int("protection_cancel", 0)
+			end
+		end
+	end
+
+	return newstack, success, place_to
 end
 
 

@@ -481,6 +481,21 @@ end
 
 
 
+local function follow_adjacent_slope(self, bcp)
+	-- We have hit the ground. Check for a possible slope which we can continue to fall down.
+	local ndef = all_nodes[self.node.name]
+	local ss = find_adjacent_slope(bcp, ndef)
+	if ss ~= nil then
+		self.object:set_pos(vector_add(ss, {x=0, y=1, z=0}))
+		self.object:set_velocity({x=0, y=0, z=0})
+
+		ambiance.sound_play("default_gravel_footstep", ss, 0.2, 20)
+		return true
+	end
+end
+
+
+
 local function drop_as_item(self)
 	local pos = self.object:get_pos()
 	local drops = core.get_node_drops(self.node, "")
@@ -525,6 +540,9 @@ function falling.on_step(self, dtime, moveresult)
 
 	-- Try to actually place ourselves
 	if not failure then
+		if follow_adjacent_slope(self, bcp) then
+			return
+		end
 		failure = not try_place(self, bcp, bcn)
 	end
 

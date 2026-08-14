@@ -531,10 +531,17 @@ end
 
 
 local function drop_as_item(self)
-	local pos = self.object:get_pos()
-	local drops = core.get_node_drops(self.node, "")
-	for _, item in pairs(drops) do
-		core.add_item(pos, item)
+	local ndef = all_nodes[self.node.name]
+	local callback = ndef.on_collapse_to_entity
+	if callback then
+		local pos = vector_round(self.object:get_pos())
+		callback(pos, self.node)
+	else
+		local pos = self.object:get_pos()
+		local drops = core.get_node_drops(self.node, "")
+		for _, item in pairs(drops) do
+			core.add_item(pos, item)
+		end
 	end
 end
 

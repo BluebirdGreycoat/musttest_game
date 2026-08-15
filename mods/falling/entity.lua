@@ -236,7 +236,7 @@ local function get_node_falling_harm(name)
 	end
 
 	-- Default amount of harm to: player, mobs.
-	return 4*500, 4*500
+	return 4*500, 2*500
 end
 
 

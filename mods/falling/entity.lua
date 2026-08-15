@@ -68,6 +68,37 @@ end
 
 
 
+local function follow_adjacent_slope(self, bcp)
+	-- We have hit the ground. Check for a possible slope which we can continue to fall down.
+	local ndef = all_nodes[self.node.name]
+	local ss = find_adjacent_slope(bcp, ndef)
+	if ss ~= nil then
+		local opos = self.object:get_pos()
+		local spos = vector.round(opos)
+		local npos = vector.add(ss, {x=0, y=1, z=0}) -- Position above the slope location.
+		local rpos = vector.subtract(npos, spos) -- Vector to target position. (Assumed unit vector.)
+		local nvel = vector.multiply(rpos, 2) -- Velocity multiplier.
+
+		self.object:set_pos(vector.round(opos))
+		self.object:set_velocity(nvel)
+
+		-- Record the original Y of the falling node entity (not rounded)!
+		self.horizontal_move = {
+			original_y = opos.y,
+			start_pos = spos,
+			end_pos = npos,
+		}
+
+		--highlight_position(self.horizontal_move.start_pos)
+		--highlight_position(self.horizontal_move.end_pos)
+
+		ambiance.sound_play("default_gravel_footstep", ss, 0.2, 20)
+		return true
+	end
+end
+
+
+
 -- Hardcoded tool capabilities for speed.
 local TOOL_CAPABILITIES = {
 	full_punch_interval = 0.1,
@@ -612,37 +643,6 @@ local function handle_collision_extended_node(self, bcp, bcn)
 	end
 
 	return failure, bcp, bcn
-end
-
-
-
-local function follow_adjacent_slope(self, bcp)
-	-- We have hit the ground. Check for a possible slope which we can continue to fall down.
-	local ndef = all_nodes[self.node.name]
-	local ss = find_adjacent_slope(bcp, ndef)
-	if ss ~= nil then
-		local opos = self.object:get_pos()
-		local spos = vector.round(opos)
-		local npos = vector.add(ss, {x=0, y=1, z=0}) -- Position above the slope location.
-		local rpos = vector.subtract(npos, spos) -- Vector to target position. (Assumed unit vector.)
-		local nvel = vector.multiply(rpos, 2) -- Velocity multiplier.
-
-		self.object:set_pos(vector.round(opos))
-		self.object:set_velocity(nvel)
-
-		-- Record the original Y of the falling node entity (not rounded)!
-		self.horizontal_move = {
-			original_y = opos.y,
-			start_pos = spos,
-			end_pos = npos,
-		}
-
-		--highlight_position(self.horizontal_move.start_pos)
-		--highlight_position(self.horizontal_move.end_pos)
-
-		ambiance.sound_play("default_gravel_footstep", ss, 0.2, 20)
-		return true
-	end
 end
 
 

@@ -32,6 +32,11 @@ function fire.scatter_flame_in_area_over_ground(minp, maxp, coverage)
 	local data = voxel:get_data()
 
 	local c_air = minetest.get_content_id("air")
+	local non_ground_nodes = {
+		[minetest.get_content_id("air")] = true,
+		[minetest.get_content_id("default:snow")] = true,
+		[minetest.get_content_id("snow:footprints")] = true,
+	}
 
 	-- Will store the positions of ground nodes.
 	local targets = {}
@@ -43,7 +48,7 @@ function fire.scatter_flame_in_area_over_ground(minp, maxp, coverage)
 				local v2 = area:index(x, y + 1, z)
 				local d1 = data[v1]
 				local d2 = data[v2]
-				if d1 ~= c_air and d2 == c_air then
+				if not non_ground_nodes[d1] and d2 == c_air then
 					targets[#targets + 1] = {x=x, y=y+1, z=z}
 				end
 			end

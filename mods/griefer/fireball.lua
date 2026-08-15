@@ -1,4 +1,7 @@
 
+local FIRE_COVERAGE = 15 -- 0 .. 100
+local FIRE_RADIUS = 3
+
 mobs.register_arrow(":griefer:fireball", {
 	visual = "sprite",
 	visual_size = {x = 1, y = 1},
@@ -7,15 +10,19 @@ mobs.register_arrow(":griefer:fireball", {
 
 	-- Direct hit, no fire ... just plenty of pain.
 	hit_player = function(self, player)
+		local pos = vector.round(player:get_pos())
 		armor.notify_punch_reason({damage_groups = {arrow = 4*500, heat=4*500}})
 		player:punch(self.object, 1.0, {
 			full_punch_interval = 1.0,
 			damage_groups = {arrow = 4*500, heat=4*500},
 		}, nil)
+
+		fire.scatter_flame_around_over_ground(pos, FIRE_RADIUS, FIRE_COVERAGE)
 	end,
 
 	hit_mob = function(self, target)
 		local puncher
+		local pos = vector.round(target:get_pos())
 
 		if self.owner_obj and self.owner_obj:get_pos() then
 			puncher = self.owner_obj
@@ -27,6 +34,8 @@ mobs.register_arrow(":griefer:fireball", {
 			full_punch_interval = 1.0,
 			damage_groups = {arrow = 4*500, heat=4*500},
 		}, nil)
+
+		fire.scatter_flame_around_over_ground(pos, FIRE_RADIUS, FIRE_COVERAGE)
 	end,
 
 	-- Node hit, bursts into flame.
@@ -46,5 +55,7 @@ mobs.register_arrow(":griefer:fireball", {
 			disable_drops = true,
 			mob = "griefer:elite_griefer",
 		})
+
+		fire.scatter_flame_around_over_ground(pos, FIRE_RADIUS, FIRE_COVERAGE)
 	end
 })

@@ -372,6 +372,7 @@ minetest.register_craftitem("carts:cart", {
 	description = "Mine Cart\n\nShift+punch to pick up.",
 	inventory_image = minetest.inventorycube("carts_cart_top.png", "carts_cart_side.png", "carts_cart_side.png"),
 	wield_image = "carts_cart_side.png",
+	stack_max = 1,
 	on_place = function(itemstack, placer, pointed_thing)
     local under = pointed_thing.under
 		local node = minetest.get_node(under)
@@ -385,7 +386,7 @@ minetest.register_craftitem("carts:cart", {
 		if not pointed_thing.type == "node" then
 			return
 		end
-    
+
 		if carts:is_rail(pointed_thing.under) then
 			minetest.add_entity(pointed_thing.under, "carts:cart")
 		elseif carts:is_rail(pointed_thing.above) then

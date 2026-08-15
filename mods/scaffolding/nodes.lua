@@ -61,6 +61,7 @@ minetest.register_node("scaffolding:reinforced_scaffolding", {
 	end,
 
 	_scaffolding_alternate_name = "scaffolding:scaffolding",
+	_scaffolding_is_reinforced = true,
 	on_punch = function(...)
 		return scaffolding.on_punch(...)
 	end,
@@ -135,6 +136,7 @@ minetest.register_node("scaffolding:reinforced_platform", {
 	_no_collapse_on_walkover = true,
 
 	_scaffolding_alternate_name = "scaffolding:platform",
+	_scaffolding_is_reinforced = true,
 	on_punch = function(...)
 		return scaffolding.on_punch(...)
 	end,
@@ -219,6 +221,7 @@ minetest.register_node("scaffolding:reinforced_iron_scaffolding", {
 	end,
 
 	_scaffolding_alternate_name = "scaffolding:iron_scaffolding",
+	_scaffolding_is_reinforced = true,
 	on_punch = function(...)
 		return scaffolding.on_punch(...)
 	end,
@@ -297,6 +300,7 @@ minetest.register_node("scaffolding:reinforced_iron_platform", {
 	end,
 
 	_scaffolding_alternate_name = "scaffolding:iron_platform",
+	_scaffolding_is_reinforced = true,
 	on_punch = function(...)
 		return scaffolding.on_punch(...)
 	end,

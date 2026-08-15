@@ -566,6 +566,12 @@ local function get_moveresult_info(self, moveresult)
 						local entity = info.object:get_luaentity()
 						if entity.mob == true then
 							entity_collision = info
+						elseif entity.name == "__builtin:falling_node" then
+							-- Take note only if the falling node is below us.
+							-- If the falling node is above us we don't care about it.
+							if self.object:get_pos().y > info.object:get_pos().y then
+								entity_collision = info
+							end
 						end
 					end
 				end
@@ -596,18 +602,27 @@ local function handle_collision_entity_or_ignore(self, bcp, bcn, entity_collisio
 	if not bcp then
 		-- We're colliding with something, but not the ground. Irrelevant to us.
 		if entity_collision then
-			-- Continue falling through players/mobs by moving a little into
-			-- their collision box
-			-- TODO: this hack could be avoided in the future if objects
-			--       could choose who to collide with
-			local vel = self.object:get_velocity()
-			self.object:set_velocity(vector.new(
-				vel.x,
-				entity_collision.old_velocity.y,
-				vel.z
-			))
-			self.object:set_pos(self.object:get_pos():offset(0, -0.5, 0))
-			damage_entity(self, entity_collision.object)
+			local obj = entity_collision.object
+			local entity = obj:get_luaentity()
+
+			if entity.name == "__builtin:falling_node" then
+				if not self.horizontal_move then -- Only if not already moving sideways.
+					follow_adjacent_slope(self, vector.round(obj:get_pos()))
+				end
+			else
+				-- Continue falling through players/mobs by moving a little into
+				-- their collision box
+				-- TODO: this hack could be avoided in the future if objects
+				--       could choose who to collide with
+				local vel = self.object:get_velocity()
+				self.object:set_velocity(vector.new(
+					vel.x,
+					entity_collision.old_velocity.y,
+					vel.z
+				))
+				self.object:set_pos(self.object:get_pos():offset(0, -0.5, 0))
+				damage_entity(self, obj)
+			end
 		end
 		return true
 	elseif bcn.name == "ignore" then

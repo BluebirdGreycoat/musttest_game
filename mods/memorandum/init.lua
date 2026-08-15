@@ -56,7 +56,7 @@ end
 
 
 
--- Returns {message, author}
+-- Returns {message, author, owner}
 -- Use only on memorandum items!
 function memorandum.get_data_from_stack(stack)
 	return memorandum.extract_metainfo(stack:get_metadata())
@@ -80,6 +80,7 @@ memorandum.extract_metainfo = function(text)
 		data.message = data.message or ""
 		data.author = data.author or ""
 		data.iv = data.iv or ""
+		data.owner = data.owner or ""
 
 		-- If we have an IV, the data is encrypted.
 		-- This complicated check is because the IV can be a number or a string.
@@ -115,7 +116,7 @@ memorandum.extract_metainfo = function(text)
 			sgnd = string.sub(text, -scnt-2, -3)
 		end
 
-		return {message=mssg, author=sgnd}
+		return {message=mssg, author=sgnd, owner=""}
 	end
 end
 
@@ -125,6 +126,7 @@ end
 memorandum.insert_metainfo = function(meta)
 	local message = meta:get_string("text") or ""
 	local author = meta:get_string("signed") or ""
+	local owner = meta:get_string("owner") or ""
 	local iv = meta:get_string("iv") or ""
 
 	-- Encrypt the message only if needed.
@@ -138,7 +140,7 @@ memorandum.insert_metainfo = function(meta)
 		end
 	end
 
-	local serialized = minetest.write_json({message=message, author=author, iv=iv})
+	local serialized = minetest.write_json({message=message, author=author, owner=owner, iv=iv})
 
 	-- Tag string as JSON data. The now-depreciated data format can never have this string at the end.
 	-- This means we can use it to determine if data is in the old format or the new format, when loading.
@@ -154,6 +156,7 @@ end
 memorandum.compose_metadata = function(data)
   local message = data.text or ""
   local author = data.signed or ""
+  local owner = data.owner or ""
 
   -- Clamp data sizes BEFORE encryption.
   message = message:sub(1, MAX_LETTER_SIZE)
@@ -167,7 +170,7 @@ memorandum.compose_metadata = function(data)
 		iv = 0
 	end
 
-  local serialized = minetest.write_json({message=message, author=author, iv=iv})
+  local serialized = minetest.write_json({message=message, author=author, owner=owner, iv=iv})
   serialized = serialized .. ":JSON"
   return serialized
 end
@@ -182,6 +185,7 @@ memorandum.on_rightclick = function(pos, node, clicker, itemstack, pt)
 	local info = {
 		text = meta:get_string("text"),
 		signed = meta:get_string("signed"),
+		owner = meta:get_string("owner"),
 		iv = meta:get_string("iv"),
 		edit = meta:get_int("edit"),
 	}
@@ -265,7 +269,7 @@ memorandum.get_formspec = function(info)
 			"label[0,7.3;Letters can be edited with an eraser.]"
 
 		if type(info.signed) == "string" and info.signed ~= "" then
-			formspec = formspec .. "label[0,7;Signed by <" .. minetest.formspec_escape(info.signed) .. ">]"
+			formspec = formspec .. "label[0,7;Signed by: " .. minetest.formspec_escape(info.signed) .. "]"
 		else
 			formspec = formspec .. "label[0,7;Letter is not signed.]"
 		end
@@ -564,8 +568,9 @@ memorandum.on_letter_item_place = function(itemstack, placer, pointed_thing)
 	meta:set_string("infotext", "A Sheet of Paper (Written)")
 	meta:set_string("text", text)
 	meta:set_string("signed", author)
+	meta:set_string("owner", data.owner)
 	meta:set_int("iv", iv)
-	meta:mark_as_private({"text", "signed", "iv"})
+	meta:mark_as_private({"text", "signed", "owner", "iv"})
 
 	itemstack:take_item()
 	return itemstack
@@ -683,8 +688,9 @@ memorandum.on_message_use = function(itemstack, user, pointed_thing)
 	meta:set_string("infotext", "A Sheet of Paper (Written)")
 	meta:set_string("text", text)
 	meta:set_string("signed", author)
+	meta:set_string("owner", data.owner)
 	meta:set_int("iv", iv)
-	meta:mark_as_private({"text", "signed", "iv", "signed"})
+	meta:mark_as_private({"text", "signed", "iv", "owner"})
 
 	itemstack:take_item()
 	user:get_inventory():add_item("main", {name="vessels:glass_bottle", count=1, wear=0, metadata=""})
@@ -738,9 +744,10 @@ memorandum.on_message_place = function(itemstack, placer, pointed_thing)
 	local meta = minetest.get_meta(pos)
 	meta:set_string("text", text)
 	meta:set_string("signed", author)
+	meta:set_string("owner", data.owner)
 	meta:set_int("iv", iv)
 	meta:set_string("infotext", "Bottle With Message")
-	meta:mark_as_private({"text", "signed", "iv"})
+	meta:mark_as_private({"text", "signed", "owner", "iv"})
 
 	dirtspread.on_environment(pos)
 	droplift.notify(pos)

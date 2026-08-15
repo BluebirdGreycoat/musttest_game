@@ -8,7 +8,7 @@ mobs.register_arrow(":griefer:fireball", {
 	textures = {"dm_fireball.png"},
 	velocity = 8,
 
-	-- Direct hit, no fire ... just plenty of pain.
+	-- Direct hit ... plenty of pain.
 	hit_player = function(self, player)
 		local pos = vector.round(player:get_pos())
 		armor.notify_punch_reason({damage_groups = {arrow = 4*500, heat=4*500}})

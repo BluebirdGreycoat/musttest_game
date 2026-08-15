@@ -583,6 +583,11 @@ CC.COMMAND_VERBS = {
 				return
 			end
 
+			if not minetest.get_player_by_name(param) then
+				system_error(pname, ("User <%s> is not online."):format(rename.gpn(param)))
+				return
+			end
+
 			if gdac.player_is_admin(param) or camc.player_is_camera(param) then
 				system_error(pname, "He hides for \"reasons.\"")
 				return

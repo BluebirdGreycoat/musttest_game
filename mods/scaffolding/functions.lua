@@ -1,4 +1,8 @@
 
+local WRENCH_NAME = "scaffolding:scaffolding_wrench"
+
+
+
 -- Non-reinforced scaffolding will self-destruct if falling nodes fall on it.
 -- You can stop this by using reinforced scaffolding, but that also means you
 -- can't climb inside it.
@@ -10,6 +14,25 @@ function scaffolding.on_falling_trigger(pos)
 	local node = minetest.get_node(pos)
 	minetest.remove_node(pos)
 	minetest.add_item(pos, node.name)
+end
+
+
+
+function scaffolding.on_place(itemstack, placer, pointed_thing)
+	return core.item_place(itemstack, placer, pointed_thing)
+end
+
+
+
+function scaffolding.on_punch(pos, node, puncher)
+	local tool = puncher:get_wielded_item():get_name()
+	if tool and tool == WRENCH_NAME then
+		local ndef = minetest.registered_nodes[node.name] or {}
+		if ndef._scaffolding_alternate_name then
+			node.name = ndef._scaffolding_alternate_name
+			minetest.swap_node(pos, node)
+		end
+	end
 end
 
 

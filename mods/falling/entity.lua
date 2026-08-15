@@ -224,7 +224,7 @@ local function get_node_falling_harm(name)
 		if ndef.groups then
 			local lg = (ndef.groups.leaves or 0)
 			if lg > 0 then
-				return 100, 100
+				return 50, 50
 			end
 		end
 

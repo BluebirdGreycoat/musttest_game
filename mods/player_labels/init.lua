@@ -109,6 +109,9 @@ end
 -- Returns 'false' if the player's nametag is OFF.
 -- Returns 'nil' if the player's nametag state cannot be determined (player doesn't exist, or other error).
 -- This is called from the `bones` mod for instance, to decide whether to tell everyone about the bones.
+--
+-- Note: if player turns nametag off but has still said something recently,
+--       this will return true for a brief time. (See refcount implementation.)
 player_labels.query_nametag_onoff = function(name)
   assert(type(name) == "string")
   local res = nil

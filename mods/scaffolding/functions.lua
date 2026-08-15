@@ -19,7 +19,26 @@ end
 
 
 function scaffolding.on_place(itemstack, placer, pointed_thing)
-	return core.item_place(itemstack, placer, pointed_thing)
+	local new_thing = table.copy(pointed_thing)
+	if placer and placer:is_player() then
+		local dir = placer:get_look_dir()
+		local fdir = minetest.dir_to_facedir(dir)
+		local udir = minetest.facedir_to_dir(fdir)
+		if new_thing.type == "node" then
+			local node = minetest.get_node(new_thing.under)
+			local ndef = minetest.registered_nodes[node.name] or {}
+			local pdef = itemstack:get_definition() or {}
+			if ndef._scaffolding_is_scaffolding then
+				if pdef._scaffolding_is_platform then -- Only if placing a platform.
+					if new_thing.above.y > new_thing.under.y then -- Only if pointing at top of node.
+						-- This will make building scaffolding platforms easier.
+						new_thing.above = vector.add(new_thing.under, udir)
+					end
+				end
+			end
+		end
+	end
+	return core.item_place(itemstack, placer, new_thing)
 end
 
 

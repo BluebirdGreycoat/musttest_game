@@ -11,6 +11,9 @@ minetest.register_node("scaffolding:scaffolding", {
 	groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 	sounds = default.node_sound_wood_defaults(),
 
+	node_placement_prediction = "",
+
+	_scaffolding_is_scaffolding = true,
 	_scaffolding_alternate_name = "scaffolding:reinforced_scaffolding",
 	on_punch = function(...)
 		return scaffolding.on_punch(...)
@@ -56,10 +59,13 @@ minetest.register_node("scaffolding:reinforced_scaffolding", {
 	sounds = default.node_sound_wood_defaults(),
 	_no_collapse_on_walkover = true,
 
+	node_placement_prediction = "",
+
 	on_place = function(...)
 		return scaffolding.on_place(...)
 	end,
 
+	_scaffolding_is_scaffolding = true,
 	_scaffolding_alternate_name = "scaffolding:scaffolding",
 	_scaffolding_is_reinforced = true,
 	on_punch = function(...)
@@ -92,7 +98,12 @@ minetest.register_node("scaffolding:platform", {
 	sounds = default.node_sound_wood_defaults(),
 	_no_collapse_on_walkover = true,
 
+	node_placement_prediction = "",
+
+	_scaffolding_is_scaffolding = true,
 	_scaffolding_alternate_name = "scaffolding:reinforced_platform",
+	_scaffolding_is_platform = true,
+
 	on_punch = function(...)
 		return scaffolding.on_punch(...)
 	end,
@@ -135,8 +146,13 @@ minetest.register_node("scaffolding:reinforced_platform", {
 	sounds = default.node_sound_wood_defaults(),
 	_no_collapse_on_walkover = true,
 
+	node_placement_prediction = "",
+
+	_scaffolding_is_scaffolding = true,
 	_scaffolding_alternate_name = "scaffolding:platform",
 	_scaffolding_is_reinforced = true,
+	_scaffolding_is_platform = true,
+
 	on_punch = function(...)
 		return scaffolding.on_punch(...)
 	end,
@@ -171,6 +187,9 @@ minetest.register_node("scaffolding:iron_scaffolding", {
 	groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 	sounds = default.node_sound_stone_defaults(),
 	_no_collapse_on_walkover = true,
+
+	node_placement_prediction = "",
+
 	node_box = {
 			type = "fixed",
 			fixed = {
@@ -192,6 +211,7 @@ minetest.register_node("scaffolding:iron_scaffolding", {
 		return scaffolding.on_place(...)
 	end,
 
+	_scaffolding_is_scaffolding = true,
 	_scaffolding_alternate_name = "scaffolding:reinforced_iron_scaffolding",
 	on_punch = function(...)
 		return scaffolding.on_punch(...)
@@ -216,10 +236,13 @@ minetest.register_node("scaffolding:reinforced_iron_scaffolding", {
 	groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 	sounds = default.node_sound_stone_defaults(),
 
+	node_placement_prediction = "",
+
 	on_place = function(...)
 		return scaffolding.on_place(...)
 	end,
 
+	_scaffolding_is_scaffolding = true,
 	_scaffolding_alternate_name = "scaffolding:iron_scaffolding",
 	_scaffolding_is_reinforced = true,
 	on_punch = function(...)
@@ -252,11 +275,16 @@ minetest.register_node("scaffolding:iron_platform", {
 	sounds = default.node_sound_stone_defaults(),
 	_no_collapse_on_walkover = true,
 
+	node_placement_prediction = "",
+
 	on_place = function(...)
 		return scaffolding.on_place(...)
 	end,
 
+	_scaffolding_is_scaffolding = true,
 	_scaffolding_alternate_name = "scaffolding:reinforced_iron_platform",
+	_scaffolding_is_platform = true,
+
 	on_punch = function(...)
 		return scaffolding.on_punch(...)
 	end,
@@ -295,12 +323,17 @@ minetest.register_node("scaffolding:reinforced_iron_platform", {
 	sounds = default.node_sound_stone_defaults(),
 	_no_collapse_on_walkover = true,
 
+	node_placement_prediction = "",
+
 	on_place = function(...)
 		return scaffolding.on_place(...)
 	end,
 
+	_scaffolding_is_scaffolding = true,
 	_scaffolding_alternate_name = "scaffolding:iron_platform",
 	_scaffolding_is_reinforced = true,
+	_scaffolding_is_platform = true,
+
 	on_punch = function(...)
 		return scaffolding.on_punch(...)
 	end,

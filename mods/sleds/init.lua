@@ -22,6 +22,7 @@ local STAMINA_COST_PER_JUMP = 5
 
 
 
+-- Called to check if sled is placeable.
 local function is_snow(pos)
 	local nn = minetest.get_node(pos).name
 	local def = minetest.registered_nodes[nn]
@@ -36,15 +37,21 @@ local function is_snow(pos)
 	return false
 end
 
+-- Called when sled is moving.
 local function is_snow_or_air(pos)
 	local nn = minetest.get_node(pos).name
-	if nn == "air" or snow.is_snow(nn) then
+	if nn == "air" then
+		return true
+	end
+	if snow.is_snow(nn) and snow.is_sledable() then
 		return true
 	end
 	local def = minetest.registered_nodes[nn]
 	if def and def.groups then
 		if def.groups.snow and def.groups.snow > 0 then
-			return true
+			if snow.is_sledable() then
+				return true
+			end
 		end
 		if def.groups.ice and def.groups.ice > 0 then
 			return true
@@ -160,8 +167,10 @@ function sleds.on_step(self, dtime)
 	-- Slow the sled down gradually.
 	if is_snow_or_air({x=pos.x, y=pos.y-0.3, z=pos.z}) then
 		self.v = self.v - (SNOWICE_COASTING_DECEL_RATE * dtime)
+		self.on_snow_or_air = true
 	else
 		self.v = self.v - (HIGH_FRICTION_DECEL_RATE * dtime)
+		self.on_snow_or_air = false
 	end
 	if self.v < 0 then self.v = 0 end
 
@@ -179,7 +188,9 @@ function sleds.on_step(self, dtime)
 			local node = minetest.get_node({x=pos.x, y=pos.y-2, z=pos.z})
 			-- But not if sled is flying.
 			if node.name ~= "air" and (self.jump or 0) <= 0 then
-				self.v = self.v + (DOWNSLOPE_ACCEL_RATE * dtime)
+				if self.on_snow_or_air then
+					self.v = self.v + (DOWNSLOPE_ACCEL_RATE * dtime)
+				end
 				if self.v > MAX_DOWNSLOPE_VELOCITY then
 					self.v = MAX_DOWNSLOPE_VELOCITY
 				end

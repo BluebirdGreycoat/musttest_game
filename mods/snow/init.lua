@@ -495,7 +495,16 @@ end
 -- API function to determine whether snow is at all visible.
 -- Shall return false when snow is completely transparent (implying that it should be pretending like it is not there).
 function snow.is_visible()
+	-- Range is 1 .. 34
 	if snow.snowlevel >= 3 and snow.snowlevel <= 32 then
+		return true
+	end
+	return false
+end
+
+function snow.is_sledable()
+	-- Range is 1 .. 34
+	if snow.snowlevel >= 7 and snow.snowlevel <= 28 then
 		return true
 	end
 	return false

@@ -564,13 +564,15 @@ local function get_moveresult_info(self, moveresult)
 						entity_collision = info
 					else
 						local entity = info.object:get_luaentity()
-						if entity.mob == true then
-							entity_collision = info
-						elseif entity.name == "__builtin:falling_node" then
-							-- Take note only if the falling node is below us.
-							-- If the falling node is above us we don't care about it.
-							if self.object:get_pos().y > info.object:get_pos().y then
+						if entity then
+							if entity.mob == true then
 								entity_collision = info
+							elseif entity.name == "__builtin:falling_node" then
+								-- Take note only if the falling node is below us.
+								-- If the falling node is above us we don't care about it.
+								if self.object:get_pos().y > info.object:get_pos().y then
+									entity_collision = info
+								end
 							end
 						end
 					end
@@ -603,9 +605,9 @@ local function handle_collision_entity_or_ignore(self, bcp, bcn, entity_collisio
 		-- We're colliding with something, but not the ground. Irrelevant to us.
 		if entity_collision then
 			local obj = entity_collision.object
-			local entity = obj:get_luaentity()
+			local entity = obj:get_luaentity() -- Nil for players.
 
-			if entity.name == "__builtin:falling_node" then
+			if entity and entity.name == "__builtin:falling_node" then
 				if not self.horizontal_move then -- Only if not already moving sideways.
 					follow_adjacent_slope(self, vector.round(obj:get_pos()))
 				end

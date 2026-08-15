@@ -62,8 +62,8 @@ local function get_players_barycenter(pos, radius)
 
 	for _, obj in ipairs(objects) do
 		if obj:is_player() then
-			if not gdac_invis.is_invisible(obj) then
-				local pname = obj:get_player_name()
+			local pname = obj:get_player_name()
+			if not gdac_invis.is_invisible(pname) then
 				if not cloaking.is_cloaked(pname) then
 					sum = vector.add(sum, obj:get_pos())
 					count = count + 1

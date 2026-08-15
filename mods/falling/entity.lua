@@ -625,7 +625,7 @@ local function follow_adjacent_slope(self, bcp)
 		local spos = vector.round(opos)
 		local npos = vector.add(ss, {x=0, y=1, z=0}) -- Position above the slope location.
 		local rpos = vector.subtract(npos, spos) -- Vector to target position. (Assumed unit vector.)
-		local nvel = vector.multiply(rpos, 1) -- Velocity multiplier.
+		local nvel = vector.multiply(rpos, 2) -- Velocity multiplier.
 
 		self.object:set_pos(vector.round(opos))
 		self.object:set_velocity(nvel)
@@ -716,7 +716,11 @@ local function do_horizontal_slide(self, moveresult)
 		end
 
 		-- Stop moving sideways once we've moved 1 node distance.
-		if vector.distance(pos, data.start_pos) > 1.0 then
+		-- 1. This keeps us from sliding long distances across flat ground -- ugly.
+		-- 2. If the slope is just a 1 node hole, the falling entity doesn't stay
+		--		over it long enough for the engine to notice it should start falling.
+		--    It would just "skip" over the hole instead.
+		if vector.distance(pos, data.start_pos) >= 1.0 then
 			self.object:set_pos(vector.round(pos))
 			self.object:set_velocity(vector.new(0, 0, 0))
 			self.horizontal_move = nil
@@ -745,7 +749,6 @@ function falling.on_step(self, dtime, moveresult)
 	local bcp, bcn, entity_collision, continue = get_moveresult_info(self, moveresult)
 	if continue then
 		-- Hit node on X or Z axis, continue falling on next server step.
-		-- Do not drop as item.
 		return
 	end
 

@@ -53,6 +53,19 @@ local node_walkable = falling.node_walkable
 local pos_out_of_bounds = falling.pos_out_of_bounds
 local find_adjacent_slope = falling.find_adjacent_slope
 
+local function highlight_position(pos)
+	utility.original_add_particle({
+		pos = pos,
+		velocity = {x=0, y=0, z=0},
+		acceleration = {x=0, y=0, z=0},
+		expirationtime = 1.5,
+		size = 4,
+		collisiondetection = false,
+		vertical = false,
+		texture = "heart.png",
+	})
+end
+
 
 
 -- Hardcoded tool capabilities for speed.
@@ -506,13 +519,15 @@ end
 
 
 
-local function get_moveresult_info(moveresult)
+local function get_moveresult_info(self, moveresult)
 	local bcp, bcn
 	local entity_collision
+	local continue
 
 	if moveresult.touching_ground then
 		for _, info in ipairs(moveresult.collisions) do
 			if info.type == "object" then
+				--minetest.chat_send_all('collision object')
 				if info.axis == "y" then
 					if info.object:is_player() then
 						entity_collision = info
@@ -524,14 +539,24 @@ local function get_moveresult_info(moveresult)
 					end
 				end
 			elseif info.axis == "y" then
+				--minetest.chat_send_all('collision Y')
 				bcp = info.node_pos
 				bcn = core.get_node(bcp)
-				break
+				--break
+			end
+
+			if info.axis == "x" or info.axis == "z" then
+				--minetest.chat_send_all('collision XZ')
+				self.object:set_velocity(vector.new(0, 0, 0))
+				self.object:set_pos(vector.round(info.new_pos))
+				self.horizontal_move = nil
+				continue = true -- Attempt to continue to fall.
+				--break
 			end
 		end
 	end
 
-	return bcp, bcn, entity_collision
+	return bcp, bcn, entity_collision, continue
 end
 
 
@@ -596,8 +621,24 @@ local function follow_adjacent_slope(self, bcp)
 	local ndef = all_nodes[self.node.name]
 	local ss = find_adjacent_slope(bcp, ndef)
 	if ss ~= nil then
-		self.object:set_pos(vector_add(ss, {x=0, y=1, z=0}))
-		self.object:set_velocity({x=0, y=0, z=0})
+		local opos = self.object:get_pos()
+		local spos = vector.round(opos)
+		local npos = vector.add(ss, {x=0, y=1, z=0}) -- Position above the slope location.
+		local rpos = vector.subtract(npos, spos) -- Vector to target position. (Assumed unit vector.)
+		local nvel = vector.multiply(rpos, 1) -- Velocity multiplier.
+
+		self.object:set_pos(vector.round(opos))
+		self.object:set_velocity(nvel)
+
+		-- Record the original Y of the falling node entity (not rounded)!
+		self.horizontal_move = {
+			original_y = opos.y,
+			start_pos = spos,
+			end_pos = npos,
+		}
+
+		--highlight_position(self.horizontal_move.start_pos)
+		--highlight_position(self.horizontal_move.end_pos)
 
 		ambiance.sound_play("default_gravel_footstep", ss, 0.2, 20)
 		return true
@@ -662,6 +703,31 @@ end
 
 
 
+local function do_horizontal_slide(self, moveresult)
+	local data = self.horizontal_move
+	if data then
+		local pos = self.object:get_pos()
+		if pos.y < data.original_y then
+			-- Node has started falling.
+			-- Keep falling node centered in column.
+			self.object:set_pos(vector.round(pos))
+			self.object:set_velocity(vector.new(0, 0, 0))
+			self.horizontal_move = nil
+		end
+
+		-- Stop moving sideways once we've moved 1 node distance.
+		if vector.distance(pos, data.start_pos) > 1.0 then
+			self.object:set_pos(vector.round(pos))
+			self.object:set_velocity(vector.new(0, 0, 0))
+			self.horizontal_move = nil
+		end
+
+		return true
+	end
+end
+
+
+
 function falling.on_step(self, dtime, moveresult)
 	trigger_fallthrough_callbacks(self)
 	damage_entities_around(self, dtime)
@@ -676,7 +742,16 @@ function falling.on_step(self, dtime, moveresult)
 	end
 
 	-- Returns: bcp=nodepos, bcn=nodetable. Or nil.
-	local bcp, bcn, entity_collision = get_moveresult_info(moveresult)
+	local bcp, bcn, entity_collision, continue = get_moveresult_info(self, moveresult)
+	if continue then
+		-- Hit node on X or Z axis, continue falling on next server step.
+		-- Do not drop as item.
+		return
+	end
+
+	if do_horizontal_slide(self, moveresult) then
+		return
+	end
 
 	if handle_collision_entity_or_ignore(self, bcp, bcn, entity_collision) then
 		-- If hit ignore, self is deleted.
@@ -692,6 +767,7 @@ function falling.on_step(self, dtime, moveresult)
 	if not failure then
 		if follow_adjacent_slope(self, bcp) then
 			-- If slope found, keep falling.
+			-- This also activates "horizontal move" mode.
 			return
 		end
 		failure = not try_place(self, bcp, bcn)

@@ -313,36 +313,8 @@ local function get_protector_slave_status(prot_pos, city_pos)
 	-- Check all neighboring cityblocks for age and ownership.
 	-- If the city owner is admin, skip this check.
 	if cblock.owner and city_time then
-		local allblocks = city_block.blocks
-		local cityowner = cblock.owner or ""
-		local good = true
-
-		-- Get cityblocks, including blocks that haven't become "active" yet.
-		local minp = vector.subtract(city_pos, city_block.CITYBLOCK_BOROUGH_RADIUS * 2)
-		local maxp = vector.add(city_pos, city_block.CITYBLOCK_BOROUGH_RADIUS * 2)
-		local checkblocks = city_block:get_blocks_in_area(minp, maxp, true)
-
-		for k = 1, #checkblocks do
-			local block = checkblocks[k]
-			local bowner = block.owner
-			local btime = block.time
-
-			if bowner and gdac.player_is_admin(bowner) then
-				btime = 0
-			end
-			if bowner and btime then
-				-- All other city blocks must be owned by this city owner, or be
-				-- yonger than the current city block.
-				-- Note: ownername check is especially needed because self is always
-				-- included in the array of blocks we're looking at.
-				if not (bowner == cityowner or btime <= city_time) then
-					good = false
-					break
-				end
-			end
-		end
-
-		if good or gdac.player_is_admin(cblock.owner) then
+		local good = not city_block.have_conflicting_boroughs(cblock)
+		if good then
 			cityblocks_all_allow = true
 		end
 	end
@@ -824,4 +796,53 @@ function city_block.on_mayor_fields(player, formname, fields)
 
 	minetest.show_formspec(pname, "city_block:mayor", guiobj:to_formspec())
 	return true
+end
+
+
+
+-- Return true if there are any nearby cityblocks conflicting with this one.
+-- Otherwise, false.
+-- A cityblock conflicts with THIS if it has a different owner and is older.
+-- If another cityblock has the same owner, or is newer, it does not conflict.
+function city_block.have_conflicting_boroughs(cblock)
+	if not cblock.pos then
+		return false
+	end
+
+	local city_pos = cblock.pos
+	local city_owner = cblock.owner or ""
+	local city_time = cblock.time or 0
+
+	-- If the cityblock is owned by the admin, there are no other conflicting blocks.
+	if gdac.player_is_admin(city_owner) then
+		return false
+	end
+
+	-- Get cityblocks, including blocks that haven't become "active" yet.
+	local minp = vector.subtract(city_pos, city_block.CITYBLOCK_BOROUGH_RADIUS * 2)
+	local maxp = vector.add(city_pos, city_block.CITYBLOCK_BOROUGH_RADIUS * 2)
+	local checkblocks = city_block:get_blocks_in_area(minp, maxp, true)
+
+	for k = 1, #checkblocks do
+		local block = checkblocks[k]
+		local bowner = block.owner
+		local btime = block.time
+
+		-- Any cityblock owned by the admin has oldest possible placement time.
+		if bowner and gdac.player_is_admin(bowner) then
+			btime = 0
+		end
+
+		if bowner and btime then
+			-- All other city blocks must be owned by this city owner, or be
+			-- yonger than the current city block.
+			-- Note: ownername check is especially needed because self is always
+			-- included in the array of blocks we're looking at.
+			if bowner ~= city_owner and btime <= city_time then
+				return true
+			end
+		end
+	end
+
+	return false
 end

@@ -113,6 +113,7 @@ end
 
 
 -- Singular function to find relevant protector nodes in an area.
+local PROTECTOR_NODENAMES = {"protector:protect", "protector:protect2", "protector:protect3", "protector:protect4"}
 function protector.find_protector_nodes(pos, r, mult, nodename)
 	-- Arguments:
 	-- `pos` = the point of interaction.
@@ -125,7 +126,7 @@ function protector.find_protector_nodes(pos, r, mult, nodename)
 	local positions, counts = minetest.find_nodes_in_area(
 		{x = pos.x - r, y = pos.y - r, z = pos.z - r},
 		{x = pos.x + r, y = pos.y + r, z = pos.z + r},
-		{"protector:protect", "protector:protect2", "protector:protect3", "protector:protect4"})
+		PROTECTOR_NODENAMES)
 
 	local p1 = counts["protector:protect"] or 0
 	local p2 = counts["protector:protect2"] or 0
@@ -359,6 +360,7 @@ end
 
 
 
+-- Called in 'on_place' of node definition.
 function protector.check_overlap(itemstack, placer, pt)
 	if pt.type ~= "node" then
 		return itemstack
@@ -621,4 +623,100 @@ function protector.can_dig(r, mult, nodename, pos, digger, onlyowner, infolevel)
 	end
 
 	return true
+end
+
+
+
+function protector.after_place_node(pos, placer)
+	local meta = minetest.get_meta(pos)
+	protector.timed_setup(pos, placer, meta)
+	protector.initialize_meta(meta, placer)
+
+	-- Notify nearby players.
+	protector.update_nearby_players(pos)
+	protector.clear_protection_cancel(pos)
+end
+
+
+
+function protector.on_destruct(pos)
+	-- Notify nearby players.
+	minetest.after(0, protector.update_nearby_players, pos)
+	protector.remove_area_display(pos)
+end
+
+
+
+function protector.on_blast(pos, intensity)
+	-- TNT-proof.
+end
+
+
+
+-- Called in 'can_dig' of node definition.
+function protector.node_can_dig(pos, player)
+	if not player then
+		return false
+	end
+
+	local node = minetest.get_node(pos)
+	local pname = player:get_player_name()
+	return protector.can_dig(1, 1, node.name, pos, pname, true, 1)
+end
+
+
+
+-- Called in 'on_use' of node definition.
+function protector.node_on_use(itemstack, user, pointed_thing)
+	if pointed_thing.type ~= "node" then
+		return
+	end
+	if not user or not user:is_player() then
+		return
+	end
+
+	local pos = pointed_thing.under
+	local node = minetest.get_node(pos)
+	local pname = user:get_player_name()
+	protector.can_dig(protector.radius, 1, node.name, pos, pname, false, 2)
+end
+
+
+
+-- Called in 'on_punch' of node definition.
+function protector.node_on_punch(pos, node, puncher)
+	if not puncher or not puncher:is_player() then
+		return
+	end
+
+	local pname = puncher:get_player_name()
+	if minetest.test_protection(pos, pname) then
+		return
+	end
+
+	local node = minetest.get_node(pos)
+	local ndef = minetest.registered_nodes[node.name] or {}
+	if not ndef._protector_displayent_name then
+		return
+	end
+
+	protector.toggle_area_display(pos, ndef._protector_displayent_name)
+end
+
+
+
+-- Called in 'on_rightclick' of node definition. (Note: only some nodes.)
+function protector.node_on_rightclick(pos, node, clicker, itemstack)
+	if not clicker or not clicker:is_player() then
+		return
+	end
+
+	local meta = minetest.get_meta(pos)
+	local pname = clicker:get_player_name()
+	local node = minetest.get_node(pos)
+
+	if protector.can_dig(1, 1, node.name, pos, pname, true, 1) then
+		protector.players[pname] = pos -- Security + context.
+		minetest.show_formspec(pname, "protector:node", protector.generate_formspec(pname, meta))
+	end
 end

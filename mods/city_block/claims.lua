@@ -160,13 +160,6 @@ function count_content_ids(minp, maxp)
 	return counts
 end
 
-local PROTECTOR_RADIUS = {
-	["protector:protect"] = 5,
-	["protector:protect2"] = 5,
-	["protector:protect3"] = 3,
-	["protector:protect4"] = 3,
-}
-
 local function calc_costinfo_for_protector(prot_pos)
 	local prot_node = minetest.get_node(prot_pos)
 	local prot_meta = minetest.get_meta(prot_pos)
@@ -176,7 +169,8 @@ local function calc_costinfo_for_protector(prot_pos)
 	if prot_meta:get_string("owner") == "" then
 		return 0
 	end
-	local R = PROTECTOR_RADIUS[prot_node.name]
+	local prot_ndef = minetest.registered_nodes[prot_node.name] or {}
+	local R = prot_ndef._protector_node_radius
 	if not R then
 		return 0
 	end

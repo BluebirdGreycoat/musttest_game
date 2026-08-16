@@ -83,31 +83,15 @@ function protector.on_use_tool(itemstack, user, pointed_thing)
 		return
 	end
 
-	-- get direction player is facing
-	local dir = minetest.dir_to_facedir( user:get_look_dir() )
-	local vec = {x = 0, y = 0, z = 0}
-	local gap = (r * 2) + 1
-	local pit =  user:get_look_vertical()
-
 	-- double the gap distance if player is holding 'E'
+	local gap = (r * 2) + 1
 	if user:get_player_control().aux1 then
 		gap = gap * 2
 	end
 
-	-- set placement coords
-	if pit > 1.2 then
-		vec.y = -gap -- up
-	elseif pit < -1.2 then
-		vec.y = gap -- down
-	elseif dir == 0 then
-		vec.z = gap -- north
-	elseif dir == 1 then
-		vec.x = gap -- east
-	elseif dir == 2 then
-		vec.z = -gap -- south
-	elseif dir == 3 then
-		vec.x = -gap -- west
-	end
+	-- get location to place protector
+	local dir = minetest.facedir_to_dir(minetest.dir_to_facedir(user:get_look_dir(), true))
+	local vec = vector.multiply(dir, gap)
 
 	-- new position
 	pos.x = pos.x + vec.x
@@ -296,26 +280,10 @@ function protector.on_use_tool2(itemstack, user, pointed_thing)
 		end
 	end
 
-	-- get direction player is facing
-	local dir = minetest.dir_to_facedir( user:get_look_dir() )
-	local vec = {x = 0, y = 0, z = 0}
+	-- get location to move protector
 	local gap = 1
-	local pit = user:get_look_vertical()
-
-	-- set placement coords
-	if pit > 1.2 then
-		vec.y = -gap -- up
-	elseif pit < -1.2 then
-		vec.y = gap -- down
-	elseif dir == 0 then
-		vec.z = gap -- north
-	elseif dir == 1 then
-		vec.x = gap -- east
-	elseif dir == 2 then
-		vec.z = -gap -- south
-	elseif dir == 3 then
-		vec.x = -gap -- west
-	end
+	local dir = minetest.facedir_to_dir(minetest.dir_to_facedir(user:get_look_dir(), true))
+	local vec = vector.multiply(dir, gap)
 
 	-- new position (save old position)
 	local oldpos = {x=pos.x, y=pos.y, z=pos.z}

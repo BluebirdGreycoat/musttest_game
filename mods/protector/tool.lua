@@ -138,7 +138,7 @@ function protector.on_use_tool(itemstack, user, pointed_thing)
 
 	-- does placing a protector overlap existing area
 	-- this is the most important check! must not mess this up!
-	local success, reason, message = protector.check_overlap_main(protname, pname, pos)
+	local success, reason, message = protector.check_overlap_main(protname, owner, pos)
 	if not success then
 		if reason == 1 then
 			response("Protection bounds overlap into another person's area claim.")

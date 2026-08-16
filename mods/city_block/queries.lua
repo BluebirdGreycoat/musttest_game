@@ -30,8 +30,9 @@ end
 
 function city_block:may_place_protector_at(pos, protrad)
 	pos = vector_round(pos)
-	-- Covers a 45x45x45 area (not including prot radius).
-	local r = 22 + (protrad or 0) -- Plus the radius of the protector.
+	-- Covers the borough area (not including prot radius).
+	local D = city_block.CITYBLOCK_BOROUGH_RADIUS
+	local r = D + (protrad or 0) -- Plus the radius of the protector.
 	local blocks = self.blocks
 	local t2 = os.time()
 
@@ -237,8 +238,7 @@ function city_block.city_info(pos)
 	pos = vector_round(pos)
 	local marker = city_block:nearest_blocks_to_position(pos, 1, 100)
 	if marker and marker[1] then
-		-- Covers a 45x45x45 area.
-		local r = 22
+		local r = city_block.CITYBLOCK_BOROUGH_RADIUS
 		local vpos = marker[1].pos
 		if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
 			 pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
@@ -252,8 +252,7 @@ end
 
 function city_block:in_city(pos)
 	pos = vector_round(pos)
-	-- Covers a 45x45x45 area.
-	local r = 22
+	local r = city_block.CITYBLOCK_BOROUGH_RADIUS
 	local blocks = self.blocks
 	local t2 = os.time()
 
@@ -278,8 +277,7 @@ end
 -- Query whether pos is in a dueling arena. Size is same as city area.
 function city_block:in_pvp_arena(pos)
 	pos = vector_round(pos)
-	-- Covers a 45x45x45 area.
-	local r = 22
+	local r = city_block.CITYBLOCK_BOROUGH_RADIUS
 	local blocks = self.blocks
 	local t2 = os.time()
 
@@ -318,9 +316,7 @@ function city_block:in_disallow_liquid_zone(pos, player)
 	local blocks = {}
 	local sblocks = self.blocks
 	local t2 = os.time()
-
-	-- Covers a 45x45x45 area.
-	local r = 22
+	local r = city_block.CITYBLOCK_BOROUGH_RADIUS
 
 	for i=1, #sblocks, 1 do
 		local vpos = sblocks[i].pos

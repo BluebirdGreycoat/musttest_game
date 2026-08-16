@@ -16,6 +16,7 @@ city_block.guiobjs = city_block.guiobjs or {}
 city_block.saved_guiobjs = city_block.saved_guiobjs or {}
 city_block.BUILDXP_FOR_MAYOR = 20000
 city_block.BOROUGH_MIN_ACTIVATION_TIME = os.time({year=2026, month=10, day=1}) -- 10 year anniversary
+city_block.CITYBLOCK_BOROUGH_RADIUS = 22 -- Covers a 45x45x45 area.
 reload.install_simple_signals(city_block)
 
 -- Cityblocks take 6 hours to become "active".
@@ -182,8 +183,16 @@ if not city_block.run_once then
 	minetest.register_on_player_receive_fields(function(...)
 		return city_block.on_receive_fields(...) end)
 
+	local R = city_block.CITYBLOCK_BOROUGH_RADIUS * 2 + 1
 	minetest.register_node("city_block:cityblock", {
-		description = "Lawful Zone Marker (Marks a 45x45x45 area as a city.)\n\nSaves your bed respawn position, if someone killed you within the city area.\nMurderers and trespassers will be sent to jail if caught in a city.\nPrevents the use of ore leeching equipment within 100 meters radius.\nPrevents mining with TNT nearby.",
+		description = ("Lawful Zone Marker (Marks a %s area as a city.)\n" ..
+			"\n" ..
+			"Saves your bed respawn position, if someone killed you within the city area.\n" ..
+			"Murderers and trespassers will be sent to jail if caught in a city.\n" ..
+			"Prevents the use of ore leeching equipment within 100 meters radius.\n" ..
+			"Prevents mining with TNT nearby.")
+			:format(("%dx%dx%d"):format(R, R, R)),
+
 		tiles = {"moreblocks_circle_stone_bricks.png^default_tool_mesepick.png"},
 		is_ground_content = false,
 		groups = utility.dig_groups("obsidian", {

@@ -20,7 +20,6 @@
 local LAST_LOGIN_DAYS = 60 * 60 * 24 * 180
 local PROTECTOR_PLACETIME_OFFSET = 60 * 60 * 24 * 3
 local MAYOR_MINIMUM_BUILDXP = 30000
-local CITYBLOCK_BOROUGH_RADIUS = 22 -- Covers a 45x45x45 area.
 local ADD_MEMBER_COST_MULTPLIER = 0.85 -- % off doing "add member" instead of "force expire"
 
 local PROTECTOR_NAMES = {
@@ -206,7 +205,7 @@ end
 -- This function has final responsibility for all security checks!
 local function get_protector_slave_status(prot_pos, city_pos)
 	local rpos = vector.subtract(prot_pos, city_pos)
-	local D = CITYBLOCK_BOROUGH_RADIUS
+	local D = city_block.CITYBLOCK_BOROUGH_RADIUS
 
 	-- All must be true to pass.
 	local in_cityblock_area = false
@@ -318,9 +317,10 @@ local function get_protector_slave_status(prot_pos, city_pos)
 		local cityowner = cblock.owner or ""
 		local good = true
 
-		local minp = vector.subtract(city_pos, CITYBLOCK_BOROUGH_RADIUS * 2)
-		local maxp = vector.add(city_pos, CITYBLOCK_BOROUGH_RADIUS * 2)
-		local checkblocks = city_block:get_blocks_in_area(minp, maxp)
+		-- Get cityblocks, including blocks that haven't become "active" yet.
+		local minp = vector.subtract(city_pos, city_block.CITYBLOCK_BOROUGH_RADIUS * 2)
+		local maxp = vector.add(city_pos, city_block.CITYBLOCK_BOROUGH_RADIUS * 2)
+		local checkblocks = city_block:get_blocks_in_area(minp, maxp, true)
 
 		for k = 1, #checkblocks do
 			local block = checkblocks[k]
@@ -446,7 +446,7 @@ end
 
 
 local function do_protector_scan(pos, pname, guiobj)
-	local D = CITYBLOCK_BOROUGH_RADIUS
+	local D = city_block.CITYBLOCK_BOROUGH_RADIUS
 	local minp = vector.subtract(pos, D)
 	local maxp = vector.add(pos, D)
 

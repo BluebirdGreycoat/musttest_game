@@ -3,6 +3,10 @@
 local math_floor = math.floor
 local math_random = math.random
 
+-- How much XP a player must have to be able to toggle display entities owned
+-- by someone else.
+local BUILDXP_FOR_DISPLAY_ENTITIES = 15000
+
 
 
 -- Can use this in node definitions to allow a node to be placed inside
@@ -189,6 +193,10 @@ end
 
 
 
+local function have_buildxp(pname)
+	return xp.get_xp(pname, "buildxp") >= BUILDXP_FOR_DISPLAY_ENTITIES
+end
+
 -- This is called by the node inspector tool to toggle display entities for buried protectors.
 function protector.toggle_protector_entities_in_area(pname, pos)
 	local r = protector.radius
@@ -196,12 +204,11 @@ function protector.toggle_protector_entities_in_area(pname, pos)
   for n = 1, #positions do
     local meta = minetest.get_meta(positions[n])
     local owner = meta:get_string("owner")
-		if owner == pname then -- Can only toggle display entities for owned protectors.
+		if owner == pname or gdac.player_is_admin(pname) or have_buildxp(pname) then
 			local node = minetest.get_node(positions[n])
-			if node.name == "protector:protect" or node.name == "protector:protect2" then
-				protector.toggle_area_display(positions[n], "protector:display")
-			elseif node.name == "protector:protect3" or node.name == "protector:protect4" then
-				protector.toggle_area_display(positions[n], "protector:display_small")
+			local ndef = minetest.registered_nodes[node.name] or {}
+			if ndef._protector_displayent_name then
+				protector.toggle_area_display(positions[n], ndef._protector_displayent_name)
 			end
 		end
 	end

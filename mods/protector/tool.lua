@@ -24,6 +24,32 @@ local function pos_has_inventory(pos)
 	return true
 end
 
+local function choose_protector(pos, user, small)
+	local inv = user:get_inventory()
+	local node
+
+	-- try to take protector from player inventory (block first then logo)
+	if small then
+		if inv:contains_item("main", "protector:protect3") then
+			inv:remove_item("main", "protector:protect3")
+			node = "protector:protect3"
+		elseif inv:contains_item("main", "protector:protect4") then
+			inv:remove_item("main", "protector:protect4")
+			node = "protector:protect4"
+		end
+	else
+		if inv:contains_item("main", "protector:protect") then
+			inv:remove_item("main", "protector:protect")
+			node = "protector:protect"
+		elseif inv:contains_item("main", "protector:protect2") then
+			inv:remove_item("main", "protector:protect2")
+			node = "protector:protect2"
+		end
+	end
+
+	return node
+end
+
 
 
 -- Claim EXPANSION tool.
@@ -54,17 +80,18 @@ function protector.on_use_tool(itemstack, user, pointed_thing)
 	pos = pp[1] -- take position of first protector found
 
 	-- get type of protector, its radius and size class
-	local r -- Protector radius
-	local s -- Small protector: true, else false
+	local radius_prot -- Protector radius
+	local small_prot -- Small protector: true, else false
 	local node = minetest.get_node(pos)
 	local protname
+
 	if node.name == "protector:protect" or node.name == "protector:protect2" then
-		r = protector.radius
-		s = false
+		radius_prot = protector.radius
+		small_prot = false
 		protname = node.name
 	elseif node.name == "protector:protect3" or node.name == "protector:protect4" then
-		r = protector.radius_small
-		s = true
+		radius_prot = protector.radius_small
+		small_prot = true
 		protname = node.name
 	else
 		response("PPT internal error!")
@@ -84,7 +111,7 @@ function protector.on_use_tool(itemstack, user, pointed_thing)
 	end
 
 	-- double the gap distance if player is holding 'E'
-	local gap = (r * 2) + 1
+	local gap = (radius_prot * 2) + 1
 	if user:get_player_control().aux1 then
 		gap = gap * 2
 	end
@@ -165,44 +192,20 @@ function protector.on_use_tool(itemstack, user, pointed_thing)
 		return
 	end
 
+	-- did we get a protector to use?
+	-- check this before we dig the target location.
+	local nod = choose_protector(pos, user, small_prot)
+	if not nod then
+		response("No protectors available to place!")
+		return
+	end
+
 	-- check node digs successfully, run all side effects and callbacks.
 	-- note: 'dig_node' returns false if position is air.
 	local dig_successful = minetest.dig_node(pos, user)
 	if node.name ~= "air" and not dig_successful then
 		response("Could not dig node to place protector.")
 		prospector.ptool_mark_single(pname, pos, "Blockage")
-		return
-	end
-
-	local nod
-	local inv = user:get_inventory()
-
-	-- try to take protector from player inventory (block first then logo)
-	if s then
-		if inv:contains_item("main", "protector:protect3") then
-			inv:remove_item("main", "protector:protect3")
-			nod = "protector:protect3"
-		elseif inv:contains_item("main", "protector:protect4") then
-			inv:remove_item("main", "protector:protect4")
-			nod = "protector:protect4"
-		end
-	else
-		if inv:contains_item("main", "protector:protect") then
-			inv:remove_item("main", "protector:protect")
-			nod = "protector:protect"
-		elseif inv:contains_item("main", "protector:protect2") then
-			inv:remove_item("main", "protector:protect2")
-			nod = "protector:protect2"
-		end
-	end
-
-	-- did we get a protector to use ?
-	if not nod then
-		if s then
-			response("No basic protectors available to place!")
-		else
-			response("No advanced protectors available to place!")
-		end
 		return
 	end
 
@@ -234,7 +237,7 @@ function protector.on_use_tool(itemstack, user, pointed_thing)
 
 	ambiance.sound_play(electric_screwdriver.sound, pos, electric_screwdriver.sound_gain, electric_screwdriver.sound_dist)
 
-	if members_copied and not s then
+	if members_copied and not small_prot then
 		response("Protector placed at " .. rc.pos_to_namestr_ex(pos) .. ". Members copied.")
 		prospector.ptool_mark_single(pname, pos, "Success")
 	else

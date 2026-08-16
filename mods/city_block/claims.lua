@@ -318,28 +318,26 @@ local function get_protector_slave_status(prot_pos, city_pos)
 		local cityowner = cblock.owner or ""
 		local good = true
 
-		for k = 1, #allblocks do
-			local block = allblocks[k]
+		local minp = vector.subtract(city_pos, CITYBLOCK_BOROUGH_RADIUS * 2)
+		local maxp = vector.add(city_pos, CITYBLOCK_BOROUGH_RADIUS * 2)
+		local checkblocks = city_block:get_blocks_in_area(minp, maxp)
+
+		for k = 1, #checkblocks do
+			local block = checkblocks[k]
 			local bowner = block.owner
 			local btime = block.time
-			local vpos = block.pos
-			local cpos = city_pos
-			local r = CITYBLOCK_BOROUGH_RADIUS * 2
+
 			if bowner and gdac.player_is_admin(bowner) then
 				btime = 0
 			end
-			if bowner and btime and vpos then
-				if vpos.x >= (cpos.x - r) and vpos.x <= (cpos.x + r) and
-					vpos.z >= (cpos.z - r) and vpos.z <= (cpos.z + r) and
-					vpos.y >= (cpos.y - r) and vpos.y <= (cpos.y + r) then
-					-- All other city blocks must be owned by this city owner, or be
-					-- yonger than the current city block.
-					-- Note: ownername check is especially needed because self is always
-					-- included in the array of blocks we're looking at.
-					if not (bowner == cityowner or btime <= city_time) then
-						good = false
-						break
-					end
+			if bowner and btime then
+				-- All other city blocks must be owned by this city owner, or be
+				-- yonger than the current city block.
+				-- Note: ownername check is especially needed because self is always
+				-- included in the array of blocks we're looking at.
+				if not (bowner == cityowner or btime <= city_time) then
+					good = false
+					break
 				end
 			end
 		end

@@ -69,6 +69,12 @@ end
 
 
 
+function protector.update_infotext(meta)
+	meta:set_string("infotext", protector.get_infotext(meta))
+end
+
+
+
 function protector.initialize_meta(meta, placer)
 	-- Critical. Never change this time format, we have to be able to parse
 	-- it to get a timestamp in seconds. This is the only way to get a time for
@@ -82,7 +88,6 @@ function protector.initialize_meta(meta, placer)
 	meta:set_string("placetime", tostring(os.time())) -- New as of August 2026.
 	meta:set_string("owner", pname)
 	meta:set_string("rename", dname)
-	meta:set_string("infotext", protector.get_infotext(meta))
 	meta:set_string("members", "")
 
 	meta:mark_as_private({
@@ -92,6 +97,8 @@ function protector.initialize_meta(meta, placer)
 		"rename",
 		"members",
 	})
+
+	protector.update_infotext(meta)
 end
 
 
@@ -111,7 +118,7 @@ function protector.on_update_infotext_lbm(pos)
 	end
 
 	meta:set_string("rename", rename.gpn(owner))
-	meta:set_string("infotext", protector.get_infotext(meta))
+	protector.update_infotext(meta)
 end
 
 
@@ -456,7 +463,7 @@ function protector.on_timer(pos, elapsed)
 		local timefut = meta:get_int("timerot")
 
 		if (timefut - os.time()) > 0 then
-			meta:set_string("infotext", protector.get_infotext(meta))
+			protector.update_infotext(meta)
 
 			-- Rerun timer for same timeout.
 			minetest.get_node_timer(pos):start(60)

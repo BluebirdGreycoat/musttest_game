@@ -263,13 +263,10 @@ function protector.on_use_tool2(itemstack, user, pointed_thing)
 
 	pos = pp[1] -- take position of first protector found
 
-	-- get members on protector
 	local meta = minetest.get_meta(pos)
-	local members = meta:get_string("members") or ""
-	local owner = meta:get_string("owner") or ""
-	local placedate = meta:get_string("placedate") or ""
-	local placetime = meta:get_string("placetime") or ""
-	local area_name = meta:get_string("area_name") or ""
+	local oldmeta = meta:to_table()
+	local owner = meta:get_string("owner")
+	local numtimes = meta:get_int("moved")
 	local protname = minetest.get_node(pos).name
 
 	-- require the tool user to be the owner of the initial protector node
@@ -325,7 +322,7 @@ function protector.on_use_tool2(itemstack, user, pointed_thing)
 	end
 
 	-- do not replace containers with inventory space
-	if minetest.get_inventory({type = "node", pos = pos}) then
+	if pos_has_inventory(pos) then
 		response("Cannot place protector, container at " .. rc.pos_to_namestr_ex(pos) .. ".")
 		return
 	end
@@ -357,18 +354,23 @@ function protector.on_use_tool2(itemstack, user, pointed_thing)
 	end
 	if protdef.after_place_node then
 		-- Assume callback only requires 'pos' and 'user'.
+		-- This updates the node metadata as if 'user' placed it!
 		protdef.after_place_node(pos, user)
 	end
 
-	-- set protector metadata
+	-- Restore original meta.
+	-- This should restore original owner (if prot was moved by admin).
+	-- Placetime should also be restored.
 	local meta = minetest.get_meta(pos)
-	local dname = rename.gpn(owner)
+	meta:from_table(oldmeta)
 
-	-- Restore original placement date and members list.
-	meta:set_string("placedate", placedate)
-	meta:set_string("placetime", placetime)
-	meta:set_string("area_name", area_name)
-	meta:set_string("members", members)
+	-- It might be important in the future to know if a protector was ever moved.
+	-- And how many times.
+	meta:set_int("moved", numtimes + 1)
+	meta:mark_as_private("moved")
+
+	-- Update infotext. (Needed after restoring meta.)
+	protector.update_infotext(meta)
 
 	ambiance.sound_play(electric_screwdriver.sound, pos, electric_screwdriver.sound_gain, electric_screwdriver.sound_dist)
 	response("Protector moved to " .. rc.pos_to_namestr_ex(pos) .. ".")

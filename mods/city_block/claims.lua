@@ -860,6 +860,11 @@ function city_block.have_conflicting_claims(cblock)
 	local city_owner = cblock.owner or ""
 	local city_time = cblock.time or 0
 
+	-- If the cityblock is owned by the admin, there are no other conflicting protectors.
+	if gdac.player_is_admin(city_owner) then
+		return false
+	end
+
 	-- Get all protectors with overlap in this area.
 	local minp = vector.subtract(city_pos, city_block.CITYBLOCK_BOROUGH_RADIUS)
 	local maxp = vector.add(city_pos, city_block.CITYBLOCK_BOROUGH_RADIUS)
@@ -869,16 +874,26 @@ function city_block.have_conflicting_claims(cblock)
 		local bpos = prots[k]
 		local meta = minetest.get_meta(bpos)
 		local timestamp = city_block.get_protector_timestamp(meta) -- may be nil
+		local prot_owner = meta:get_string("owner")
 
-		if meta:get_string("owner") ~= city_owner then
+		if prot_owner ~= city_owner then
 			if timestamp == 0 or timestamp == nil then
 				return true
 			end
 
+			-- If protector owner is admin, then it has maximum age.
+			if gdac.player_is_admin(prot_owner) then
+				timestamp = 0
+			end
+
+			-- If any protector is older, that's a conflict.
 			if timestamp and timestamp ~= 0 then
 				if timestamp < city_time then
 					return true
 				end
+			else
+				-- Handle unknown timestamp.
+				return true
 			end
 		end
 	end

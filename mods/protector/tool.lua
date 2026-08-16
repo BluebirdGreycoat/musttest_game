@@ -100,14 +100,15 @@ function protector.on_use_tool(itemstack, user, pointed_thing)
 
 	-- get members on protector
 	local meta = minetest.get_meta(pos)
-	local members = meta:get_string("members") or ""
-	local area_name = meta:get_string("area_name") or ""
-	local owner = meta:get_string("owner") or ""
+	local oldmeta = meta:to_table()
+	local owner = meta:get_string("owner")
 
 	-- require the tool user to be the owner of the initial protector node
-	if owner ~= pname then
-		response("Cannot expand claim from origin, the protector is not yours!")
-		return
+	if not minetest.check_player_privs(pname, {protection_bypass=true}) then
+		if owner ~= pname then
+			response("Cannot expand claim from origin, the protector is not yours!")
+			return
+		end
 	end
 
 	-- double the gap distance if player is holding 'E'
@@ -223,17 +224,22 @@ function protector.on_use_tool(itemstack, user, pointed_thing)
 		protdef.after_place_node(pos, user)
 	end
 
+	-- Set up meta. The 'after_place_node' callback added the protector as if the
+	-- tool user placed it. We need to fix owner name in case the tool user is admin.
+	local meta = minetest.get_meta(pos)
+	meta:set_string("owner", oldmeta.fields.owner)
+	meta:set_string("rename", rename.gpn(oldmeta.fields.owner))
+
 	-- Copy members across if holding sneak when using tool.
 	local members_copied = false
 	if user:get_player_control().sneak then
-		local meta = minetest.get_meta(pos)
-		meta:set_string("members", members)
-		meta:set_string("area_name", area_name)
+		meta:set_string("members", oldmeta.fields.members)
+		meta:set_string("area_name", oldmeta.fields.area_name)
 		members_copied = true
-	else
-		local meta = minetest.get_meta(pos)
-		meta:set_string("members", "")
 	end
+
+	-- Update infotext. (Needed after restoring meta.)
+	protector.update_infotext(meta)
 
 	ambiance.sound_play(electric_screwdriver.sound, pos, electric_screwdriver.sound_gain, electric_screwdriver.sound_dist)
 

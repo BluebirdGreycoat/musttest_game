@@ -165,6 +165,15 @@ function protector.on_use_tool(itemstack, user, pointed_thing)
 		return
 	end
 
+	-- check node digs successfully, run all side effects and callbacks.
+	-- note: 'dig_node' returns false if position is air.
+	local dig_successful = minetest.dig_node(pos, user)
+	if node.name ~= "air" and not dig_successful then
+		response("Could not dig node to place protector.")
+		prospector.ptool_mark_single(pname, pos, "Blockage")
+		return
+	end
+
 	local nod
 	local inv = user:get_inventory()
 
@@ -337,6 +346,14 @@ function protector.on_use_tool2(itemstack, user, pointed_thing)
 	local node = minetest.get_node(pos)
 	if minetest.get_item_group(node.name, "immovable") ~= 0 then
 		response("Cannot place protector in place of immovable object!")
+		return
+	end
+
+	-- check node digs successfully, run all side effects and callbacks.
+	-- note: 'dig_node' returns false if position is air.
+	local dig_successful = minetest.dig_node(pos, user)
+	if node.name ~= "air" and not dig_successful then
+		response("Could not dig node to move protector.")
 		return
 	end
 

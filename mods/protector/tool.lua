@@ -28,7 +28,14 @@ end
 
 -- Claim EXPANSION tool.
 function protector.on_use_tool(itemstack, user, pointed_thing)
-	local name = user:get_player_name()
+	if not user or not user:is_player() then
+		return
+	end
+
+	local pname = user:get_player_name()
+	local function response(message)
+		minetest.chat_send_player(pname, "# Server: " .. message)
+	end
 
 	-- check for protector near player (2 block radius)
 	local pos = vector.round(user:get_pos())
@@ -40,7 +47,7 @@ function protector.on_use_tool(itemstack, user, pointed_thing)
 	if #pp == 0 then return end -- none found
 
 	if #pp > 1 then
-		minetest.chat_send_player(name, "# Server: Too many protectors nearby, choice would be ambiguous.")
+		response("Too many protectors nearby, choice would be ambiguous.")
 		return
 	end
 
@@ -60,7 +67,7 @@ function protector.on_use_tool(itemstack, user, pointed_thing)
 		s = true
 		protname = node.name
 	else
-		minetest.chat_send_player(name, "# Server: PPT internal error!")
+		response("PPT internal error!")
 		return
 	end
 
@@ -71,8 +78,8 @@ function protector.on_use_tool(itemstack, user, pointed_thing)
 	local owner = meta:get_string("owner") or ""
 
 	-- require the tool user to be the owner of the initial protector node
-	if owner ~= name then
-		minetest.chat_send_player(name, "# Server: Cannot expand claim from origin, the protector is not yours!")
+	if owner ~= pname then
+		response("Cannot expand claim from origin, the protector is not yours!")
 		return
 	end
 
@@ -109,34 +116,34 @@ function protector.on_use_tool(itemstack, user, pointed_thing)
 
 	-- ensure position is within a valid realm
 	if not rc.is_valid_realm_pos(pos) then
-		minetest.chat_send_player(name, "# Server: Cannot place protector in the Void!")
+		response("Cannot place protector in the Void!")
 		return
 	end
 	if not minetest.get_node_or_nil(pos) then
-		minetest.chat_send_player(name, "# Server: Cannot place protector within IGNORE!")
+		response("Cannot place protector within IGNORE!")
 		return
 	end
 
 	-- does placing a protector overlap existing area
 	-- this is the most important check! must not mess this up!
-	local success, reason = protector.check_overlap_main(protname, name, pos)
+	local success, reason = protector.check_overlap_main(protname, pname, pos)
 	if not success then
 		if reason == 1 then
-			minetest.chat_send_player(name, "# Server: Protection bounds overlap into another person's area claim.")
+			response("Protection bounds overlap into another person's area claim.")
 		elseif reason == 2 then
-			minetest.chat_send_player(name, "# Server: You cannot claim this area while someone's fresh corpse is nearby!")
+			response("You cannot claim this area while someone's fresh corpse is nearby!")
 		elseif reason == 3 then
-			minetest.chat_send_player(name, "# Server: You must remove all corpses before you can claim this area.")
+			response("You must remove all corpses before you can claim this area.")
 		else
-			minetest.chat_send_player(name, "# Server: Cannot place protection for unknown reason.")
+			response("Cannot place protection for unknown reason.")
 		end
 		return
 	end
 
 	-- Does location already have a protector?
 	if minetest.get_node(pos).name:find("^protector:protect") then
-		minetest.chat_send_player(name, "# Server: Protector already in place!")
-		prospector.ptool_mark_single(name, pos, "Protector")
+		response("Protector already in place!")
+		prospector.ptool_mark_single(pname, pos, "Protector")
 		return
 	end
 
@@ -144,34 +151,33 @@ function protector.on_use_tool(itemstack, user, pointed_thing)
 	local nearby_protectors = minetest.find_nodes_in_area(vector.subtract(pos, 1), vector.add(pos, 1),
 		{"protector:protect", "protector:protect2", "protector:protect3", "protector:protect4"})
 	if #nearby_protectors > 0 then
-		minetest.chat_send_player(name, "# Server: Protector already near target!")
+		response("Protector already near target!")
 		for k, v in ipairs(nearby_protectors) do
-			prospector.ptool_mark_single(name, v, "Protector")
+			prospector.ptool_mark_single(pname, v, "Protector")
 		end
 		return
 	end
 
 	-- do not replace containers with inventory space.
 	if pos_has_inventory(pos) then
-		minetest.chat_send_player(name, "# Server: Cannot place protector, container at " .. rc.pos_to_namestr_ex(pos) .. ".")
-		prospector.ptool_mark_single(name, pos, "Blockage")
+		response("Cannot place protector, container at " .. rc.pos_to_namestr_ex(pos) .. ".")
+		prospector.ptool_mark_single(pname, pos, "Blockage")
 		return
 	end
 
 	-- protection check for other stuff, like bedrock, etc
-	if minetest.is_protected(pos, name) then
-		minetest.chat_send_player(name, "Cannot place protector, already protected at " .. rc.pos_to_namestr_ex(pos) .. ".")
-		prospector.ptool_mark_single(name, pos, "Blockage")
+	if minetest.is_protected(pos, pname) then
+		response("Cannot place protector, already protected at " .. rc.pos_to_namestr_ex(pos) .. ".")
+		prospector.ptool_mark_single(pname, pos, "Blockage")
 		return
 	end
 
 	-- check not replacing an immovable object
 	local node = minetest.get_node(pos)
-	if minetest.get_item_group(node.name, "immovable") ~= 0
-			or minetest.get_item_group(node.name, "unbreakable") ~= 0
+	if minetest.get_item_group(node.name, "immovable") ~= 0 or minetest.get_item_group(node.name, "unbreakable") ~= 0
 	then
-		minetest.chat_send_player(name, "# Server: Cannot place protector in place of immovable object!")
-		prospector.ptool_mark_single(name, pos, "Blockage")
+		response("Cannot place protector in place of immovable object!")
+		prospector.ptool_mark_single(pname, pos, "Blockage")
 		return
 	end
 
@@ -200,9 +206,9 @@ function protector.on_use_tool(itemstack, user, pointed_thing)
 	-- did we get a protector to use ?
 	if not nod then
 		if s then
-			minetest.chat_send_player(name, "# Server: No basic protectors available to place!")
+			response("No basic protectors available to place!")
 		else
-			minetest.chat_send_player(name, "# Server: No advanced protectors available to place!")
+			response("No advanced protectors available to place!")
 		end
 		return
 	end
@@ -236,11 +242,11 @@ function protector.on_use_tool(itemstack, user, pointed_thing)
 	ambiance.sound_play(electric_screwdriver.sound, pos, electric_screwdriver.sound_gain, electric_screwdriver.sound_dist)
 
 	if members_copied and not s then
-		minetest.chat_send_player(name, "# Server: Protector placed at " .. rc.pos_to_namestr_ex(pos) .. ". Members copied.")
-		prospector.ptool_mark_single(name, pos, "Success")
+		response("Protector placed at " .. rc.pos_to_namestr_ex(pos) .. ". Members copied.")
+		prospector.ptool_mark_single(pname, pos, "Success")
 	else
-		minetest.chat_send_player(name, "# Server: Protector placed at " .. rc.pos_to_namestr_ex(pos) .. ".")
-		prospector.ptool_mark_single(name, pos, "Success")
+		response("Protector placed at " .. rc.pos_to_namestr_ex(pos) .. ".")
+		prospector.ptool_mark_single(pname, pos, "Success")
 	end
 end
 
@@ -248,7 +254,14 @@ end
 
 -- Protector MOVER tool.
 function protector.on_use_tool2(itemstack, user, pointed_thing)
-	local name = user:get_player_name()
+	if not user or not user:is_player() then
+		return
+	end
+
+	local pname = user:get_player_name()
+	local function response(message)
+		minetest.chat_send_player(pname, "# Server: " .. message)
+	end
 
 	-- check for protector near player (2 block radius)
 	local pos = vector.round(user:get_pos())
@@ -260,7 +273,7 @@ function protector.on_use_tool2(itemstack, user, pointed_thing)
 	if #pp == 0 then return end -- none found
 
 	if #pp > 1 then
-		minetest.chat_send_player(name, "# Server: Too many protectors nearby, choice would be ambiguous.")
+		response("Too many protectors nearby, choice would be ambiguous.")
 		return
 	end
 
@@ -276,9 +289,9 @@ function protector.on_use_tool2(itemstack, user, pointed_thing)
 	local protname = minetest.get_node(pos).name
 
 	-- require the tool user to be the owner of the initial protector node
-	if not minetest.check_player_privs(name, {protection_bypass=true}) then
-		if owner ~= name then
-			minetest.chat_send_player(name, "# Server: Cannot expand claim from origin, the protector is not yours!")
+	if not minetest.check_player_privs(pname, {protection_bypass=true}) then
+		if owner ~= pname then
+			response("Cannot move protector, the protector is not yours!")
 			return
 		end
 	end
@@ -312,11 +325,11 @@ function protector.on_use_tool2(itemstack, user, pointed_thing)
 
 	-- ensure position is within a valid realm
 	if not rc.is_valid_realm_pos(pos) then
-		minetest.chat_send_player(name, "# Server: Cannot place protector in the Void!")
+		response("Cannot place protector in the Void!")
 		return
 	end
 	if not minetest.get_node_or_nil(pos) then
-		minetest.chat_send_player(name, "# Server: Cannot place protector within IGNORE!")
+		response("Cannot place protector within IGNORE!")
 		return
 	end
 
@@ -325,13 +338,13 @@ function protector.on_use_tool2(itemstack, user, pointed_thing)
 	local success, reason = protector.check_overlap_main(protname, owner, pos)
 	if not success then
 		if reason == 1 then
-			minetest.chat_send_player(name, "# Server: Protection bounds overlap into another person's area claim.")
+			response("Protection bounds overlap into another person's area claim.")
 		elseif reason == 2 then
-			minetest.chat_send_player(name, "# Server: You cannot claim this area while someone's fresh corpse is nearby!")
+			response("You cannot claim this area while someone's fresh corpse is nearby!")
 		elseif reason == 3 then
-			minetest.chat_send_player(name, "# Server: You must remove all corpses before you can claim this area.")
+			response("You must remove all corpses before you can claim this area.")
 		else
-			minetest.chat_send_player(name, "# Server: Cannot place protection for unknown reason.")
+			response("Cannot place protection for unknown reason.")
 		end
 		return
 	end
@@ -339,26 +352,26 @@ function protector.on_use_tool2(itemstack, user, pointed_thing)
 	-- does a protector already exist ?
 	if #minetest.find_nodes_in_area(vector.subtract(pos, 0), vector.add(pos, 0),
 			{"protector:protect", "protector:protect2", "protector:protect3", "protector:protect4"}) > 0 then
-		minetest.chat_send_player(name, "# Server: Protector already in place!")
+		response("Protector already in place!")
 		return
 	end
 
 	-- do not replace containers with inventory space
 	if minetest.get_inventory({type = "node", pos = pos}) then
-		minetest.chat_send_player(name, "# Server: Cannot place protector, container at " .. rc.pos_to_namestr_ex(pos) .. ".")
+		response("Cannot place protector, container at " .. rc.pos_to_namestr_ex(pos) .. ".")
 		return
 	end
 
 	-- protection check for other stuff, like bedrock, etc
 	if minetest.is_protected(pos, owner) then
-		minetest.chat_send_player(name, "Cannot place protector, already protected at " .. rc.pos_to_namestr_ex(pos) .. ".")
+		response("Cannot place protector, already protected at " .. rc.pos_to_namestr_ex(pos) .. ".")
 		return
 	end
 
 	-- check not replacing an immovable object
 	local node = minetest.get_node(pos)
 	if minetest.get_item_group(node.name, "immovable") ~= 0 then
-		minetest.chat_send_player(name, "# Server: Cannot place protector in place of immovable object!")
+		response("Cannot place protector in place of immovable object!")
 		return
 	end
 
@@ -390,7 +403,7 @@ function protector.on_use_tool2(itemstack, user, pointed_thing)
 	meta:set_string("members", members)
 
 	ambiance.sound_play(electric_screwdriver.sound, pos, electric_screwdriver.sound_gain, electric_screwdriver.sound_dist)
-	minetest.chat_send_player(name, "# Server: Protector moved to " .. rc.pos_to_namestr_ex(pos) .. ".")
+	response("Protector moved to " .. rc.pos_to_namestr_ex(pos) .. ".")
 end
 
 

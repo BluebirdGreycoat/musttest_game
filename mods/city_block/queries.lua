@@ -459,3 +459,31 @@ function city_block:in_no_leecher_zone(pos)
 	end
 	return false
 end
+
+
+
+-- Returns unsorted list of all cityblocks in a cubic area.
+function city_block:get_blocks_in_area(minp, maxp, inactive)
+	minp = vector_round(minp)
+	maxp = vector_round(maxp)
+
+	local blocks = self.blocks
+	local t2 = os.time()
+	local rblocks = {}
+
+	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
+		local v = blocks[i]
+		local vpos = v.pos
+		local t1 = v.time or 0
+
+		if inactive or time_active(t1, t2) then
+			if pos.x >= minp.x and pos.x <= maxp.x and
+				pos.z >= minp.z and pos.z <= maxp.z and
+				pos.y >= minp.y and pos.y <= maxp.y then
+				rblocks[#rblocks + 1] = v
+			end
+		end
+	end
+
+	return rblocks
+end

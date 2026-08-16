@@ -110,7 +110,7 @@ function protector.on_use_tool(itemstack, user, pointed_thing)
 
 	-- does placing a protector overlap existing area
 	-- this is the most important check! must not mess this up!
-	local success, reason = protector.check_overlap_main(protname, pname, pos)
+	local success, reason, message = protector.check_overlap_main(protname, pname, pos)
 	if not success then
 		if reason == 1 then
 			response("Protection bounds overlap into another person's area claim.")
@@ -119,7 +119,7 @@ function protector.on_use_tool(itemstack, user, pointed_thing)
 		elseif reason == 3 then
 			response("You must remove all corpses before you can claim this area.")
 		else
-			response("Cannot place protection for unknown reason.")
+			response("Cannot place protection. System says: " .. message)
 		end
 		return
 	end
@@ -309,7 +309,7 @@ function protector.on_use_tool2(itemstack, user, pointed_thing)
 
 	-- does placing a protector overlap existing area
 	-- this is the most important check! must not mess this up!
-	local success, reason = protector.check_overlap_main(protname, owner, pos)
+	local success, reason, message = protector.check_overlap_main(protname, owner, pos)
 	if not success then
 		if reason == 1 then
 			response("Protection bounds overlap into another person's area claim.")
@@ -318,7 +318,7 @@ function protector.on_use_tool2(itemstack, user, pointed_thing)
 		elseif reason == 3 then
 			response("You must remove all corpses before you can claim this area.")
 		else
-			response("Cannot place protection for unknown reason.")
+			response("Cannot place protection. System says: " .. message)
 		end
 		return
 	end

@@ -323,7 +323,7 @@ end
 -- Make sure protection block doesn't overlap another protector's area
 function protector.check_overlap_main(protname, pname, spos)
 	if not realm_allows_protection(spos, pname) then
-		return false, 4
+		return false, 4, "Position is void."
 	end
 
 	-- Do not allow protections to be placed near the Outback gate's exit coordinates.
@@ -331,18 +331,18 @@ function protector.check_overlap_main(protname, pname, spos)
 	-- Existing protections (if any) remain untouched.
 	local realmname = rc.current_realm_at_pos(spos)
 	if not serveressentials.protector_can_place(spos, realmname) then
-		return false, 5
+		return false, 5, "Too near unstable gate."
 	end
 
 	if not protector.can_dig(protector.radius, 2, protname, spos, pname, true, 3) then
 		-- Overlap with other player's protection.
-		return false, 1
+		return false, 1, "Overlap with someone else's area claim."
 	end
 
 	local ndef = minetest.registered_nodes[protname] or {}
 	if not city_block:may_place_protector_at(spos, ndef._protector_node_radius or 0) then
 		-- Overlap with a cityblock that says "no."
-		return false, 6
+		return false, 6, "Cityblock forbids overlap."
 	end
 
 	local pos = {x=spos.x, y=spos.y, z=spos.z}
@@ -358,18 +358,18 @@ function protector.check_overlap_main(protname, pname, spos)
 			local owner = meta:get_string("owner") or ""
 			if owner ~= "" and owner ~= "server" then
 				-- fresh bones nearby
-				return false, 2
+				return false, 2, "Too close to fresh corpse."
 			end
 			local oldowner = meta:get_string("oldowner") or ""
 			if oldowner ~= "" and oldowner ~= "server" then
 				-- old bones nearby
-				return false, 3
+				return false, 3, "Too close to decayed corpse."
 			end
 		end
 	end
 
 	-- no overlap with other protection
-	return true, 0
+	return true, 0, "Success."
 end
 
 
@@ -383,7 +383,7 @@ function protector.check_overlap(itemstack, placer, pt)
 	local pname = placer:get_player_name()
 	local prot_type = itemstack:get_name()
 
-	local success, reason = protector.check_overlap_main(prot_type, pname, pt.above)
+	local success, reason, message = protector.check_overlap_main(prot_type, pname, pt.above)
 
 	if not success then
 		if reason == 1 then
@@ -399,7 +399,7 @@ function protector.check_overlap(itemstack, placer, pt)
 		elseif reason == 6 then
 			minetest.chat_send_player(pname, "# Server: A nearby city block forbids placing protectors.")
 		else
-			minetest.chat_send_player(pname, "# Server: Cannot place protection for unknown reason.")
+			minetest.chat_send_player(pname, "# Server: Cannot place protection. System says: " .. message)
 		end
 		return
 	end

@@ -320,6 +320,17 @@ end
 
 
 
+-- Get list of all protectors that have overlap into the given area bounds.
+function protector.get_protectors_overlapping_area(minp, maxp)
+	minp = vector.subtract(vector.round(minp), protector.radius)
+	maxp = vector.add(vector.round(maxp), protector.radius)
+
+	local prots = minetest.find_nodes_in_area(minp, maxp, PROTECTOR_NODENAMES)
+	return prots
+end
+
+
+
 -- Make sure protection block doesn't overlap another protector's area
 function protector.check_overlap_main(protname, pname, spos)
 	if not realm_allows_protection(spos, pname) then

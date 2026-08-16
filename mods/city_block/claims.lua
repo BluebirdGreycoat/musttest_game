@@ -113,7 +113,7 @@ local function parse_protector_placedate(timestr)
   return os.time(t) + offset
 end
 
-local function get_protector_timestamp(meta)
+function city_block.get_protector_timestamp(meta)
 	local placedate = meta:get_string("placedate")
 	local placetime = tonumber(meta:get_string("placetime")) -- May be nil.
 
@@ -299,7 +299,7 @@ local function get_protector_slave_status(prot_pos, city_pos)
 		city_time = 0
 	end
 	if city_time then
-		local placetime = get_protector_timestamp(meta)
+		local placetime = city_block.get_protector_timestamp(meta)
 
 		if placetime and placetime ~= 0 then
 			-- Protector must be significantly newer.
@@ -630,8 +630,8 @@ function city_block.on_mayor_fields(player, formname, fields)
 				local is_expired = is_expired_protector_name(node.name)
 				local nmeta = minetest.get_meta(vpos)
 				local members = protector.get_member_list(nmeta)
-				local timestamp = get_protector_timestamp(nmeta) or 0
-				local timestr = timestamp ~= 0 and os.date("!%Y/%m/%d", timestamp) or "N/A"
+				local timestamp = city_block.get_protector_timestamp(nmeta) or 0
+				local timestr = timestamp ~= nil and timestamp ~= 0 and os.date("!%Y/%m/%d", timestamp) or "N/A"
 				local areaname = nmeta:get_string("area_name")
 				areaname = areaname ~= "" and areaname or "N/A"
 				local unique_ids, total_cost = calc_costinfo_for_protector(vpos)
@@ -840,6 +840,45 @@ function city_block.have_conflicting_boroughs(cblock)
 			-- included in the array of blocks we're looking at.
 			if bowner ~= city_owner and btime <= city_time then
 				return true
+			end
+		end
+	end
+
+	return false
+end
+
+
+
+-- Returns true if there are any protectors overlapping a cityblock area that
+-- are OLDER than the cityblock and aren't owned by the cityblock owner.
+function city_block.have_conflicting_claims(cblock)
+	if not cblock.pos then
+		return false
+	end
+
+	local city_pos = cblock.pos
+	local city_owner = cblock.owner or ""
+	local city_time = cblock.time or 0
+
+	-- Get all protectors with overlap in this area.
+	local minp = vector.subtract(city_pos, city_block.CITYBLOCK_BOROUGH_RADIUS)
+	local maxp = vector.add(city_pos, city_block.CITYBLOCK_BOROUGH_RADIUS)
+	local prots = protector.get_protectors_overlapping_area(minp, maxp)
+
+	for k = 1, #prots do
+		local bpos = prots[k]
+		local meta = minetest.get_meta(bpos)
+		local timestamp = city_block.get_protector_timestamp(meta) -- may be nil
+
+		if meta:get_string("owner") ~= city_owner then
+			if timestamp == 0 or timestamp == nil then
+				return true
+			end
+
+			if timestamp and timestamp ~= 0 then
+				if timestamp < city_time then
+					return true
+				end
 			end
 		end
 	end

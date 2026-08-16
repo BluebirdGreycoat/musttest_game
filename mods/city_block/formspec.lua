@@ -172,17 +172,17 @@ function city_block.on_receive_fields(player, formname, fields)
 	end
 
 	if fields.allow_protectors then
-		local str = fields.allow_protectors
-		if str == "true" then
-			block.allow_protectors = true
-		elseif str == "false" then
-			if city_block.have_conflicting_boroughs(block) then
-				minetest.chat_send_player(pname, "# Server: Foreign borough takes precedence!")
-			else
+		if not city_block.have_conflicting_boroughs(block) then
+			local str = fields.allow_protectors
+			if str == "true" then
+				block.allow_protectors = true
+			elseif str == "false" then
 				block.allow_protectors = false
 			end
+			city_block:save()
+		else
+			minetest.chat_send_player(pname, "# Server: Foreign City Marker takes precedence!")
 		end
-		city_block:save()
 	end
 
 	if fields.quit then

@@ -473,7 +473,7 @@ function city_block:get_blocks_in_area(minp, maxp, inactive)
 
 	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
 		local v = blocks[i]
-		local vpos = v.pos
+		local pos = v.pos
 		local t1 = v.time or 0
 
 		if inactive or time_active(t1, t2) then

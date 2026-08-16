@@ -28,7 +28,7 @@ end
 
 
 
-function city_block:may_place_protector_at(pos, protrad)
+function city_block:may_place_protector_at(pos, protrad, pname)
 	pos = vector_round(pos)
 	-- Covers the borough area (not including prot radius).
 	local D = city_block.CITYBLOCK_BOROUGH_RADIUS
@@ -47,6 +47,7 @@ function city_block:may_place_protector_at(pos, protrad)
 	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
 		local v = blocks[i]
 		local vpos = v.pos
+		local vowner = v.owner or ""
 		local t1 = v.time or 0
 
 		local ybot = vpos.y - r
@@ -64,7 +65,8 @@ function city_block:may_place_protector_at(pos, protrad)
 		end
 
 		-- nil or true means the cityblock allows protectors.
-		if v.allow_protectors == false then
+		-- Note: owner of cityblock can always place protectors.
+		if v.allow_protectors == false and vowner ~= pname then
 			if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
 				pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
 				pos.y >= (ybot) and pos.y <= (ytop) then

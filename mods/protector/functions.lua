@@ -340,7 +340,7 @@ function protector.check_overlap_main(protname, pname, spos)
 	end
 
 	local ndef = minetest.registered_nodes[protname] or {}
-	if not city_block:may_place_protector_at(spos, ndef._protector_node_radius or 0) then
+	if not city_block:may_place_protector_at(spos, ndef._protector_node_radius or 0, pname) then
 		-- Overlap with a cityblock that says "no."
 		return false, 6, "Cityblock forbids overlap."
 	end

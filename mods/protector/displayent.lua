@@ -4,109 +4,67 @@
 if not protector.displayent_registered then
 	protector.displayent_registered = true
 
-	minetest.register_entity("protector:display", {
-		physical = false,
-		collisionbox = {0, 0, 0, 0, 0, 0},
-		visual = "wielditem",
-		-- wielditem seems to be scaled to 1.5 times original node size
-		visual_size = {x = 1.0 / 1.5, y = 1.0 / 1.5},
-		textures = {"protector:display_node"},
-		timer = 0,
-		glow = 14,
-		static_save = false,
+	local ENTITY_GLOW = 14
 
-		on_step = function(self, dtime)
-			self.timer = self.timer + dtime
-			if self.timer > protector.display_time then
-				self.object:remove()
-			end
-		end,
+	local versions = {
+		{radius=protector.radius, node="protector:display_node", entity="protector:display"},
+		{radius=protector.radius_small, node="protector:display_node_small", entity="protector:display_small"},
+	}
 
-		on_blast = function(self, damage)
-			return false, false, {}
-		end,
-	})
+	for _, v in ipairs(versions) do
+		minetest.register_entity(v.entity, {
+			physical = false,
+			collisionbox = {0, 0, 0, 0, 0, 0},
+			visual = "wielditem",
+			-- wielditem seems to be scaled to 1.5 times original node size
+			visual_size = {x = 1.0 / 1.5, y = 1.0 / 1.5},
+			textures = {v.node},
+			timer = 0,
+			glow = ENTITY_GLOW,
+			static_save = false,
 
-	minetest.register_entity("protector:display_small", {
-		physical = false,
-		collisionbox = {0, 0, 0, 0, 0, 0},
-		visual = "wielditem",
-		-- wielditem seems to be scaled to 1.5 times original node size
-		visual_size = {x = 1.0 / 1.5, y = 1.0 / 1.5},
-		textures = {"protector:display_node_small"},
-		timer = 0,
-		glow = 14,
-		static_save = false,
+			on_step = function(self, dtime)
+				self.timer = self.timer + dtime
+				if self.timer > protector.display_time then
+					self.object:remove()
+				end
+			end,
 
-		on_step = function(self, dtime)
-			self.timer = self.timer + dtime
-			if self.timer > protector.display_time then
-				self.object:remove()
-			end
-		end,
-
-		on_blast = function(self, damage)
-			return false, false, {}
-		end,
-	})
-
-	-- Display-zone node, Do NOT place the display as a node,
-	-- it is made to be used as an entity (see above)
-
-	do
-		local x = protector.radius
-		minetest.register_node("protector:display_node", {
-			tiles = {"protector_display.png"},
-			use_texture_alpha = "blend",
-			walkable = false,
-			drawtype = "nodebox",
-			node_box = {
-				type = "fixed",
-				fixed = {
-					-- sides
-					{-(x+.55), -(x+.55), -(x+.55), -(x+.45), (x+.55), (x+.55)},
-					{-(x+.55), -(x+.55), (x+.45), (x+.55), (x+.55), (x+.55)},
-					{(x+.45), -(x+.55), -(x+.55), (x+.55), (x+.55), (x+.55)},
-					{-(x+.55), -(x+.55), -(x+.55), (x+.55), (x+.55), -(x+.45)},
-					-- top
-					{-(x+.55), (x+.45), -(x+.55), (x+.55), (x+.55), (x+.55)},
-					-- bottom
-					{-(x+.55), -(x+.55), -(x+.55), (x+.55), -(x+.45), (x+.55)},
-					-- middle (surround protector)
-					{-.55,-.55,-.55, .55,.55,.55},
-				},
-			},
-			selection_box = {
-				type = "regular",
-			},
-			paramtype = "light",
-			groups = utility.dig_groups("item", {not_in_creative_inventory = 1}),
-			drop = "",
+			on_blast = function(self, damage)
+				return false, false, {}
+			end,
 		})
 	end
 
-	do
-		local x = protector.radius_small
-		minetest.register_node("protector:display_node_small", {
+	local function get_nodebox(x)
+		local w = 1/64 -- Tex width/height.
+		local h = 0.5 - w*2 -- Wall thickness.
+		return {
+			-- sides
+			{-(x+0.5+w), -(x+0.5+w), -(x+0.5+w), -(x+h  +w),  (x+0.5+w),  (x+0.5+w)},
+			{-(x+0.5+w), -(x+0.5+w),  (x+h  +w),  (x+0.5+w),  (x+0.5+w),  (x+0.5+w)},
+			{ (x+h  +w), -(x+0.5+w), -(x+0.5+w),  (x+0.5+w),  (x+0.5+w),  (x+0.5+w)},
+			{-(x+0.5+w), -(x+0.5+w), -(x+0.5+w),  (x+0.5+w),  (x+0.5+w), -(x+h  +w)},
+			-- top
+			{-(x+0.5+w),  (x+h  +w), -(x+0.5+w),  (x+0.5+w),  (x+0.5+w),  (x+0.5+w)},
+			-- bottom
+			{-(x+0.5+w), -(x+0.5+w), -(x+0.5+w),  (x+0.5+w), -(x+h  +w),  (x+0.5+w)},
+			-- middle (surround protector)
+			{-(  0.5+w), -(  0.5+w), -(  0.5+w),  (  0.5+w),  (  0.5+w),  (  0.5+w)},
+		}
+	end
+
+	for _, v in ipairs(versions) do
+		-- Display-zone node, Do NOT place the display as a node,
+		-- it is made to be used as an entity (see above)
+		minetest.register_node(v.node, {
 			tiles = {"protector_display.png"},
 			use_texture_alpha = "blend",
 			walkable = false,
 			drawtype = "nodebox",
 			node_box = {
 				type = "fixed",
-				fixed = {
-					-- sides
-					{-(x+.55), -(x+.55), -(x+.55), -(x+.45), (x+.55), (x+.55)},
-					{-(x+.55), -(x+.55), (x+.45), (x+.55), (x+.55), (x+.55)},
-					{(x+.45), -(x+.55), -(x+.55), (x+.55), (x+.55), (x+.55)},
-					{-(x+.55), -(x+.55), -(x+.55), (x+.55), (x+.55), -(x+.45)},
-					-- top
-					{-(x+.55), (x+.45), -(x+.55), (x+.55), (x+.55), (x+.55)},
-					-- bottom
-					{-(x+.55), -(x+.55), -(x+.55), (x+.55), -(x+.45), (x+.55)},
-					-- middle (surround protector)
-					{-.55,-.55,-.55, .55,.55,.55},
-				},
+				fixed = get_nodebox(v.radius),
 			},
 			selection_box = {
 				type = "regular",

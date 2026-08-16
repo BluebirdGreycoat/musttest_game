@@ -13,6 +13,7 @@ if not protector.displayent_registered then
 		textures = {"protector:display_node"},
 		timer = 0,
 		glow = 14,
+		static_save = false,
 
 		on_step = function(self, dtime)
 			self.timer = self.timer + dtime
@@ -35,6 +36,7 @@ if not protector.displayent_registered then
 		textures = {"protector:display_node_small"},
 		timer = 0,
 		glow = 14,
+		static_save = false,
 
 		on_step = function(self, dtime)
 			self.timer = self.timer + dtime

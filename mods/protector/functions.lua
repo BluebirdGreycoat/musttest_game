@@ -727,3 +727,37 @@ function protector.node_on_rightclick(pos, node, clicker, itemstack)
 		minetest.show_formspec(pname, "protector:node", protector.generate_formspec(pname, meta))
 	end
 end
+
+
+
+function protector.remove_area_display(pos)
+	local ents = minetest.get_objects_inside_radius(pos, 0.5)
+	for k, n in ipairs(ents) do
+		if not n:is_player() and n:get_luaentity() then
+			local name = n:get_luaentity().name or ""
+			if name == "protector:display" or name == "protector:display_small" then
+				n:remove()
+			end
+		end
+	end
+end
+
+
+
+function protector.toggle_area_display(pos, entity)
+	local got_any = false
+	local ents = minetest.get_objects_inside_radius(pos, 0.5)
+	for k, n in ipairs(ents) do
+		if not n:is_player() and n:get_luaentity() then
+			local name = n:get_luaentity().name or ""
+			if name == "protector:display" or name == "protector:display_small" then
+				n:remove()
+				got_any = true
+			end
+		end
+	end
+	if not got_any then
+		minetest.add_entity(pos, entity)
+	end
+	return not got_any -- True if entity added, otherwise false.
+end

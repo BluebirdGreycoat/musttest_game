@@ -292,4 +292,45 @@ if not protector.nodes_registered then
 			return protector.on_destruct(...)
 		end,
 	})
+
+	-- Expired protector node.
+	minetest.register_node("protector:expired1", {
+		description = "Expired Protector",
+		drawtype = "nodebox",
+		tiles = {"cityblock.png"},
+		sounds = default.node_sound_stone_defaults(),
+		groups = utility.dig_groups("bigitem"),
+		paramtype = "light",
+		movement_speed_multiplier = default.NORM_SPEED,
+
+		node_box = {
+			type = "fixed",
+			fixed = {
+				{-0.5 ,-0.5, -0.5, 0.5, 0.5, 0.5},
+			}
+		},
+	})
+
+	minetest.register_node("protector:expired2", {
+		description = "Expired Protector",
+		tiles = {"protector_lock.png"},
+		wield_image = "protector_lock.png",
+		inventory_image = "protector_lock.png",
+		sounds = default.node_sound_stone_defaults(),
+		groups = utility.dig_groups("bigitem"),
+		paramtype = 'light',
+		paramtype2 = "wallmounted",
+		legacy_wallmounted = true,
+
+		drawtype = "nodebox",
+		sunlight_propagates = true,
+		walkable = false,
+		node_box = {
+			type = "wallmounted",
+			wall_top    = {-0.375, 0.4375, -0.5, 0.375, 0.5, 0.5},
+			wall_bottom = {-0.375, -0.5, -0.5, 0.375, -0.4375, 0.5},
+			wall_side   = {-0.5, -0.5, -0.375, -0.4375, 0.5, 0.375},
+		},
+		selection_box = {type = "wallmounted"},
+	})
 end

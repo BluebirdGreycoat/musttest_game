@@ -379,15 +379,17 @@ function protector.on_use_tool2(itemstack, user, pointed_thing)
 		return
 	end
 
-	local nod = minetest.get_node(oldpos).name
+	-- If a display entity is active, remove it and keep track.
+	-- Then we can activate a display entity after moving the protector.
+	local displayent_visible = protector.remove_area_display(oldpos)
 
 	-- place protector
-	minetest.set_node(pos, {name = nod, param2 = 1})
+	local nodename = minetest.get_node(oldpos).name
+	minetest.set_node(pos, {name = nodename, param2 = 1})
 	minetest.remove_node(oldpos)
 
 	-- We are going to execute callbacks.
-	local protdef = minetest.registered_nodes[nod]
-
+	local protdef = minetest.registered_nodes[nodename]
 	if protdef.on_construct then
 		protdef.on_construct(pos)
 	end
@@ -410,6 +412,10 @@ function protector.on_use_tool2(itemstack, user, pointed_thing)
 
 	-- Update infotext. (Needed after restoring meta.)
 	protector.update_infotext(meta)
+
+	if displayent_visible then
+		protector.toggle_area_display(pos)
+	end
 
 	ambiance.sound_play(electric_screwdriver.sound, pos, electric_screwdriver.sound_gain, electric_screwdriver.sound_dist)
 	response("Protector moved to " .. rc.pos_to_namestr_ex(pos) .. ".")

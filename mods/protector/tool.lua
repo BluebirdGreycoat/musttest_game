@@ -24,30 +24,43 @@ local function pos_has_inventory(pos)
 	return true
 end
 
+-- Chose protector to place at 'pos' (using the protector placer tool).
 local function choose_protector(pos, user, small)
 	local inv = user:get_inventory()
-	local node
 
-	-- try to take protector from player inventory (block first then logo)
-	if small then
-		if inv:contains_item("main", "protector:protect3") then
-			inv:remove_item("main", "protector:protect3")
-			node = "protector:protect3"
-		elseif inv:contains_item("main", "protector:protect4") then
-			inv:remove_item("main", "protector:protect4")
-			node = "protector:protect4"
-		end
-	else
-		if inv:contains_item("main", "protector:protect") then
-			inv:remove_item("main", "protector:protect")
-			node = "protector:protect"
-		elseif inv:contains_item("main", "protector:protect2") then
-			inv:remove_item("main", "protector:protect2")
-			node = "protector:protect2"
-		end
+	local function contains(name)
+		return inv:contains_item("main", name)
+	end
+	local function remove(name)
+		inv:remove_item("main", name)
 	end
 
-	return node
+	local solid = true
+	local protectors = {
+		--[[ Small prots ]] [true] = {[true]="protector:protect3", [false]="protector:protect4"},
+		--[[ Big prots   ]] [false] = {[true]="protector:protect", [false]="protector:protect2"},
+	}
+
+	-- Determine whether to try placing a solid or logo protector,
+	-- based on how much air is around the placement location.
+	local minp = vector.subtract(pos, 1)
+	local maxp = vector.add(pos, 1)
+	local airnodes = minetest.find_nodes_in_area(minp, maxp, "air")
+	if airnodes and #airnodes > math.floor((3*3*3-1)/3*2) then -- 2/3rds total volume is air
+		solid = false
+	end
+
+	-- Try to remove protector from inventory.
+	-- First one type, then the other. (Small is fixed, but solid can be toggled.)
+	if contains(protectors[small][solid]) then
+		remove(protectors[small][solid])
+		return protectors[small][solid]
+	end
+	solid = not solid
+	if contains(protectors[small][solid]) then
+		remove(protectors[small][solid])
+		return protectors[small][solid]
+	end
 end
 
 

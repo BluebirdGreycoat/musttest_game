@@ -65,6 +65,31 @@ end
 
 
 
+-- If exactly 1 protector display entity is found in a radius, return its position.
+-- Else, return original pos.
+local function find_protector_by_entity(pos)
+	local radius = 7
+	local objs = minetest.get_objects_inside_radius(pos, radius)
+	local displayents = {}
+
+	for _, obj in ipairs(objs) do
+		local entity = obj:get_luaentity()
+		if entity and entity.name then
+			local n = entity.name
+			if n == "protector:display" or n == "protector:display_small" then
+				displayents[#displayents + 1] = entity
+			end
+		end
+	end
+
+	if #displayents == 1 then
+		return vector.round(displayents[1].object:get_pos())
+	end
+	return pos
+end
+
+
+
 -- Claim EXPANSION tool.
 function protector.on_use_tool(itemstack, user, pointed_thing)
 	if not user or not user:is_player() then
@@ -77,7 +102,10 @@ function protector.on_use_tool(itemstack, user, pointed_thing)
 	end
 
 	-- check for protector near player (2 block radius)
+	-- If there's exactly 1 display entity in the area, use that position instead.
 	local pos = vector.round(user:get_pos())
+	pos = find_protector_by_entity(pos)
+
 	local pp = minetest.find_nodes_in_area(
 		vector.subtract(pos, 2), vector.add(pos, 2),
 		{"protector:protect", "protector:protect2",

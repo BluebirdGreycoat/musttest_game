@@ -215,7 +215,7 @@ function protector.toggle_protector_entities_in_area(pname, pos)
 			local node = minetest.get_node(positions[n])
 			local ndef = minetest.registered_nodes[node.name] or {}
 			if ndef._protector_displayent_name then
-				protector.toggle_area_display(positions[n], ndef._protector_displayent_name)
+				protector.toggle_area_display(positions[n])
 			end
 		end
 	end
@@ -725,7 +725,7 @@ function protector.node_on_punch(pos, node, puncher)
 		return
 	end
 
-	protector.toggle_area_display(pos, ndef._protector_displayent_name)
+	protector.toggle_area_display(pos)
 end
 
 
@@ -749,20 +749,27 @@ end
 
 
 function protector.remove_area_display(pos)
+	local got_any = false
 	local ents = minetest.get_objects_inside_radius(pos, 0.5)
 	for k, n in ipairs(ents) do
 		if not n:is_player() and n:get_luaentity() then
 			local name = n:get_luaentity().name or ""
 			if name == "protector:display" or name == "protector:display_small" then
 				n:remove()
+				got_any = true
 			end
 		end
 	end
+	return got_any -- True if entity removed, otherwise false.
 end
 
 
 
-function protector.toggle_area_display(pos, entity)
+function protector.toggle_area_display(pos)
+	-- Get entity name from node definition.
+	local ndef = minetest.registered_nodes[minetest.get_node(pos).name] or {}
+	local entity = ndef._protector_displayent_name
+
 	local got_any = false
 	local ents = minetest.get_objects_inside_radius(pos, 0.5)
 	for k, n in ipairs(ents) do

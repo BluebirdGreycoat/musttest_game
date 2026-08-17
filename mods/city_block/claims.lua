@@ -29,13 +29,6 @@ local PROTECTOR_NAMES = {
 	"protector:protect4",
 }
 
-local DISPLAY_ENTITY_NAME = {
-	["protector:protect"] = "protector:display",
-	["protector:protect2"] = "protector:display",
-	["protector:protect3"] = "protector:display_small",
-	["protector:protect4"] = "protector:display_small",
-}
-
 local function is_protector_name(name)
 	for k, v in ipairs(PROTECTOR_NAMES) do
 		if name == v then
@@ -687,9 +680,9 @@ function city_block.on_mayor_fields(player, formname, fields)
 		if info then
 			local vpos = info.pos
 			local node = minetest.get_node(vpos)
-			local entity = DISPLAY_ENTITY_NAME[node.name]
-			if is_protector_name(node.name) and entity then
-				if protector.toggle_area_display(vpos, entity) then
+
+			if is_protector_name(node.name) then
+				if protector.toggle_area_display(vpos) then
 					guiobj:set_message("Grid shown.")
 				else
 					guiobj:set_message("Grid hidden.")

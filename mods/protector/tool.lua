@@ -111,7 +111,10 @@ function protector.on_use_tool(itemstack, user, pointed_thing)
 		{"protector:protect", "protector:protect2",
 		"protector:protect3", "protector:protect4"})
 
-	if #pp == 0 then return end -- none found
+	if #pp == 0 then
+		response("No protector nearby.")
+		return
+	end -- none found
 
 	if #pp > 1 then
 		response("Too many protectors nearby, choice would be ambiguous.")

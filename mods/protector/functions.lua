@@ -767,21 +767,10 @@ end
 
 function protector.toggle_area_display(pos)
 	-- Get entity name from node definition.
-	local ndef = minetest.registered_nodes[minetest.get_node(pos).name] or {}
-	local entity = ndef._protector_displayent_name
-
-	local got_any = false
-	local ents = minetest.get_objects_inside_radius(pos, 0.5)
-	for k, n in ipairs(ents) do
-		if not n:is_player() and n:get_luaentity() then
-			local name = n:get_luaentity().name or ""
-			if name == "protector:display" or name == "protector:display_small" then
-				n:remove()
-				got_any = true
-			end
-		end
-	end
+	local got_any = protector.remove_area_display(pos)
 	if not got_any then
+		local ndef = minetest.registered_nodes[minetest.get_node(pos).name] or {}
+		local entity = ndef._protector_displayent_name
 		minetest.add_entity(pos, entity)
 	end
 	return not got_any -- True if entity added, otherwise false.

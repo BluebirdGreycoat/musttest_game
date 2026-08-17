@@ -68,7 +68,7 @@ end
 -- If exactly 1 protector display entity is found in a radius, return its position.
 -- Else, return original pos.
 local function find_protector_by_entity(pos)
-	local radius = 7
+	local radius = 5
 	local objs = minetest.get_objects_inside_radius(pos, radius)
 	local displayents = {}
 

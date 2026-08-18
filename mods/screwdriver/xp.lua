@@ -5,7 +5,7 @@ screwdriver.xp.players = screwdriver.xp.players or {}
 
 local QUEUE_SIZE = 50
 local TIME_WINDOW = 10
-local MAX_STREAK = 10
+local MAX_STREAK = 20
 local XP_COOLDOWN = 60
 local PLAYER_DIST = 2
 local MAX_XP_PER_BPOS = 500
